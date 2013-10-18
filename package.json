@@ -1,0 +1,60 @@
+{
+  "name": "Bookworm",
+  "description": "Book NZB Searcher and Grabber",
+  "version": "0.1.0",
+  "homepage": "https://github.com/blackbarn/Bookworm",
+  "private": true,
+  "keywords": "nzb, book, automate",
+  "author": {
+    "name": "Kyle Brown",
+    "email": "blackbarn@gmail.com"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "/blob/master/LICENSE-MIT"
+    }
+  ],
+  "engines": {
+    "node": "0.10.x"
+  },
+  "main": "app/",
+  "scripts": {
+    "start": "node index.js",
+    "build": "grunt"
+  },
+  "dependencies": {
+    "express": "~3.4.0",
+    "connect-thumbs": "~0.1.7",
+    "async": "~0.2.9",
+    "lodash": "~2.2.1",
+    "sabnzbd": "~0.2.1",
+    "fs-extra": "~0.7.0",
+    "xml2js": "~0.2.8",
+    "jugglingdb": "~0.2.0-41",
+    "memoizee": "~0.2.6",
+    "nconf": "~0.6.7",
+    "request": "~2.27.0",
+    "winston": "~0.7.2",
+    "moment": "~2.3.1",
+    "jade": "~0.35.0",
+    "jugglingdb-sqlite3": "0.0.2-1",
+    "socket.io": "~0.9.16",
+    "express-partial-response": "~0.2.1",
+    "findit": "~1.1.0",
+    "line-reader": "~0.2.3",
+    "revalidator": "~0.1.5",
+    "winston-request-logger": "~0.1.1",
+    "passport": "~0.1.17",
+    "passport-localapikey": "0.0.3",
+    "node-schedule": "~0.1.11",
+    "q": "~0.9.7",
+    "json-mask": "~0.2.0",
+    "node-uuid": "~1.4.1"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib": "~0.7.0",
+    "stylus": "~0.38.0"
+  }
+}
