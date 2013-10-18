@@ -2,10 +2,9 @@
  * @author Kyle Brown <blackbarn@gmail.com>
  * @since 10/10/13 10:57 AM
  */
-
+var Q = require('q');
 var fs = require('fs-extra');
 var path = require('path');
-var async = require('async');
 var logger = require('../../services/log').logger();
 
 /**
@@ -35,35 +34,29 @@ function initializeControllers (app) {
 
     controllersDirectory = path.join(__dirname, '..', '..', 'controllers');
 
-    async.waterfall([
-        function (next) {
-            fs.exists(controllersDirectory, function (exists) {
-                next(null, exists);
-            });
-        },
-        function (exists, next) {
-            if (exists) {
-                fs.readdir(controllersDirectory, next);
-            } else {
-                next(new Error('Controllers directory does not exist'));
+    Q.fcall(function () {
+        var deferred = Q.defer();
+        fs.exists(controllersDirectory, deferred.resolve);
+        return deferred.promise;
+    })
+    .then(function (exists) {
+        if (exists) {
+            return Q.nfcall(fs.readdir, controllersDirectory);
+        } else {
+            throw new Error('Controllers directory does not exist!');
+        }
+    })
+    .then(function (files) {
+        files.forEach(function (file) {
+            // skipping index.js for last as it has the default routes
+            if (file !== 'index.js') {
+                initializeController(file, app);
             }
-        },
-        function (files, next) {
-            files.forEach(function (file) {
-                // skipping index.js for last as it has the default routes
-                if (file !== 'index.js') {
-                    initializeController(file, app);
-                }
-            });
-            initializeController('index', app);
-            next();
-        }
-    ], function (err) {
-        if (err) {
-            throw err;
-        }
+        });
+        initializeController('index', app);
         logger.info('Application Started');
+    }).catch(function (err) {
+        logger.error(err);
     });
-
 }
 module.exports = initializeControllers;

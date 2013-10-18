@@ -2,24 +2,35 @@
  * @author Kyle Brown <blackbarn@gmail.com>
  * @since 10/11/13 4:00 PM
  */
-var querystring = require('querystring');
+var qs = require('querystring');
+
+/**
+ * Request Metadata Paging information.
+ * @param {object} req - The Request object.
+ * @param {object} res - The Response object.
+ * @param {function} next - callback to next middleware
+ */
 module.exports = function (req, res, next) {
     'use strict';
 
     var offset, limit, createDynamicLink;
 
+    /**
+     * Create a dynamic link given offset and limit
+     * @param {number} offset - offset number
+     * @param {number} limit - limit number
+     * @returns {string} the full url with proper params.
+     */
     createDynamicLink = function (offset, limit) {
         var pagingUrl, pagingUrlParams;
 
         pagingUrl = req._metadata.links.pagingRemoved.split('?')[0];
-        pagingUrlParams = querystring.parse(req._metadata.links.pagingRemoved.split('?')[1]);
+        pagingUrlParams = qs.parse(req._metadata.links.pagingRemoved.split('?')[1]);
         pagingUrlParams.offset = offset;
         pagingUrlParams.limit = limit;
 
-        return pagingUrl + '?' + querystring.stringify(pagingUrlParams);
+        return pagingUrl + '?' + qs.stringify(pagingUrlParams);
     };
-
-
 
     offset = req.query.offset;
     limit = req.query.limit;
@@ -45,7 +56,6 @@ module.exports = function (req, res, next) {
         previous = ensureNotNegative(offset - limit);
         next = ensureNotNegative((offset + limit > totalRecords) ? (totalRecords - offset) - limit : offset + limit);
         last = ensureNotNegative((totalRecords - offset) - limit);
-
 
         req._metadata.links.first = createDynamicLink(0, limit);
         req._metadata.links.previus = createDynamicLink(previous, limit);

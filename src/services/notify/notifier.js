@@ -88,7 +88,8 @@ Notifier.prototype.shouldNotify = function (trigger) {
  */
 Notifier.prototype.toString = function () {
     "use strict";
-    return this._settings.name;
+    //noinspection JSHint
+    return Q(this._settings.name);
 };
 
 /**

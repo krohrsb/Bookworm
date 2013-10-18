@@ -2,7 +2,7 @@
  * @author Kyle Brown <blackbarn@gmail.com>
  * @since 10/10/13 12:58 PM
  */
-var settingsService = require('../services/setting');
+var settingService = require('../services/setting');
 
 //noinspection JSUnusedLocalSymbols
 /**
@@ -29,7 +29,7 @@ function partial (req, res, next) {
     name = req.params.name;
     category = req.params.category;
     res.render('partials/' + category + '/' + name, {
-        env: settingsService.get('environment:env')
+        env: settingService.get('environment:env')
     });
 }
 

@@ -3,7 +3,7 @@
  * @since 10/15/13 8:45 AM
  * @module schedule/config
  */
-var settingsService = require('../setting');
+var settingService = require('../setting');
 
 module.exports = [{
     name: 'Post Process',
@@ -14,7 +14,7 @@ module.exports = [{
     spec: function () {
         "use strict";
         return {
-            minute: (settingsService.get('postProcessor:frequency') === 0) ? null : settingsService.get('postProcessor:frequency')
+            minute: (settingService.get('postProcessor:frequency') === 0) ? null : settingService.get('postProcessor:frequency')
         };
     },
     settingsKey: 'postProcessor:frequency'

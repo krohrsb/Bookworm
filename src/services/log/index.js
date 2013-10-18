@@ -4,9 +4,9 @@
  */
 
 // Local Dependencies
-var settingsService = require('../setting');
+var settingService = require('../setting');
 var loggerDefaults = require('./config');
 var LogService = require('./log');
 
 
-module.exports = new LogService(settingsService, loggerDefaults);
+module.exports = new LogService(settingService, loggerDefaults);

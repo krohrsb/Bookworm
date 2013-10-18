@@ -6,7 +6,7 @@ It utilizes the vast Public Google Books API for book information.
 
 It is built with NodeJS, ExpressJS and AngularJS with JugglingDB (Sqlite) as a store.
 
-Add your favorite authors, mark books as wanted, search nzb providers for these books and download them with SABNzbd!
+Add your favorite authors, mark books as wanted, search nzb providers for these books and download them with SABnzbd!
 
 _Currently only Newznab providers are supported for search providers, and SABNzbd for download providers. More to be implemented in the future._
 

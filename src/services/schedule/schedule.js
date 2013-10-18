@@ -12,7 +12,7 @@ var _ = require('lodash');
 var Q = require('q');
 
 // Local Dependencies
-var settingsService = require('../setting');
+var settingService = require('../setting');
 var logger = require('../log').logger();
 
 /**
@@ -25,7 +25,7 @@ var ScheduleService = function () {
     this._jobs = {};
 
     // Watch for setting 'sets' so we can update jobs accordingly.
-    settingsService.on('set', function (key) {
+    settingService.on('set', function (key) {
         this.updateJobs(key);
     }.bind(this));
 

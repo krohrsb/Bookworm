@@ -12,7 +12,7 @@ var Q = require('q');
 
 // Local Dependencies
 var Notifier = require('../notifier');
-var settingsService = require('../../setting');
+var settingService = require('../../setting');
 
 /**
  * Notify My Android Notifier
@@ -39,9 +39,9 @@ util.inherits(NotifyMyAndroid, Notifier);
 NotifyMyAndroid.prototype.shouldNotify = function (trigger) {
     "use strict";
     if (trigger === 'snatched') {
-        return settingsService.get('notifiers:nma:onSnatched');
+        return settingService.get('notifiers:nma:onSnatched');
     } else if (trigger === 'download') {
-        return settingsService.get('notifiers:nma:onDownload');
+        return settingService.get('notifiers:nma:onDownload');
     } else {
         return true;
     }
@@ -64,12 +64,12 @@ NotifyMyAndroid.prototype._parseResponse = function (response) {
             enabled: this._isEnabled,
             statusCode: response.nma.error[0].$.code
         });
-    } else if (result.nma && result.nma.success) {
+    } else if (response.nma && response.nma.success) {
         deferred.resolve({
             success: true,
             message: 'success',
             enabled: this._isEnabled,
-            statusCode: response.nma.error[0].$.code
+            statusCode: response.nma.success[0].$.code
         });
     } else {
         deferred.reject(new Error('could not parse nma response'));
@@ -88,13 +88,18 @@ NotifyMyAndroid.prototype.verify = function () {
         uri: this._verifyUrl,
         method: 'GET',
         qs: {
-            apikey: settingsService.get('notifiers:nma:apiKey')
+            apikey: settingService.get('notifiers:nma:apiKey')
         }
     })
-    .then(function (response, body) {
-        return Q.fcall(parseXml, body);
+    .then(function (body) {
+        if (body && body[1]) {
+            return Q.nfcall(parseXml, body[1]);
+        } else {
+            throw new Error('empty response from NMA');
+        }
+
     })
-    .then(this._parseResponse);
+    .then(this._parseResponse.bind(this));
 };
 
 /**
@@ -108,8 +113,8 @@ NotifyMyAndroid.prototype.notify = function (options) {
 
     if (this.shouldNotify(options.trigger)) {
         defaults = {
-            apikey: settingsService.get('notifiers:nma:apiKey'),
-            priority: settingsService.get('notifiers:nma:priority'),
+            apikey: settingService.get('notifiers:nma:apiKey'),
+            priority: settingService.get('notifiers:nma:priority'),
             description: this._settings.description,
             event: this._settings.event,
             application: this._settings.application
@@ -121,9 +126,13 @@ NotifyMyAndroid.prototype.notify = function (options) {
             uri: this._notifyUrl,
             method: 'POST',
             form: settings
-        }).then(function (resopnse, body) {
-            return Q.fcall(parseXml, body);
-        }).then(this._parseResponse);
+        }).then(function (body) {
+            if (body && body[1]) {
+                return Q.nfcall(parseXml, body[1]);
+            } else {
+                throw new Error('empty response from NMA');
+            }
+        }).then(this._parseResponse.bind(this));
     } else {
         return Q.fcall(function () {
             return {

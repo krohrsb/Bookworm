@@ -2,7 +2,7 @@
  * @author Kyle Brown <blackbarn@gmail.com>
  * @since 10/11/13 4:13 PM
  */
-var settingsService = require('../services/setting');
+var settingService = require('../services/setting');
 
 //noinspection JSUnusedLocalSymbols
 /**
@@ -16,7 +16,7 @@ var settingsService = require('../services/setting');
 function settings (req, res, next) {
     'use strict';
 
-    var data = settingsService.get();
+    var data = settingService.get();
 
     if (data === null) {
         res.send(400);
@@ -38,7 +38,7 @@ function settingById (req, res, next) {
     'use strict';
     var data;
     if (req.params.id) {
-        data = settingsService.get(req.params.id);
+        data = settingService.get(req.params.id);
     } else {
         data = null;
     }
@@ -63,11 +63,11 @@ function setSettings (req, res, next) {
     var result;
     if (req.body) {
 
-        result = settingsService.setJSON(req.body);
+        result = settingService.setJSON(req.body);
         if (result && result[0]) {
             next(result[0]);
         } else {
-            settingsService.save().then(function () {
+            settingService.save().then(function () {
                 res.send(200);
             }, next);
         }

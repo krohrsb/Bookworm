@@ -14,7 +14,7 @@ var Q = require('q');
 // Local Dependencies
 var GoogleBooksAPIService = require('./google-books-api');
 var GoogleBooksParser = require('./google-books-parser');
-var settingsService = require('../../setting');
+var settingService = require('../../setting');
 var logger = require('../../log').logger();
 
 var errors = {
@@ -62,7 +62,7 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
         // get isbn
         isbn = this._parser.parseISBN(volume);
         // get languages
-        languages = settingsService.get('searchers:googleBooks:filters:languages');
+        languages = settingService.get('searchers:googleBooks:filters:languages');
 
         if (_.isEmpty(languages)) {
             languages = '';
@@ -84,10 +84,10 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
         } else if (!_.isEmpty(languages) && !_.contains(languages, volume.language)) {
             logger.debug('Book language does not match selected language filter, skipping.', {title: volume.title, filter: languages, language: language});
             deferred.resolve();
-        } else if (settingsService.get('searchers:googleBooks:filters:description') && _.isEmpty(description)) {
+        } else if (settingService.get('searchers:googleBooks:filters:description') && _.isEmpty(description)) {
             logger.debug('Book does not contain a description, skipping.', {title: volume.title});
             deferred.resolve();
-        } else if (settingsService.get('searchers:googleBooks:filters:isbn') && _.isEmpty(isbn)) {
+        } else if (settingService.get('searchers:googleBooks:filters:isbn') && _.isEmpty(isbn)) {
             logger.debug('Industry Identifier (ISBN) not available for Book, skipping.', {title: volume.title});
             deferred.resolve();
         } else {

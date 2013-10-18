@@ -18,13 +18,13 @@ var Q = require('q');
 /**
  * Log Service
  * Provides access to the logger, log querying and detecting current log file.
- * @param {object} settingsService - instance of a settings service for #get
+ * @param {object} settingService - instance of a settings service for #get
  * @constructor
  * @alias module:log
  */
-var LogService = function (settingsService) {
+var LogService = function (settingService) {
     "use strict";
-    this._settingsService = settingsService;
+    this._settingService = settingService;
     this._logLevelsArray = [];
     this._logger = null;
 
@@ -46,7 +46,7 @@ LogService.prototype.initialize = function () {
 
     defaults = this._getDefaults();
     // create log file if it doesn't already exist
-    fs.createFileSync(path.join(this._settingsService.get('loggers:file:path')));
+    fs.createFileSync(path.join(this._settingService.get('loggers:file:path')));
 
     //add colors
     winston.addColors(defaults.colors);
@@ -92,17 +92,17 @@ LogService.prototype._getDefaults = function () {
             console: {
                 colorize: true,
                 timestamp: true,
-                level: this._settingsService.get('loggers:console:level'),
-                silent: !this._settingsService.get('loggers:console:enabled'),
+                level: this._settingService.get('loggers:console:level'),
+                silent: !this._settingService.get('loggers:console:enabled'),
                 prettyPrint: true
             },
             file: {
-                filename: this._settingsService.get('loggers:file:path'),
+                filename: this._settingService.get('loggers:file:path'),
                 timestamp: true,
-                level: this._settingsService.get('loggers:file:level'),
-                silent: !this._settingsService.get('loggers:file:enabled'),
-                maxsize: this._settingsService.get('loggers:file:maxSize'),
-                maxFiles: this._settingsService.get('loggers:file:maxFiles')
+                level: this._settingService.get('loggers:file:level'),
+                silent: !this._settingService.get('loggers:file:enabled'),
+                maxsize: this._settingService.get('loggers:file:maxSize'),
+                maxFiles: this._settingService.get('loggers:file:maxFiles')
             }
         }
 
@@ -131,7 +131,7 @@ LogService.prototype.getLogFile = function () {
     /** @type {object[]}**/
     logFiles = [];
     /** @type {string} **/
-    logDirectory = path.dirname(path.join(this._settingsService.get('environment:baseDirectory'), this._settingsService.get('loggers:file:path')));
+    logDirectory = path.dirname(path.join(this._settingService.get('environment:baseDirectory'), this._settingService.get('loggers:file:path')));
 
     finder = find(logDirectory);
 

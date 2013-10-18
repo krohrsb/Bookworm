@@ -14,7 +14,7 @@ var settingService = require('../setting/');
 
 var FetchService = function () {
     "use strict";
-    //path.dirname(path.join(this._settingsService.get('environment:baseDirectory'), this._settingsService.get('loggers:file:path')));
+    //path.dirname(path.join(this._settingService.get('environment:baseDirectory'), this._settingService.get('loggers:file:path')));
     events.EventEmitter.call(this);
 };
 
