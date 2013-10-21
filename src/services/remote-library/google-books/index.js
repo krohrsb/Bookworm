@@ -4,14 +4,25 @@
  */
 var GoogleBooks = require('./google-books');
 var settingService = require('../../setting');
+var StatefulSetting = require('../../setting/stateful-setting');
 
-module.exports = new GoogleBooks({
-    userAgent: settingService.get('environment:userAgent'),
+var googleBooksSettings = new StatefulSetting({
+    userAgent: 'environment:userAgent',
     queryParams: {
-        key: settingService.get('searchers:googleBooks:apiKey'),
-        langRestrict: settingService.get('searchers:googleBooks:language')
+        key: 'searchers:googleBooks:apiKey',
+        langRestrict: 'searchers:googleBooks:language'
     },
     cacheOptions: {
-        maxAge: settingService.get('searchers:googleBooks:cache')
+        maxAge: 'searchers:googleBooks:cache'
     }
 });
+
+var googleBooks = new GoogleBooks(googleBooksSettings.get());
+
+//update settings in the service when they are updated in the config
+googleBooksSettings.on('updated', function (obj) {
+    "use strict";
+    googleBooks.updateSettings(obj);
+});
+
+module.exports = googleBooks;

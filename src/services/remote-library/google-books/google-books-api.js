@@ -78,6 +78,15 @@ util.inherits(GoogleBooksAPIService, events.EventEmitter);
 
 
 /**
+ * Update the settings
+ * @param {object} settings - new settings
+ */
+GoogleBooksAPIService.prototype.updateSettings = function (settings) {
+    "use strict";
+    this._settings = _.merge({}, this._defaults, settings || {});
+};
+
+/**
  * Query the Google Books API
  * @param {object} options - The query options (search params)
  * @returns {Promise} A promise of type Promise<Object[], Error>

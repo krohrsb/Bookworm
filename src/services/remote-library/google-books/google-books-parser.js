@@ -33,29 +33,29 @@ util.inherits(GoogleBooksParserService, events.EventEmitter);
 
 /**
  * Parses a single Google Books API Response
- * @param {object} body - The Google Books API Response object
+ * @param {object} response - The Google Books API Response object
  * @returns {Promise} A promise of type Promise<Object, Error>
  */
-GoogleBooksParserService.prototype.parseResponse = function (body) {
+GoogleBooksParserService.prototype.parseResponse = function (response) {
     "use strict";
     var error, items, deferred;
     deferred = Q.defer();
-    if (_.isEmpty(body)) {
+    if (_.isEmpty(response)) {
         deferred.reject(new Error(errors.EMPTY_RESPONSE));
-    } else if (body.error) {
-        if (_.isEmpty(body.error.errors)) {
+    } else if (response.error) {
+        if (_.isEmpty(response.error.errors)) {
             error = errors.RESPONSE_ERROR;
         } else {
-            error = body.error.errors[0].message + '. ' + body.error.errors[0].reason;
+            error = response.error.errors[0].message + '. ' + response.error.errors[0].reason;
         }
         deferred.reject(new Error(error));
     } else {
         // handle single book response
-        if (_.isUndefined(body.totalItems)) {
-            items = [body];
-        } else if (body.items) {
+        if (_.isUndefined(response.totalItems)) {
+            items = [response];
+        } else if (response.items) {
             //ensure no duplicate books
-            items = _.uniq(body.items, function (item) {
+            items = _.uniq(response.items, function (item) {
                 return item.id;
             });
         } else {

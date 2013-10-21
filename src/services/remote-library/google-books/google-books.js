@@ -38,6 +38,16 @@ var GoogleBooksService = function (options) {
 
 util.inherits(GoogleBooksService, events.EventEmitter);
 
+
+/**
+ * Update the settings
+ * @param {object} settings - new settings
+ */
+GoogleBooksService.prototype.updateSettings = function (settings) {
+    "use strict";
+    this._api.updateSettings(settings);
+};
+
 /**
  * Construct a Book given Google Book API details
  * @param {object} options - The original options from the query
@@ -82,7 +92,7 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
             logger.debug('Author could not be found for book, skipping.', {title: volume.title, author: volume.authors || volume.author});
             deferred.resolve();
         } else if (!_.isEmpty(languages) && !_.contains(languages, volume.language)) {
-            logger.debug('Book language does not match selected language filter, skipping.', {title: volume.title, filter: languages, language: language});
+            logger.debug('Book language does not match selected language filter, skipping.', {title: volume.title, filter: languages, language: languages});
             deferred.resolve();
         } else if (settingService.get('searchers:googleBooks:filters:description') && _.isEmpty(description)) {
             logger.debug('Book does not contain a description, skipping.', {title: volume.title});
