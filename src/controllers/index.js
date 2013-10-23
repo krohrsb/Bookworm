@@ -4,6 +4,7 @@
  */
 var settingService = require('../services/setting');
 
+var logger = require('../services/log').logger();
 //noinspection JSUnusedLocalSymbols
 /**
  * Render the main index page
@@ -13,6 +14,7 @@ var settingService = require('../services/setting');
  */
 function index (req, res, next) {
     "use strict";
+    logger.trace('Controllers::index::index');
     res.render('index');
 }
 
@@ -28,6 +30,7 @@ function partial (req, res, next) {
     var name, category;
     name = req.params.name;
     category = req.params.category;
+    logger.trace('Controllers::index::partial(%s, %s)', category, name);
     res.render('partials/' + category + '/' + name, {
         env: settingService.get('environment:env')
     });
@@ -42,6 +45,7 @@ function partial (req, res, next) {
  */
 function unknown (req, res, next) {
     'use strict';
+    logger.trace('Controllers::index::unknown');
     res.send(404);
 }
 
@@ -54,6 +58,7 @@ function unknown (req, res, next) {
  */
 function apiUnauthorized (req, res, next) {
     "use strict";
+    logger.trace('Controllers::index::apiUnauthorized');
     res.send(401);
 }
 /**

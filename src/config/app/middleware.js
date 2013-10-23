@@ -3,7 +3,7 @@
  * @since 10/10/13 10:40 AM
  */
 'use strict';
-
+var Q = require('q');
 var express = require('express');
 var logger = require('../../services/log').logger();
 var partialResponse = require('express-partial-response');

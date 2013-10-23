@@ -93,13 +93,15 @@ NotifyMyAndroid.prototype.verify = function () {
     })
     .then(function (body) {
         if (body && body[1]) {
-            return Q.nfcall(parseXml, body[1]);
+            return Q.nfcall(parseXml, body[1]).then(function (response) {
+                this.emit('verify', response);
+                return response;
+            }.bind(this));
         } else {
             throw new Error('empty response from NMA');
         }
 
-    })
-    .then(this._parseResponse.bind(this));
+    }.bind(this)).then(this._parseResponse.bind(this));
 };
 
 /**
@@ -128,7 +130,10 @@ NotifyMyAndroid.prototype.notify = function (options) {
             form: settings
         }).then(function (body) {
             if (body && body[1]) {
-                return Q.nfcall(parseXml, body[1]);
+                return Q.nfcall(parseXml, body[1]).then(function (response) {
+                    this.emit('notify', response);
+                    return response;
+                });
             } else {
                 throw new Error('empty response from NMA');
             }
@@ -140,6 +145,9 @@ NotifyMyAndroid.prototype.notify = function (options) {
                 enabled: this._isEnabled,
                 message: 'trigger not set to notify'
             };
+        }.bind(this)).then(function (response) {
+            this.emit('notify', response);
+            return response;
         }.bind(this));
     }
 

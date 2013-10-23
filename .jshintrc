@@ -1,4 +1,5 @@
 {
     "node": true,
-    "globalstrict": true
+    "globalstrict": true,
+    "newcap": false
 }

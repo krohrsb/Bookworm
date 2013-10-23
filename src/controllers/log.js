@@ -3,7 +3,7 @@
  * @since 10/10/13 2:41 PM
  */
 var logService = require('../services/log');
-
+var logger = logService.logger();
 //noinspection JSUnusedLocalSymbols
 /**
  * Retrieve logs
@@ -13,7 +13,7 @@ var logService = require('../services/log');
  */
 function logs (req, res, next) {
     'use strict';
-
+    logger.trace('Controllers::log::logs');
     logService.query({
         offset: req.query.offset,
         limit: req.query.limit,

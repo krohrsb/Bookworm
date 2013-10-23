@@ -2,9 +2,11 @@
  * @author Kyle Brown <blackbarn@gmail.com>
  * @since 10/16/13 11:08 AM
  */
+var _ = require('lodash');
 
 var remoteLibraryService = require('../services/remote-library');
-
+var settingService = require('../services/setting');
+var logger = require('../services/log').logger();
 //noinspection JSUnusedLocalSymbols
 /**
  * Queries the remote library
@@ -14,12 +16,10 @@ var remoteLibraryService = require('../services/remote-library');
  */
 function queryBooks (req, res, next) {
     'use strict';
-
-    if (req.query.paging) {
-        remoteLibraryService.pagingQuery(req.query).then(res.json.bind(res), next);
-    } else {
-        remoteLibraryService.query(req.query).then(res.json.bind(res), next);
-    }
+    logger.trace('Controllers::remote-library::queryBooks');
+    remoteLibraryService.pagingQuery(_.merge({}, {
+        pagingQueryLimit: settingService.get('searchers:googleBooks:pageCounts:searchBooks')
+    }, req.query || {})).then(res.json.bind(res), next);
 
 }
 
@@ -32,6 +32,7 @@ function queryBooks (req, res, next) {
  */
 function bookById (req, res, next) {
     'use strict';
+    logger.trace('Controllers::remote-library::bookById(%s)', req.params.id);
     remoteLibraryService.findById(req.params.id, {}).then(function (book) {
         if (book) {
             res.json(book);
@@ -50,8 +51,10 @@ function bookById (req, res, next) {
  */
 function queryAuthors (req, res, next) {
     "use strict";
-
-    remoteLibraryService.queryAuthors(req.query).then(res.json.bind(res), next);
+    logger.trace('Controllers::remote-library::queryAuthors');
+    remoteLibraryService.queryAuthors(_.merge({}, {
+        pagingQueryLimit: settingService.get('searchers:googleBooks:pageCounts:searchAuthors')
+    }, req.query || {})).then(res.json.bind(res), next);
 }
 
 

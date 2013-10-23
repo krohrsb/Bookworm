@@ -60,13 +60,36 @@ NewznabService.prototype.updateAPISettings = function (settings) {
 };
 
 /**
+ * Sort results
+ * @param {object} options - query options
+ * @param {object[]} releases - releases to sort
+ * @returns {Promise} A promise of type Promise<Releases[], Error>
+ * @private
+ */
+NewznabService.prototype._sort = function (options, releases) {
+    "use strict";
+    return Q.fcall(function () {
+        var sorted = _.sortBy(releases, function (release) {
+            if (typeof release[options.sort] !== 'undefined') {
+                return release[options.sort];
+            } else {
+                return release.usenetDate;
+            }
+        });
+        if (options.direction && options.direction.toLowerCase() === 'desc') {
+            sorted = sorted.reverse();
+        }
+        return sorted;
+    });
+};
+
+/**
  * Query all enabled newznab providers.
  * @param {object} options - The query options
  * @returns {Promise} A promise of type Promise<Array, Error>
  */
 NewznabService.prototype.query = function (options) {
     "use strict";
-    console.log(this._settings);
     var settings = _.clone(this._settings, true);
 
     return Q.all(settings.providers.map(function (provider) {
@@ -83,7 +106,7 @@ NewznabService.prototype.query = function (options) {
         return _.uniq(results, false, function (item) {
             return item.title;
         });
-    });
+    }).then(_.partial(this._sort, options).bind(this));
 };
 
 /**
@@ -134,6 +157,7 @@ NewznabService.prototype.constructRelease = function (release) {
 
         deferred.resolve({
             title: release.title,
+            nzbTitle: release.title + '.bw(' + guid + ')',
             providerName: release.channelTitle,
             providerType: 'newznab',
             usenetDate: usenetDate,

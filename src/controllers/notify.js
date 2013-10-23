@@ -6,6 +6,8 @@ var _ = require('lodash');
 
 var notificationService = require('../services/notify');
 
+var logger = require('../services/log').logger();
+
 //noinspection JSUnusedLocalSymbols
 /**
  * Verify a notifier
@@ -16,6 +18,7 @@ var notificationService = require('../services/notify');
 function verify (req, res, next) {
     'use strict';
     var notifier;
+    logger.trace('Controllers::notify::verify(%s)', req.params.name);
     notifier = notificationService.getNotifier(req.params.name);
 
     if (notifier) {
@@ -40,6 +43,8 @@ function verify (req, res, next) {
 function notify (req, res, next) {
     "use strict";
     var notifier;
+
+    logger.trace('Controllers::notify::notify(%s)', req.params.name);
     notifier = notificationService.getNotifier(req.params.name);
 
     if (notifier) {
@@ -64,7 +69,7 @@ function notify (req, res, next) {
 function getNotifiers (req, res, next) {
     "use strict";
     var notifiers, json;
-
+    logger.trace('Controllers::notify::getNotifiers');
     notifiers = notificationService.getNotifiers();
 
     if (_.isArray(notifiers)) {

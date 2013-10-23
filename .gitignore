@@ -2,6 +2,7 @@
 dist/
 cache/
 components/
+build/
 atlassian-ide-plugin.xml
 lib-cov
 *.seed

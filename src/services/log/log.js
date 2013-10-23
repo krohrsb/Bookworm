@@ -64,6 +64,10 @@ LogService.prototype.initialize = function () {
     Object.keys(defaults.levels).forEach(function (key) {
         this._logLevelsArray.push(key);
     }.bind(this));
+
+    this._logger.err = function (err) {
+        this.error(err.message + '\n' + err.stack);
+    }.bind(this._logger);
 };
 
 /**

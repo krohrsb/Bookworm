@@ -48,7 +48,7 @@ module.exports = {
                 searchBooks: 1,
                 searchAuthors: 1,
                 searchNewBooks: 1,
-                authorLoad: 4
+                refreshAuthor: 2
             }
         }
     },
@@ -74,10 +74,11 @@ module.exports = {
     postProcessor: {
         frequency: 10,
         downloadDirectory: '',
-        destiationDirectory: '',
-        folderFormat: '$Author-$Title($Date)',
-        fileFormat: '$Author-$Title($Date)',
+        destinationDirectory: '',
+        folderFormat: '$Author-$Title($Year)',
+        fileFormat: '$Author-$Title($Year)',
         keepOriginalFiles: true,
-        directoryPermissions: '0755'
+        directoryPermissions: '0755',
+        opfName: 'metadata.opf'
     }
 };

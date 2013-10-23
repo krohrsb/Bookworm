@@ -6,7 +6,7 @@
 var Schema = require('jugglingdb').Schema;
 
 // Local Dependencies
-var db = require('../config/database');
+var db = require('../config/database').db;
 
 // Helpers
 var authorStatuses = ['paused', 'active'];

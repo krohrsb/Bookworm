@@ -1,17 +1,15 @@
 /**
  * @author Kyle Brown <blackbarn@gmail.com>
- * @since 10/16/13 4:02 PM
+ * @since 10/22/13 12:03 PM
  */
 
 
-// Models
 var Author = require('../../models/author');
 var Book = require('../../models/book');
-
-
-module.exports = function (db) {
+var Release = require('../../models/release');
+var logger = require('../../services/log').logger();
+module.exports = function (db, exists) {
     "use strict";
-
     Author.hasMany(Book, {
         as: 'getBooks',
         foreignKey: 'authorId'
@@ -22,13 +20,22 @@ module.exports = function (db) {
         foreignKey: 'authorId'
     });
 
-    //db.autoupdate();
+    Book.hasMany(Release, {
+        as: 'getReleases',
+        foreignKey: 'bookId'
+    });
 
-   /* Author.create({guid: 'xyz', name: 'Bob Barker'}, function (err, author) {
-        console.log(arguments);
-        author.getBooks.create({guid: '123', title: 'test title'}, function () {
-            console.log(arguments);
-        });
-    });*/
+    Release.belongsTo(Book, {
+        as: 'getBook',
+        foreignKey: 'bookId'
+    });
 
+    db.isActual(function(err, actual) {
+        if (err) {
+            logger.error(err.message);
+        } else if (!actual || !exists) {
+            logger.info('Database is not up-to-date, updating schema...');
+            db.autoupdate();
+        }
+    });
 };

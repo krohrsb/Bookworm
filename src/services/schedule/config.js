@@ -4,12 +4,13 @@
  * @module schedule/config
  */
 var settingService = require('../setting');
+var postProcessService = require('../post-process');
 
 module.exports = [{
     name: 'Post Process',
     action: function () {
         "use strict";
-        console.log('TODO: post processing');
+        postProcessService.process();
     },
     spec: function () {
         "use strict";

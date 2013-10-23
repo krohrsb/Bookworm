@@ -19,7 +19,7 @@ exports.createApp = function () {
 
     routesConfig(app);
 
-    modelsConfig(databaseConfig);
+    modelsConfig(databaseConfig.db, databaseConfig.exists);
 
 
     return app;

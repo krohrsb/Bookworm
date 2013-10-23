@@ -5,7 +5,7 @@
 // Dependencies
 
 // Local Dependencies
-var db = require('../config/database');
+var db = require('../config/database').db;
 
 // Helpers
 var releaseStatuses = ['wanted', 'skipped', 'downloaded', 'snatched', 'excluded'];
@@ -18,11 +18,18 @@ var Release = db.define('Release', {
     title: {
         type: String
     },
+    nzbTitle: {
+        type: String
+    },
     providerName: {
         type: String
     },
     providerType: {
         type: String
+    },
+    book: {
+        type: Object,
+        'default': {}
     },
     usenetDate: {
         type: String
@@ -39,12 +46,16 @@ var Release = db.define('Release', {
     },
     updated: {
         type: Date
+    },
+    directory: {
+        type: String,
+        'default': ''
     }
 });
 
 
 // Validation
-Release.validatesPresenceOf('guid', 'name', 'status');
+Release.validatesPresenceOf('guid', 'title', 'status');
 
 Release.validatesInclusionOf('status', {
     in: releaseStatuses

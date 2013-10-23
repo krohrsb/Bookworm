@@ -64,8 +64,11 @@ module.exports = function (req, res, next) {
         req._metadata.total = totalRecords;
     };
 
-    req.query.offset = offset;
-    req.query.limit = limit;
-
+    if (typeof req.query.offset === 'undefined') {
+        req.query.offset = offset;
+    }
+    if (typeof req.query.limit === 'undefined') {
+        req.query.limit = limit;
+    }
     next();
 };

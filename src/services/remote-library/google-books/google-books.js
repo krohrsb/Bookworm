@@ -127,6 +127,30 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
 };
 
 /**
+ * Sort results
+ * @param {object} options - query options
+ * @param {object[]} books - books to sort
+ * @returns {Promise} A promise of type Promise<Book[], Error>
+ * @private
+ */
+GoogleBooksService.prototype._sort = function (options, books) {
+    "use strict";
+    return Q.fcall(function () {
+        var sorted = _.sortBy(books, function (book) {
+            if (typeof book[options.sort] !== 'undefined') {
+                return book[options.sort];
+            } else {
+                return book.published;
+            }
+        });
+        if (options.direction && options.direction.toLowerCase() === 'desc') {
+            sorted = sorted.reverse();
+        }
+        return sorted;
+    });
+};
+
+/**
  * Query the Google Books API, parsing the response and returning constructed book objects.
  * @param {object} options - The options for the query
  * @returns {Promise} A promise of type Promise<Book[], Error>
@@ -143,7 +167,7 @@ GoogleBooksService.prototype.query = function (options) {
             return _.filter(books, function (book) {
                 return _.isObject(book);
             });
-        }.bind(this));
+        }.bind(this)).then(_.partial(this._sort, options).bind(this));
 };
 
 /**
@@ -163,7 +187,7 @@ GoogleBooksService.prototype.pagingQuery = function (options) {
             return _.filter(books, function (book) {
                 return _.isObject(book);
             });
-        });
+        }).then(_.partial(this._sort, options).bind(this));
 };
 
 /**
@@ -199,15 +223,9 @@ GoogleBooksService.prototype.queryAuthors = function (options) {
     if (options.q.indexOf('inauthor:') === -1) {
         options.q = 'inauthor:' + options.q;
     }
-    return Q.fcall(function () {
-        return options.paging;
-    }).then(function (paging) {
-        if (paging) {
-            return this.pagingQuery(options).then(this._parser.collateAuthors.bind(this));
-        } else {
-            return this.query(options).then(this._parser.collateAuthors.bind(this));
-        }
-        }.bind(this)).then(function (authors) {
+    return this.pagingQuery(options)
+        .then(this._parser.collateAuthors.bind(this))
+        .then(function (authors) {
         return authors.sort(function (author) {
             return author.relevance;
         }).reverse();

@@ -19,7 +19,7 @@ var apiDefaults = require('./newznab-api-defaults');
 
 /**
  * Newznab API Service
- * @param {options} - api options
+ * @param {object} options - api options
  * @constructor
  */
 var NewznabAPIService = function (options) {

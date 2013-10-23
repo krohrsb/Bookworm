@@ -3,7 +3,7 @@
  * @since 10/11/13 4:13 PM
  */
 var settingService = require('../services/setting');
-
+var logger = require('../services/log').logger();
 //noinspection JSUnusedLocalSymbols
 /**
  * Retrieve settings
@@ -15,7 +15,7 @@ var settingService = require('../services/setting');
  */
 function settings (req, res, next) {
     'use strict';
-
+    logger.trace('Controllers::setting::settings');
     var data = settingService.get();
 
     if (data === null) {
@@ -34,9 +34,10 @@ function settings (req, res, next) {
  * @param {object} res - The Response object.
  * @param {function} next - callback to next middleware
  */
-function settingById (req, res, next) {
+function byId (req, res, next) {
     'use strict';
     var data;
+    logger.trace('Controllers::setting::byId(%s)', req.params.id);
     if (req.params.id) {
         data = settingService.get(req.params.id);
     } else {
@@ -58,9 +59,10 @@ function settingById (req, res, next) {
  * @param {object} res - The Response object.
  * @param {function} next - callback to next middleware
  */
-function setSettings (req, res, next) {
+function set (req, res, next) {
     "use strict";
     var result;
+    logger.trace('Controllers::setting::set');
     if (req.body) {
 
         result = settingService.setJSON(req.body);
@@ -81,7 +83,7 @@ function setSettings (req, res, next) {
 function setup (app) {
     "use strict";
     app.get('/api/v1/settings', settings);
-    app.get('/api/v1/settings/:id', settingById);
-    app.put('/api/v1/settings', setSettings);
+    app.get('/api/v1/settings/:id', byId);
+    app.put('/api/v1/settings', set);
 }
 module.exports.setup = setup;

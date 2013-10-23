@@ -63,7 +63,7 @@ var GoogleBooksAPIService = function (options) {
      * @private
      */
     this._apiCache = memoize(function (key, options, next) {
-        logger.trace('not cached, issuing remote request', { key: key});
+        logger.trace('not cached, issuing remote request', options.qs);
         this._requestQueue.push({
             key: key,
             options: options
@@ -114,7 +114,7 @@ GoogleBooksAPIService.prototype.query = function (options) {
 
     // create the key used for caching lookup
     key = requestOptions.uri + '?' + qs.stringify(requestOptions.qs);
-    logger.trace('making request to cache', { key: key});
+    logger.trace('making request to cache', requestOptions.qs);
     // call the cache (will request if not in cache, otherwise will return the cached result)
     return Q.ninvoke(this, '_apiCache', key, requestOptions);
 
@@ -142,7 +142,7 @@ GoogleBooksAPIService.prototype.pagingQuery = function (options) {
         options.startIndex = 0;
     }
     if (_.isNaN(options.maxResults)) {
-        options.maxResults = 10;
+        options.maxResults = 40;
     }
     // allow passing in of rate control parameters, set the defaults
     if (_.isNaN(options.paging.pagingQueryParallelCount)) {

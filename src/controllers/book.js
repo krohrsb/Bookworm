@@ -3,15 +3,16 @@
  * @since 10/17/13 12:46 PM
  */
 
+var logger = require('../services/log').logger();
+
 var Q = require('q');
-var LibraryService = require('../services/library');
-var libraryService = new LibraryService();
+var _ = require('lodash');
 
-var BookService = require('../services/library/book');
-var bookService = new BookService();
+var libraryService = require('../services/library');
 
-var AuthorService = require('../services/library/author');
-var authorService = new AuthorService();
+var authorService = require('../services/library/author');
+
+var bookService = require('../services/library/book');
 
 var ModelValidationService = require('../services/model-validation');
 var modelValidationService = new ModelValidationService();
@@ -26,8 +27,12 @@ var modelValidationService = new ModelValidationService();
  */
 function getAll (req, res, next) {
     'use strict';
-
-    bookService.all({}, {
+    logger.trace('Controller::Book::getAll');
+    bookService.all({
+        limit: req.query.limit,
+        skip: req.query.offset,
+        order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : '')) : ''
+    }, {
         expand: req.query.expand
     }).then(res.json.bind(res), next);
 }
@@ -41,7 +46,7 @@ function getAll (req, res, next) {
  */
 function getById (req, res, next) {
     'use strict';
-
+    logger.trace('Controller::Book::getById(%s)', req.params.id);
     bookService.find(req.params.id, {
         expand: req.query.expand
     }).then(function (book) {
@@ -62,6 +67,7 @@ function getById (req, res, next) {
  */
 function getByIdAuthor (req, res, next) {
     "use strict";
+    logger.trace('Controller::Book::getByIdAuthor(%s)', req.params.id);
     bookService.findAuthor(req.params.id).then(function (author) {
         if (author) {
             return authorService.expandAuthor(req.query.expand, author);
@@ -71,6 +77,25 @@ function getByIdAuthor (req, res, next) {
     }).then(function (author) {
         if (author) {
             res.json(author);
+        } else {
+            res.send(404);
+        }
+    }, next);
+}
+
+//noinspection JSUnusedLocalSymbols
+/**
+ * Retrieve the releases for a book
+ * @param {object} req - The Request object.
+ * @param {object} res - The Response object.
+ * @param {function} next - callback to next middleware
+ */
+function getByIdReleases (req, res, next) {
+    "use strict";
+    logger.trace('Controller::Book::getByIdReleases(%s)', req.params.id);
+    bookService.findReleases(req.params.id).then(function (releases) {
+        if (releases) {
+            res.json(releases);
         } else {
             res.send(404);
         }
@@ -87,8 +112,14 @@ function getByIdAuthor (req, res, next) {
  */
 function create (req, res, next) {
     "use strict";
-
-    libraryService.createBook(req.body).then(function (book) {
+    logger.trace('Controller::Book::create');
+    Q.fcall(function () {
+        if (_.isArray(req.body)) {
+            return libraryService.createBooks(req.body);
+        } else {
+            return libraryService.createBook(req.body);
+        }
+    }).then(function (book) {
         if (book) {
             res.json(201, book);
         } else {
@@ -110,6 +141,7 @@ function create (req, res, next) {
  */
 function updateById (req, res, next) {
     "use strict";
+    logger.trace('Controller::Book::updateById(%s)', req.params.id);
     bookService.updateById(req.params.id, req.body, {
         expand: req.query.expand
     }).then(function (book) {
@@ -132,6 +164,7 @@ function updateById (req, res, next) {
  */
 function update (req, res, next) {
     "use strict";
+    logger.trace('Controller::Book::update');
     bookService.updateAll(req.body, {
         expand: req.query.expand
     }).then(function (books) {
@@ -154,6 +187,7 @@ function update (req, res, next) {
  */
 function removeById (req, res, next) {
     "use strict";
+    logger.trace('Controller::Book::removeById(%s)', req.params.id);
     bookService.removeById(req.params.id).then(function () {
         res.send(204);
     }, function (err) {
@@ -170,7 +204,7 @@ function removeById (req, res, next) {
  */
 function remove (req, res, next) {
     "use strict";
-
+    logger.trace('Controller::Book::remove');
     bookService.remove(req.body).then(function () {
         res.send(204);
     }, function (err) {
@@ -188,5 +222,6 @@ function setup (app) {
     app.put('/api/v1/books/:id', updateById);
     app.del('/api/v1/books/:id', removeById);
     app.get('/api/v1/books/:id/author', getByIdAuthor);
+    app.get('/api/v1/books/:id/releases', getByIdReleases);
 }
 module.exports.setup = setup;

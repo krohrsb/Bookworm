@@ -4,7 +4,7 @@
  */
 
 var remoteRelease = require('../services/remote-release');
-
+var logger = require('../services/log').logger();
 //noinspection JSUnusedLocalSymbols
 /**
  *
@@ -14,9 +14,14 @@ var remoteRelease = require('../services/remote-release');
  */
 function releases (req, res, next) {
     'use strict';
+    logger.trace('Controllers::newznab::releases');
     remoteRelease.query({
         title: req.query.title,
-        author: req.query.author
+        author: req.query.author,
+        sort: req.query.sort,
+        direction: req.query.direction,
+        limit: req.query.limit,
+        offset: req.query.offset
     }).then(function (releases) {
         res.json(releases);
     }, next);

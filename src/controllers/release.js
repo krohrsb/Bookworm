@@ -1,10 +1,11 @@
 /**
  * @author Kyle Brown <blackbarn@gmail.com>
- * @since 10/16/13 4:20 PM
+ * @since 10/22/13 10:26 AM
  */
+
 var logger = require('../services/log').logger();
 
-var authorService = require('../services/library/author');
+var releaseService = require('../services/library/release');
 
 var bookService = require('../services/library/book');
 
@@ -13,7 +14,7 @@ var modelValidationService = new ModelValidationService();
 
 //noinspection JSUnusedLocalSymbols
 /**
- * Retrieve all authors
+ * Retrieve all releases
  * Supports expand and fields to alter the response.
  * @param {object} req - The Request object.
  * @param {object} res - The Response object.
@@ -21,8 +22,8 @@ var modelValidationService = new ModelValidationService();
  */
 function getAll (req, res, next) {
     'use strict';
-    logger.trace('Controller::Author::getAll');
-    authorService.all({
+    logger.trace('Controller::Release::getAll');
+    releaseService.all({
         limit: req.query.limit,
         skip: req.query.offset,
         order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : '')) : ''
@@ -33,19 +34,19 @@ function getAll (req, res, next) {
 
 //noinspection JSUnusedLocalSymbols
 /**
- * Retrieve an author by id
+ * Retrieve a release by id
  * @param {object} req - The Request object.
  * @param {object} res - The Response object.
  * @param {function} next - callback to next middleware
  */
 function getById (req, res, next) {
     'use strict';
-    logger.trace('Controller::Author::getById(%s)', req.params.id);
-    authorService.find(req.params.id, {
+    logger.trace('Controller::Release::getById(%s)', req.params.id);
+    releaseService.find(req.params.id, {
         expand: req.query.expand
-    }).then(function (author) {
-        if (author) {
-            res.json(author);
+    }).then(function (release) {
+        if (release) {
+            res.json(release);
         } else {
             res.send(404);
         }
@@ -54,23 +55,23 @@ function getById (req, res, next) {
 
 //noinspection JSUnusedLocalSymbols
 /**
- * Retrieve an authors books given the author id
+ * Retrieve the release's book
  * @param {object} req - The Request object.
  * @param {object} res - The Response object.
  * @param {function} next - callback to next middleware
  */
-function getByIdBooks (req, res, next) {
+function getByIdBook (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::getByIdBooks', {authorId: req.params.id});
-    bookService.all({
-        where: {
-            authorId: req.params.id
+    logger.trace('Controller::Book::getByIdBook(%s)', req.params.id);
+    releaseService.findBook(req.params.id).then(function (book) {
+        if (book) {
+            return bookService.expandBook(req.query.expand, book);
+        } else {
+            return null;
         }
-    }, {
-        expand: req.query.expand
-    }).then(function (books) {
-        if (books) {
-            res.json(books);
+    }).then(function (book) {
+        if (book) {
+            res.json(book);
         } else {
             res.send(404);
         }
@@ -79,16 +80,16 @@ function getByIdBooks (req, res, next) {
 
 //noinspection JSUnusedLocalSymbols
 /**
- * Create an author
+ * Create a release
  * @param {object} req - The Request object.
  * @param {object} res - The Response object.
  * @param {function} next - callback to next middleware
  */
 function create (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::create');
-    authorService.create(req.body).then(function (author) {
-        res.json(201, author);
+    logger.trace('Controller::Release::create');
+    releaseService.create(req.body).then(function (release) {
+        res.json(201, release);
     }, function (err) {
         modelValidationService.formatError(err).then(next, next);
     });
@@ -96,19 +97,19 @@ function create (req, res, next) {
 
 //noinspection JSUnusedLocalSymbols
 /**
- * Update an author given their id
+ * Update a release given its id
  * @param {object} req - The Request object.
  * @param {object} res - The Response object.
  * @param {function} next - callback to next middleware
  */
 function updateById (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::updateById(%s, {..data..})', req.params.id);
-    authorService.updateById(req.params.id, req.body, {
+    logger.trace('Controller::Release::updateById(%s, {..data..})', req.params.id);
+    releaseService.updateById(req.params.id, req.body, {
         expand: req.query.expand
-    }).then(function (author) {
-        if (author) {
-            res.json(200, author);
+    }).then(function (release) {
+        if (release) {
+            res.json(200, release);
         } else {
             res.send(404);
         }
@@ -119,38 +120,38 @@ function updateById (req, res, next) {
 
 //noinspection JSUnusedLocalSymbols
 /**
- * Update an author given their data, may be multiple
+ * Update a release given its data, may be multiple
  * @param {object} req - The Request object.
  * @param {object} res - The Response object.
  * @param {function} next - callback to next middleware
  */
 function update (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::update({..data..})');
-    authorService.updateAll(req.body, {
+    logger.trace('Controller::Release::update({..data..})');
+    releaseService.updateAll(req.body, {
         expand: req.query.expand
-    }).then(function (authors) {
-        if (authors) {
-            res.json(200, authors);
-        } else {
-            res.send(409);
-        }
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    }).then(function (releases) {
+            if (releases) {
+                res.json(200, releases);
+            } else {
+                res.send(409);
+            }
+        }, function (err) {
+            modelValidationService.formatError(err).then(next, next);
+        });
 }
 
 //noinspection JSUnusedLocalSymbols
 /**
- * Remove a author given their id - WILL REMOVE THEIR BOOKS
+ * Remove a release given its id
  * @param {object} req - The Request object.
  * @param {object} res - The Response object.
  * @param {function} next - callback to next middleware
  */
 function removeById (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::removeById(%s)', req.params.id);
-    authorService.removeById(req.params.id).then(function () {
+    logger.trace('Controller::Release::removeById(%s)', req.params.id);
+    releaseService.removeById(req.params.id).then(function () {
         res.send(204);
     }, function (err) {
         modelValidationService.formatError(err).then(next, next);
@@ -159,32 +160,30 @@ function removeById (req, res, next) {
 
 //noinspection JSUnusedLocalSymbols
 /**
- * Remove one or more authors in an array - WILL REMOVE THEIR BOOKS
+ * Remove one or more releases in a array
  * @param {object} req - The Request object.
  * @param {object} res - The Response object.
  * @param {function} next - callback to next middleware
  */
 function remove (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::remove({..data..})');
-    authorService.remove(req.body).then(function () {
+    logger.trace('Controller::Release::remove({..data..})');
+    releaseService.remove(req.body).then(function () {
         res.send(204);
     }, function (err) {
         modelValidationService.formatError(err).then(next, next);
     });
 }
 
-
-
 function setup (app) {
     "use strict";
-    app.get('/api/v1/authors', getAll);
-    app.get('/api/v1/authors/:id', getById);
-    app.get('/api/v1/authors/:id/books', getByIdBooks);
-    app.post('/api/v1/authors', create);
-    app.put('/api/v1/authors/:id', updateById);
-    app.put('/api/v1/authors', update);
-    app.del('/api/v1/authors', remove);
-    app.del('/api/v1/authors/:id', removeById);
+    app.get('/api/v1/releases', getAll);
+    app.get('/api/v1/releases/:id', getById);
+    app.get('/api/v1/releases/:id/book', getByIdBook);
+    app.post('/api/v1/releases', create);
+    app.put('/api/v1/releases/:id', updateById);
+    app.put('/api/v1/releases', update);
+    app.del('/api/v1/releases', remove);
+    app.del('/api/v1/releases/:id', removeById);
 }
 module.exports.setup = setup;

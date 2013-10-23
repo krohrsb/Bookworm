@@ -46,7 +46,7 @@ GoogleBooksParserService.prototype.parseResponse = function (response) {
         if (_.isEmpty(response.error.errors)) {
             error = errors.RESPONSE_ERROR;
         } else {
-            error = response.error.errors[0].message + '. ' + response.error.errors[0].reason;
+            error = _.pluck(response.error.errors, 'message').join(',') + '. ' + _.pluck(response.error.errors, 'reason').join(',');
         }
         deferred.reject(new Error(error));
     } else {

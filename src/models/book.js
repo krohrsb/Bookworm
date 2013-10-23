@@ -5,7 +5,7 @@
 // Dependencies
 
 // Local Dependencies
-var db = require('../config/database');
+var db = require('../config/database').db;
 
 
 // Helpers
@@ -26,9 +26,12 @@ var Book = db.define('Book', {
         type: Object,
         'default': {}
     },
+    releases: {
+        type: Object,
+        'default': {}
+    },
     description: String,
-    averageRating: String,
-    pagesCount: Number,
+    pageCount: Number,
     publisher: String,
     language: String,
     isbn: String,
@@ -59,4 +62,8 @@ Book.validatesUniquenessOf('guid', {
     message: 'Book GUID must bee unique.'
 });
 
+Book.prototype.isWanted = function () {
+    "use strict";
+    return this.status === 'wanted' || this.status === 'wanted_new';
+};
 module.exports = Book;

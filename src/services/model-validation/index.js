@@ -59,19 +59,27 @@ ModelValidationService.prototype._getAllViolations = function (err) {
 
 
 /**
- * Determines if the error given contains a one or more violations
- * @param {Error} err - The error
- * @param {string|string[]} violations - The violations
- * @returns {Promise} A promise of type Promise<Boolean, Error>
+ * Retrieve the highest numbered status code from one or more errors.
+ * @param {Error|Error[]} err - one or more errors
+ * @returns {Promise} A promise of type Promise<Number, Error>
  */
-ModelValidationService.prototype.hasViolation = function (err, violations) {
+ModelValidationService.prototype.getStatusCode = function (err) {
     "use strict";
-
-    return this._getAllViolations(err).then(function (allViolations) {
-        return _.intersection(allViolations, violations).length > 0;
+    var code = 0;
+    if (_.isUndefined(err)) {
+        err = [];
+    }
+    if (!_.isArray(err)) {
+        err = [err];
+    }
+    err.forEach(function (err) {
+        if (err.statusCode && err.statusCode > code) {
+            code = err.statusCode;
+        }
     });
+    //noinspection JSHint
+    return Q(code);
 };
-
 /**
  * Format one or more errors into one error containing a human readable message and a corresponding status code.
  * @param {Error[]|Error} err - An error object or an array of error objects
@@ -86,7 +94,8 @@ ModelValidationService.prototype.formatError = function (err) {
         errors = err;
     }
 
-    return Q.all(errors.map(this._getAllViolations.bind(this)))
+    return this.getStatusCode(errors).then(function (code) {
+        return Q.all(errors.map(this._getAllViolations.bind(this)))
         .then(function (violations) {
             var err, violation, message;
             violations = _.flatten(violations);
@@ -96,10 +105,13 @@ ModelValidationService.prototype.formatError = function (err) {
                 message = errors[0].message;
             }
             err = new Error(this._messages[violation] || message || this._messages.other);
-            err.statusCode = this._statusCodes[violation] || this._statusCodes.other;
+            err.statusCode = code || this._statusCodes[violation] || this._statusCodes.other;
             err.violations = violations;
             return err;
         }.bind(this));
+    }.bind(this));
+
+
 
 };
 
