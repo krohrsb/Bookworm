@@ -57,7 +57,7 @@ grunt build
 
 Now that it is initialized, you can start it up!
 ```
-node index.js
+node bin/bookworm.js
 ```
 or
 ```
@@ -67,15 +67,6 @@ or whatever method you wish to use to start up a node script. (supervisor, forev
 
 It defaults to listening on port 3000, but you can change this in the settings.
 
-## Visuals
-An Author page
-![preview thumb](http://i.imgur.com/UBc0CMp.png)
-A Settings page
-![preview thumb](http://i.imgur.com/LCaLd1b.png)
-The Log page
-![preview thumb](http://i.imgur.com/2SQioym.png)
-
-Many more, so see for yourself.
 ## Documentation
 _(Coming soon)_
 
