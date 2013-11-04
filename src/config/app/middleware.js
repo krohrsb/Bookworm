@@ -22,7 +22,7 @@ module.exports = function (app) {
     app.use(express.bodyParser());
     app.use(express.compress());
     app.use(express.methodOverride());
-    app.use(express.static(__dirname + '/../../dist'));
+    app.use(express.static(__dirname + '/../../../build/client'));
     app.use(express.session({secret: '^wCE6LfbY!9Lr4H#SoPp0Xb'}));
     app.use(passport.initialize());
     app.use(passport.session());

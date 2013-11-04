@@ -198,7 +198,7 @@ ReleaseService.prototype.updateById = function (id, data, options) {
 ReleaseService.prototype.update = function (release, data) {
     "use strict";
     return Q.ninvoke(release, 'updateAttributes', mask(data, this._validUpdateAttributesMask)).then(function (release) {
-        this.emit('update', release, _.intersection(_.keys(release), _.keys(data)));
+        this.emit('update', release, _.intersection(_.keys(release.toJSON()), _.keys(data)));
         return release;
     }.bind(this));
 };
@@ -206,11 +206,12 @@ ReleaseService.prototype.update = function (release, data) {
 /**
  * Updates multiple books given their data (provided they have an ID)
  * @param {object[]|object} releasesData - Array of release data or singular release data.
- * @param {object} options - options for the update, such as expand.
+ * @param {object} [options] - options for the update, such as expand.
  * @returns {Promise} A promise of type Promise<Release[], Error>
  */
 ReleaseService.prototype.updateAll = function (releasesData, options) {
     "use strict";
+    options = options || {};
     if (!_.isArray(releasesData)) {
         releasesData = [releasesData];
     }
@@ -258,6 +259,24 @@ ReleaseService.prototype.remove = function (releasesData) {
     return Q.all(releasesData.map(function (releaseData) {
         return this.removeById(releaseData.id);
     }.bind(this)));
+};
+
+/**
+ * Clear any currently wanted releases, making them ignored.
+ * @returns {Promise} A promise of type Promise<Release[], Error>
+ */
+ReleaseService.prototype.clearWanted = function () {
+    "use strict";
+    return this.all({
+        where: {
+            status: 'wanted'
+        }
+    }).then(function (releases) {
+        releases.forEach(function (release) {
+            release.status = 'ignored';
+        });
+        return this.updateAll(releases);
+    }.bind(this));
 };
 
 module.exports = ReleaseService;

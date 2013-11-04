@@ -1,0 +1,40 @@
+div.page-header.hidden-xs
+    h1 Search
+        small the cloud
+form.form-horizontal(role='form')
+    div.form-group
+        label.col-lg-2.control-label(for='query') Author Query
+        div.col-lg-10
+            input.form-control(type='text', placeholder='J.R.R Tolkien', data-ng-model='authorQuery')
+            span.help-block Search for an author to add them to your library.
+    div.form-group
+        div.col-lg-offset-2.col-lg-10
+            button.btn.btn-default(type='submit', data-ng-click='search("searchAuthor", authorQuery)') Search
+    hr
+form.form-horizontal(role='form')
+    div.form-group
+        label.col-lg-2.control-label(for='query') Book Query
+        div.col-lg-10
+            input.form-control(type='text', placeholder='The Hobbit', data-ng-model='bookQuery')
+            span.help-block Search for a book to add it and its author to your library.
+    div.form-group
+        div.col-lg-offset-2.col-lg-10
+            button.btn.btn-default(type='submit', data-ng-click='search("searchBook", bookQuery)') Search
+    div.col-lg-offset-1.col-lg-10.well
+        p Perform more specific book searches using special keywords.
+        p For example: &quot;inauthor: J.R.R Tolkien&quot; or &quot;intitle: The Hobbit&quot;" or...both!
+        dl.dl-horizontal
+            dt intitle:
+            dd Returns results where the text following this keyword is found in the title.
+            dt inauthor:
+            dd Returns results where the text following this keyword is found in the author.
+            dt inpublisher:
+            dd Returns results where the text following this keyword is found in the publisher.
+            dt subject:
+            dd Returns results where the text following this keyword is listed in the category list of the volume.
+            dt isbn:
+            dd Returns results where the text following this keyword is the ISBN number.
+            dt lccn:
+            dd Returns results where the text following this keyword is the Library of Congress Control Number.
+            dt oclc:
+            dd Returns results where the text following this keyword is the Online Computer Library Center number.

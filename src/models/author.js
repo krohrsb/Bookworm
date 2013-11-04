@@ -29,6 +29,10 @@ var Author = db.define('Author', {
         type: Object,
         'default': []
     },
+    booksCount: {
+        type: Number,
+        'default': 0
+    },
     latestBook: {
         type: Object,
         default: {}
@@ -53,7 +57,10 @@ var Author = db.define('Author', {
         type: Number,
         'default': 0
     },
-    provider: String
+    provider: String,
+    updated: {
+        type: Date
+    }
 });
 
 
@@ -64,6 +71,9 @@ Author.validatesInclusionOf('status', {
 });
 Author.validatesUniquenessOf('guid', {
     message: 'Author GUID must bee unique.'
+});
+Author.validatesUniquenessOf('name', {
+    message: 'Author name must bee unique.'
 });
 
 module.exports = Author;

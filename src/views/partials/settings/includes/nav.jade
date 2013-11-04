@@ -1,0 +1,15 @@
+ul.nav.nav-tabs
+    li(data-ui-route='/settings', data-ng-class='{active: $uiRoute}')
+        a(data-ui-sref='settings') General
+    li.dropdown(data-ui-route='/settings/search/[a-zA-Z]*', data-ng-class='{active: $uiRoute}')
+        a.dropdown-toggle(data-toggle='dropdown') Searching
+            span.caret
+        ul.dropdown-menu
+            li
+                a(data-ui-sref='settings-search-newznab') Newznab
+            li
+                a(data-ui-sref='settings-search-googlebooks') Google Books
+    li(data-ui-route='/settings/download', data-ng-class='{active: $uiRoute}')
+        a(data-ui-sref='settings-download') Downloading
+    li(data-ui-route='/settings/notify', data-ng-class='{active: $uiRoute}')
+        a(data-ui-sref='settings-notify') Notifying

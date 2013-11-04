@@ -1,0 +1,13 @@
+div.panel.panel-default
+    div.panel-heading
+        h3.panel-title {{author.name}}
+    ul.list-group
+        li.list-group-item
+            strong Relevance:
+            |  {{author.relevance}}
+        li.list-group-item
+            strong Provider:
+            |  {{author.provider | inflector:'humanize'}}
+    div.panel-footer
+        div.btn-group
+            button.btn.btn-default.btn-sm(data-ng-click='addAuthor(author)') Add Author

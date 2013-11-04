@@ -23,7 +23,9 @@ module.exports = {
     server: {
         port: 3000,
         host: 'localhost',
-        apiKey: ''
+        apiKey: '',
+        username: '',
+        password: ''
     },
     searchers: {
         newznab: {
@@ -44,7 +46,7 @@ module.exports = {
                 description: true,
                 languages: 'en'
             },
-            pageCounts: {
+            pagingLimits: {
                 searchBooks: 1,
                 searchAuthors: 1,
                 searchNewBooks: 1,

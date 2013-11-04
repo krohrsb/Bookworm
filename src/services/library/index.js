@@ -20,20 +20,17 @@ bookService.on('update', function (book, propertiesChanged) {
     if (_.contains(propertiesChanged, 'status')) {
         if (book.status === 'wanted' || book.status === 'wanted_new') {
             logger.info('Book %s is now %s, searching for a release', book.title, book.status);
-            libraryService.findAndDownloadRelease(book).then(function (release) {
-                if (release) {
-                    logger.info('Release %s snatched for book %s', release.title, book.title);
-                } else {
-                    logger.info('No suitable release found for book %s', book.title);
-                }
-            }).fail(function (err) {
+            libraryService.findAndWantRelease(book).fail(function (err) {
                 logger.error(err.message);
             });
         } else if (book.status === 'skipped' || book.status === 'excluded') {
-            logger.info('Book %s is now %s, removing stored releases', book.title, book.status);
+            logger.info('Book %s is now %s, resetting stored releases', book.title, book.status);
             Q.ninvoke(book, 'getReleases').then(function (releases) {
                 if (releases) {
-                    return releaseService.remove(releases);
+                    releases.forEach(function (release) {
+                        release.status = 'available';
+                    });
+                    return releaseService.updateAll(releases);
                 } else {
                     return null;
                 }
@@ -41,7 +38,26 @@ bookService.on('update', function (book, propertiesChanged) {
                logger.error(err.message);
             });
         }
+    }
+});
 
+releaseService.on('update', function (release, propertiesChanged) {
+    'use strict';
+    if (_.contains(propertiesChanged, 'status')) {
+        if (release.status === 'wanted') {
+            releaseService.clearWanted().then(function () {
+                return Q.ninvoke(release, 'getBook');
+            }).then(function (book) {
+                logger.info('Release %s is now %s, searching for a release', book.title, book.status);
+                return libraryService.downloadRelease(book, release).then(function (release) {
+                    if (release) {
+                        logger.info('Release %s snatched for book %s', release.title, book.title);
+                    } else {
+                        logger.info('No suitable release found for book %s', book.title);
+                    }
+                });
+            });
+        }
     }
 });
 

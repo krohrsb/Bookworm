@@ -1,0 +1,45 @@
+extends layout
+
+
+block nav
+    toaster-container(toaster-options='{"time-out": 3000}')
+    nav.navbar.navbar-default(data-ng-controller='NavCtrl', role='navigation')
+        div.navbar-header
+            button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-ex1-collapse')
+                span.sr-only Toggle navigation
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+            a.navbar-brand(href='#/') Bookworm
+        div.collapse.navbar-collapse.navbar-ex1-collapse
+            ul.nav.navbar-nav
+                li(data-ui-route='/index', data-ng-class='{active: $uiRoute}')
+                    a(data-ui-sref='index')
+                        span.glyphicon.glyphicon-home
+                        |  Home
+                li(data-ui-route='/search', data-ng-class='{active: $uiRoute}')
+                    a(data-ui-sref='search')
+                        span.glyphicon.glyphicon-search
+                        |  Search
+                li(data-ui-route='/wanted', data-ng-class='{active: $uiRoute}')
+                    a(data-ui-sref='wanted')
+                        span.glyphicon.glyphicon-heart
+                        |  Wanted
+                li(data-ui-route='/authors', data-ng-class='{active: $uiRoute}')
+                    a(data-ui-sref='authors')
+                        span.glyphicon.glyphicon-list-alt
+                        |  Authors
+                li(data-ui-route='/logs', data-ng-class='{active: $uiRoute}')
+                    a(data-ui-sref='logs')
+                        span.glyphicon.glyphicon-list
+                        |  Logs
+                li(data-ui-route='/settings', data-ng-class='{active: $uiRoute}')
+                    a(data-ui-sref='settings')
+                        span.glyphicon.glyphicon-cog
+                        |  Settings
+block view
+
+    div.row(data-ui-view)
+
+
+block footer

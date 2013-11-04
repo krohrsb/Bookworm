@@ -179,9 +179,11 @@ function setup (app) {
     "use strict";
     app.get('/api/v1/releases', getAll);
     app.get('/api/v1/releases/:id', getById);
+    app.get('/api/v1/books/:bid/releases/:id', getById);
     app.get('/api/v1/releases/:id/book', getByIdBook);
     app.post('/api/v1/releases', create);
     app.put('/api/v1/releases/:id', updateById);
+    app.put('/api/v1/books/:bid/releases/:id', updateById);
     app.put('/api/v1/releases', update);
     app.del('/api/v1/releases', remove);
     app.del('/api/v1/releases/:id', removeById);

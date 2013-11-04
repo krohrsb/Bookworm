@@ -15,7 +15,9 @@ var logger = require('../services/log').logger();
 function index (req, res, next) {
     "use strict";
     logger.trace('Controllers::index::index');
-    res.render('index');
+    res.render('index', {
+        env: settingService.get('environment:env')
+    });
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -31,7 +33,7 @@ function partial (req, res, next) {
     name = req.params.name;
     category = req.params.category;
     logger.trace('Controllers::index::partial(%s, %s)', category, name);
-    res.render('partials/' + category + '/' + name, {
+    res.render('partials/' + category + ((name) ? '/' + name : ''), {
         env: settingService.get('environment:env')
     });
 }
@@ -68,6 +70,7 @@ function apiUnauthorized (req, res, next) {
 function setup (app) {
     "use strict";
     app.get('/', index);
+    app.get('/partials/:category', partial);
     app.get('/partials/:category/:name', partial);
     app.get('/api/unauthorized', apiUnauthorized);
     app.get('*', unknown);

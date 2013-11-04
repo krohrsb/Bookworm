@@ -28,11 +28,20 @@ var modelValidationService = new ModelValidationService();
 function getAll (req, res, next) {
     'use strict';
     logger.trace('Controller::Book::getAll');
-    bookService.all({
+    var options = {
         limit: req.query.limit,
         skip: req.query.offset,
         order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : '')) : ''
-    }, {
+    };
+
+    if (req.query.status) {
+        options.where = {
+            status: {
+                inq: req.query.status.split(',')
+            }
+        };
+    }
+    bookService.all(options, {
         expand: req.query.expand
     }).then(res.json.bind(res), next);
 }
@@ -219,8 +228,11 @@ function setup (app) {
     app.put('/api/v1/books', update);
     app.del('/api/v1/books', remove);
     app.get('/api/v1/books/:id', getById);
+    app.get('/api/v1/authors/:aid/books/:id', getById);
     app.put('/api/v1/books/:id', updateById);
+    app.put('/api/v1/authors/:aid/books/:id', updateById);
     app.del('/api/v1/books/:id', removeById);
+    app.del('/api/v1/authors/:aid/books/:id', removeById);
     app.get('/api/v1/books/:id/author', getByIdAuthor);
     app.get('/api/v1/books/:id/releases', getByIdReleases);
 }

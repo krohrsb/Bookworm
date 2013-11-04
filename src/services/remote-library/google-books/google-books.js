@@ -226,10 +226,10 @@ GoogleBooksService.prototype.queryAuthors = function (options) {
     return this.pagingQuery(options)
         .then(this._parser.collateAuthors.bind(this))
         .then(function (authors) {
-        return authors.sort(function (author) {
-            return author.relevance;
-        }).reverse();
-    });
+            return _.sortBy(authors, function (author) {
+                return author.relevance;
+            }).reverse();
+        });
 
 };
 

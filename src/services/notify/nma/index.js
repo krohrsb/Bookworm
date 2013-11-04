@@ -133,11 +133,11 @@ NotifyMyAndroid.prototype.notify = function (options) {
                 return Q.nfcall(parseXml, body[1]).then(function (response) {
                     this.emit('notify', response);
                     return response;
-                });
+                }.bind(this));
             } else {
                 throw new Error('empty response from NMA');
             }
-        }).then(this._parseResponse.bind(this));
+        }.bind(this)).then(this._parseResponse.bind(this));
     } else {
         return Q.fcall(function () {
             return {

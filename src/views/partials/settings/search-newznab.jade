@@ -1,0 +1,51 @@
+include includes/nav
+
+div.page-header.hidden-xs
+    h1 Settings
+        small newznab
+form.form-horizontal(role='form')
+    fieldset
+        div.col-sm-6
+            legend General
+            div.form-group
+                label.col-sm-3.control-label Newznab
+                div.checkbox.col-sm-9
+                    input(type='checkbox', value='', data-ng-model='settings.searchers.newznab.enabled', data-bw-setting='settings')
+                    span.text-muted Enable newznab searching.
+            div(data-ng-show='settings.searchers.newznab.enabled')
+                div.form-group
+                    label.col-sm-3.control-label Retention
+                    div.col-sm-9
+                        input.form-control(type='number', placeholder='1500', data-ng-model='settings.searchers.newznab.retention', data-bw-setting='settings')
+                        span.help-block The server retention.
+                div.form-group
+                    label.col-sm-3.control-label Frequency
+                    div.col-sm-9
+                        input.form-control(type='number', placeholder='500', data-ng-model='settings.searchers.newznab.frequency', data-bw-setting='settings')
+                        span.help-block How often Bookworm should search for nzb's. Iin minutes.
+                div.form-group
+                    label.col-sm-3.control-label Cache TTL
+                    div.col-sm-9
+                        input.form-control(type='number', placeholder='60000', data-ng-model='settings.searchers.newznab.cache', data-bw-setting='settings')
+                        span.help-block How long should Bookworm cache unique requests to newznab providers? In milliseconds.
+
+        div.col-sm-6(data-ng-show='settings.searchers.newznab.enabled')
+            legend Hosts
+            div.form-group
+                button.btn.btn-default.btn-sm.col-sm-offset-3(data-ng-click='addHost(settings.searchers.newznab.hosts)')
+                    span.glyphicon.glyphicon-plus
+                    |  Add Host
+            div.col-sm-offset-2.well(data-ng-repeat='host in settings.searchers.newznab.hosts')
+                button.close(aria-hidden='true', type='button', data-ng-click='removeHost(settings.searchers.newznab.hosts, $index, "searchers/newznab/hosts")') &times;
+                div.form-group
+                    label.col-sm-3.control-label Enabled
+                    div.checkbox.col-sm-9
+                        input(type='checkbox', value='', data-ng-model='settings.searchers.newznab.hosts[$index].enabled', data-bw-setting='settings')
+                div.form-group
+                    label.col-sm-3.control-label Host
+                    div.col-sm-9
+                        input.form-control(type='text', placeholder='http://nzb.su', data-ng-model='settings.searchers.newznab.hosts[$index].host', data-bw-setting='settings')
+                div.form-group
+                    label.col-sm-3.control-label API Key
+                    div.col-sm-9
+                        input.form-control(type='text', placeholder='xyz123', data-ng-model='settings.searchers.newznab.hosts[$index].apiKey', data-bw-setting='settings')

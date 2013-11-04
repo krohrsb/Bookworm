@@ -137,7 +137,7 @@ NewznabService.prototype._query = function (url, options) {
  */
 NewznabService.prototype.constructRelease = function (release) {
     "use strict";
-    var attributes, guid, usenetDate, deferred, size;
+    var attributes, guid, usenetDate, deferred, size, grabs, review;
     deferred = Q.defer();
 
     if (release) {
@@ -155,15 +155,26 @@ NewznabService.prototype.constructRelease = function (release) {
             return attr.name === 'guid';
         }).value;
 
+        grabs = _.find(attributes, function (attr) {
+            return attr.name === 'grabs';
+        }).value;
+
+        review = _.find(attributes, function (attr) {
+            return attr.name === 'review';
+        }).value;
+
         deferred.resolve({
             title: release.title,
             nzbTitle: release.title + '.bw(' + guid + ')',
+            description: release.description,
+            grabs: grabs,
+            review: review,
             providerName: release.channelTitle,
             providerType: 'newznab',
             usenetDate: usenetDate,
             size: size,
             link: release.link,
-            status: 'skipped',
+            status: 'available',
             guid: guid,
             updated: Date.now()
         });

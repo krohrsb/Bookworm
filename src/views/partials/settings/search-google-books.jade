@@ -1,0 +1,76 @@
+include includes/nav
+
+div.page-header.hidden-xs
+    h1 Settings
+        small google books
+form.form-horizontal(role='form')
+    fieldset
+        div.col-sm-6
+            legend General
+            div.form-group
+                label.col-sm-4.control-label New Books Check Frequency
+                div.col-sm-8
+                    input.form-control(type='number', placeholder='1500', data-ng-model='settings.searchers.googleBooks.newCheckFrequency', data-bw-setting='settings')
+                    span.label.label-default.pull-right  Minutes
+                    span.help-block How often should Bookworm check active authors for new books?
+                        span.dot-under(data-tooltip='This minimum is to help mitigate the API requests per day limitation by Google Books')  Minimum 720 minutes.
+            div.form-group
+                label.col-sm-4.control-label Cache TTL
+                div.col-sm-8
+                    input.form-control(type='number', placeholder='60000', data-ng-model='settings.searchers.googleBooks.cache', data-bw-setting='settings')
+                    span.label.label-default.pull-right Milliseconds
+                    span.help-block How long should Bookworm cache unique requests made to Google Books?
+            div.form-group
+                label.col-sm-4.control-label Ignored Words (title)
+                div.col-sm-8
+                    input.form-control(type='text', placeholder='sample,preview', data-ng-model='settings.searchers.googleBooks.ignoredWords', data-bw-setting='settings')
+                    span.help-block Comma separated list of words to ignore when searching Google Books.
+            div.form-group
+                label.col-sm-4.control-label API Key
+                div.col-sm-8
+                    input.form-control(type='text', placeholder='xyz123', data-ng-model='settings.searchers.googleBooks.apiKey', data-bw-setting='settings')
+                    span.help-block Your Google Books API Key (optional). Perhaps you have one with an increased requests/day quota?
+            div.form-group
+                label.col-sm-4.control-label Language
+                div.col-sm-8
+                    input.form-control(type='text', placeholder='en', data-ng-model='settings.searchers.googleBooks.language', data-bw-setting='settings')
+                    span.help-block Force Google Books to search this language.
+            legend Filters
+            div.form-group
+                label.col-sm-4.control-label ISBN
+                div.checkbox.col-sm-8
+                    input(type='checkbox', value='', data-ng-model='settings.searchers.googleBooks.filters.isbn', data-bw-setting='settings')
+                    span Only include books with valid ISBN's?
+            div.form-group
+                label.col-sm-4.control-label Description
+                div.checkbox.col-sm-8
+                    input(type='checkbox', value='', data-ng-model='settings.searchers.googleBooks.filters.description', data-bw-setting='settings')
+                    span Only include books with descriptions?
+            div.form-group
+                label.col-sm-4.control-label Languages
+                div.col-sm-8
+                    input.form-control(type='text', placeholder='en,fr,pl', data-ng-model='settings.searchers.googleBooks.filters.languages', data-bw-setting='settings')
+                    span.help-block Similar to the general language specifier, this is a backup filter to only include books with these languages. e.g., en,fr,pl,jp
+        div.col-sm-6
+            legend Paging Limits
+            div.alert.alert-info The amount of pages to fetch from the Google Books API (40 results per page). Increase to get more obscure/older results, just note that there is a 1000/day request limitation normally.
+            div.form-group
+                label.col-sm-3.control-label Searching Books
+                div.col-sm-9.control-label
+                    input.form-control(type='number', placeholder='1', data-ng-model='settings.searchers.googleBooks.pagingLimits.searchBooks', data-bw-setting='settings')
+                    span When searching books, how many page should Bookworm search?
+            div.form-group
+                label.col-sm-3.control-label Searching Authors
+                div.col-sm-9.control-label
+                    input.form-control(type='number', placeholder='1', data-ng-model='settings.searchers.googleBooks.pagingLimits.searchAuthors', data-bw-setting='settings')
+                    span When searching authors, how many page should Bookworm search?
+            div.form-group
+                label.col-sm-3.control-label Searching New Books
+                div.col-sm-9.control-label
+                    input.form-control(type='number', placeholder='1', data-ng-model='settings.searchers.googleBooks.pagingLimits.searchNewBooks', data-bw-setting='settings')
+                    span When searching for new books, how many page should Bookworm search?
+            div.form-group
+                label.col-sm-3.control-label Refreshing an Author
+                div.col-sm-9.control-label
+                    input.form-control(type='number', placeholder='1', data-ng-model='settings.searchers.googleBooks.pagingLimits.refreshAuthor', data-bw-setting='settings')
+                    span When refreshing an authors books, how many page should Bookworm search?

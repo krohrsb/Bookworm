@@ -188,6 +188,8 @@ LogService.prototype.query = function (options) {
     // extend defaults and options
     settings = _.merge({}, defaults, options || {});
 
+    settings.offset = parseInt(settings.offset, 10);
+    settings.limit = parseInt(settings.limit, 10);
     validateResult = revalidator.validate(settings, {
         properties: {
             offset: {
@@ -220,24 +222,19 @@ LogService.prototype.query = function (options) {
             totalLines = 0;
             lineReader.eachLine(logFile, function (line) {
                 totalLines = totalLines + 1;
-                if (totalLines >= settings.offset) {
-                    try {
-                        log = JSON.parse(line);
-                        parsedLogs = parsedLogs + 1;
-                        //if line parsed correctly
-                        if (log && logs.length < settings.limit) {
-                            //if the message level is greater or equal to the level that is being requested, add it to the response.
-                            if (levels[log.level] >= levels[settings.minLevel]) {
-                                logs.push(log);
-                            }
-                        }
-                    } catch (e) {
-                        unparsedLogs = unparsedLogs + 1;
+                try {
+                    log = JSON.parse(line);
+                    parsedLogs = parsedLogs + 1;
+                    //if line parsed correctly and level matches
+                    if (levels[log.level] >= levels[settings.minLevel]) {
+                        logs.push(log);
                     }
+                } catch (e) {
+                    unparsedLogs = unparsedLogs + 1;
                 }
             }).then(function () {
                 var response = {
-                    data: logs,
+                    data: logs.reverse().slice(settings.offset, settings.limit + settings.offset),
                     total: totalLines - unparsedLogs
                 };
                 deferred.resolve(response);

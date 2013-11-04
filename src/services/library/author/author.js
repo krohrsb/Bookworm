@@ -20,7 +20,7 @@ var Author = require('../../../models/author');
  */
 var AuthorService = function () {
     "use strict";
-    this._validUpdateAttributesMask = 'status';
+    this._validUpdateAttributesMask = 'status,updated';
     events.EventEmitter.call(this);
 };
 
@@ -50,6 +50,26 @@ AuthorService.prototype.expandAuthorBooks = function (author) {
     if (author) {
         return Q.ninvoke(author, 'getBooks').then(function (books) {
             author.books = books;
+            return author;
+        });
+    } else {
+        return Q.fcall(function () {
+            throw new Error('No author provided');
+        });
+    }
+};
+
+/**
+ * Expand an author's books count.
+ * @param {object} author - The author object
+ * @returns {Promise} A promise of type Promise<Author, Error>
+ */
+AuthorService.prototype.expandAuthorBooksCount = function (author) {
+    "use strict";
+
+    if (author) {
+        return Q.ninvoke(author, 'getBooks').then(function (books) {
+            author.booksCount = books.length;
             return author;
         });
     } else {
@@ -110,6 +130,13 @@ AuthorService.prototype.expandAuthor = function (expands, author) {
         .then(function (author) {
             if (_.contains(expands, 'latestBook')) {
                 return this.expandAuthorLatestBook(author);
+            } else {
+                return author;
+            }
+        }.bind(this))
+        .then(function (author) {
+            if (_.contains(expands, 'booksCount')) {
+                return this.expandAuthorBooksCount(author);
             } else {
                 return author;
             }
@@ -178,6 +205,7 @@ AuthorService.prototype.create = function (data) {
     if (data && !data.guid) {
         data.guid = uuid.v4();
     }
+    data.updated = Date.now();
     return Q.ninvoke(Author, 'create', data).then(function (author) {
         this.emit('create', author);
         return author;
@@ -223,6 +251,7 @@ AuthorService.prototype.updateById = function (id, data, options) {
  */
 AuthorService.prototype.update = function (author, data) {
     "use strict";
+    data.updated = Date.now();
     return Q.ninvoke(author, 'updateAttributes', mask(data, this._validUpdateAttributesMask)).then(function (author) {
         this.emit('update', author, _.intersection(_.keys(author), _.keys(data)));
         return author;

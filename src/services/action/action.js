@@ -24,7 +24,7 @@ var authorService = require('../library/author');
  */
 var ActionService = function () {
     "use strict";
-    this._actions = ['refreshAuthorNewBooks', 'refreshAuthor', 'refreshActiveAuthors', 'findAndDownloadWantedBooks', 'killProcess'];
+    this._actions = ['refreshAuthorNewBooks', 'refreshAuthor', 'refreshActiveAuthors', 'findAndDownloadWantedBooks', 'killProcess', 'forcePostProcess'];
     events.EventEmitter.call(this);
 };
 

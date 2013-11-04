@@ -23,7 +23,7 @@ var BookService = function () {
 
     events.EventEmitter.call(this);
 
-    this._validUpdateAttributesMask = 'status';
+    this._validUpdateAttributesMask = 'status,updated';
     this._validMergeAttributesMask = 'published,imageSmall,image,apiLink,isbn,provider,language,publisher,pageCount,description,link,title';
 
 };
@@ -94,6 +94,8 @@ BookService.prototype.expandBookAuthor = function (book) {
         });
     }
 };
+
+
 
 /**
  * Expand a book's releases. Load the book's releases into its releases property.
@@ -246,7 +248,9 @@ BookService.prototype.updateById = function (id, data, options) {
  */
 BookService.prototype.update = function (book, data, attrMask) {
     "use strict";
+    data.updated = Date.now();
     data = mask(data, attrMask || this._validUpdateAttributesMask);
+
     return Q.ninvoke(book, 'updateAttributes', data).then(function (book) {
         this.emit('update', book, _.intersection(_.keys(book.toJSON()), _.keys(data)));
         return book;

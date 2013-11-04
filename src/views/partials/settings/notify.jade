@@ -1,0 +1,44 @@
+include includes/nav
+div.page-header.hidden-xs
+    h1 Settings
+        small notify
+form.form-horizontal(role='form', data-ng-controller='NotificationCtrl')
+    fieldset
+        div.col-sm-6
+            legend Notify My Android
+            div.form-group
+                label.col-sm-3.control-label NMA
+                div.checkbox.col-sm-9
+                    input(type='checkbox', value='', data-ng-model='settings.notifiers.nma.enabled', data-bw-setting='settings')
+                    span.text-muted Enable notifying with Notify My Android?
+            div(data-ng-show='settings.notifiers.nma.enabled')
+                div.form-group
+                    label.col-sm-3.control-label API Key
+                    div.col-sm-9
+                        input.form-control(type='text', placeholder='123xyz', data-ng-model='settings.notifiers.nma.apiKey', data-bw-setting='settings')
+                        span.help-block Your NMA API Key
+                div.form-group
+                    label.col-sm-3.control-label Snatch
+                    div.checkbox.col-sm-9
+                        input(type='checkbox', value='', data-ng-model='settings.notifiers.nma.onSnatch', data-bw-setting='settings')
+                        span Notify on snatch?
+                div.form-group
+                    label.col-sm-3.control-label Download
+                    div.checkbox.col-sm-9
+                        input(type='checkbox', value='', data-ng-model='settings.notifiers.nma.onDownload', data-bw-setting='settings')
+                        span Notify on download?
+                div.form-group
+                    label.col-sm-3.control-label Priority
+                    div.col-sm-9
+                        select.form-control(data-ng-model='settings.notifiers.nma.priority', data-ng-options='priority.value as priority.name for priority in nmaPriorities', data-bw-setting='settings')
+                        span.help-block Notify My Android Priority
+                div.form-group
+                    label.col-sm-3.control-label Test
+                    div.col-sm-9
+                        div.alert.alert-info
+                            p {{nmaResult}}
+
+                        div.btn-group
+                            button.btn.btn-default.btn-sm(data-ng-click='nmaNotify(nmaMessage)') Notify
+                            button.btn.btn-default.btn-sm(data-ng-click='nmaVerify()') Verify
+                        input.form-control(type='text', placeholder='some message', data-ng-model='nmaMessage')

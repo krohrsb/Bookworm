@@ -8,7 +8,7 @@
 var db = require('../config/database').db;
 
 // Helpers
-var releaseStatuses = ['wanted', 'skipped', 'downloaded', 'snatched', 'excluded'];
+var releaseStatuses = ['wanted', 'available', 'downloaded', 'snatched', 'ignored'];
 
 var Release = db.define('Release', {
     guid: {
@@ -18,21 +18,36 @@ var Release = db.define('Release', {
     title: {
         type: String
     },
+    description: {
+        type: String,
+        'default': ''
+    },
     nzbTitle: {
         type: String
     },
     providerName: {
-        type: String
+        type: String,
+        'default': ''
     },
     providerType: {
-        type: String
+        type: String,
+        'default': ''
     },
     book: {
         type: Object,
         'default': {}
     },
+    grabs: {
+        type: Number,
+        'default': 0
+    },
+    review: {
+        type: String,
+        'default': ''
+    },
     usenetDate: {
-        type: String
+        type: String,
+        'default': ''
     },
     size: {
         type: Number
@@ -42,7 +57,7 @@ var Release = db.define('Release', {
     },
     status: {
         type: String,
-        'default': 'wanted'
+        'default': 'available'
     },
     updated: {
         type: Date

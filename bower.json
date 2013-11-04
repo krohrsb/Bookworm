@@ -1,0 +1,37 @@
+{
+  "name": "Bookworm",
+  "version": "0.0.1",
+  "authors": [
+    "Kyle Brown <blackbarn@gmail.com>"
+  ],
+  "description": "Book NZB searcher and grabber",
+  "main": "bin/bookworm.js",
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.0.0",
+    "angular-ui-utils": "~0.0.4",
+    "angular-bootstrap": "~0.6.0",
+    "AngularJS-Toaster": "https://github.com/jirikavi/AngularJS-Toaster.git",
+    "angular-animate": "~1.2.0-rc.3",
+    "angular-socket-io": "~0.2.0",
+    "socket.io-client": "~0.9.16",
+    "angular-ui-router": "~0.2.0",
+    "restangular": "~1.1.6",
+    "angular": "1.2.0-rc.3",
+    "ngprogress-lite": "~1.0.1",
+    "angular-truncate": "*",
+    "animate.css": "~2.1.0",
+    "json-mask": "https://github.com/nemtsov/json-mask.git#~0.1.1-alpha"
+  },
+  "resolutions": {
+    "angular": "1.2.0-rc.3"
+  }
+}

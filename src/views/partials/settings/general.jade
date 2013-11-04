@@ -1,0 +1,62 @@
+include includes/nav
+
+div.page-header.hidden-xs
+    h1 Settings
+        small general
+form.form-horizontal(role='form')
+    fieldset
+        div.col-sm-6
+            legend Server
+            div.form-group
+                label.col-sm-3.control-label Host
+                div.col-sm-9
+                    input.form-control(type='text', placeholder='0.0.0.0', data-ng-model='settings.server.host', data-bw-setting='settings')
+                    span.help-block The host the server will listen on. 0.0.0.0 for any.
+            div.form-group
+                label.col-sm-3.control-label Port
+                div.col-sm-9
+                    input.form-control(type='number', placeholder='30000', data-ng-model='settings.server.port', data-bw-setting='settings')
+                    span.help-block The port to listen on.
+            div.form-group
+                label.col-sm-3.control-label Username
+                div.col-sm-9
+                    input.form-control(type='text', data-ng-model='settings.server.username', data-bw-setting='settings')
+                    span.help-block Username for authentication, if blank, no authentication.
+            div.form-group
+                label.col-sm-3.control-label Password
+                div.col-sm-9
+                    input.form-control(type='password', data-ng-model='settings.server.password', data-bw-setting='settings')
+                    span.help-block Password if using authentication.
+            div.form-group
+                label.col-sm-3.control-label API Key
+                div.col-sm-9
+                    input.form-control(type='text', data-ng-model='settings.server.apiKey', data-bw-setting='settings')
+                    span.help-block API Key for restricting API access. Only enforced if you define one.
+        div.col-sm-6
+            legend Logging
+            div.form-group
+                label.col-sm-3.control-label File Logging
+                div.checkbox.col-sm-9
+                    input(type='checkbox', value='', data-ng-model='settings.loggers.file.enabled', data-bw-setting='settings')
+                    span.text-muted {{ (settings.loggers.file.enabled) ? 'File logging is enabled' : 'Enable file logging?'}}
+            div(data-ng-show='settings.loggers.file.enabled')
+                div.form-group
+                    label.col-sm-3.control-label File Path
+                    div.col-sm-9
+                        input.form-control(type='text', placeholder='logs/bookworm.log', data-ng-model='settings.loggers.file.path', data-bw-setting='settings')
+                        span.help-block The relative path to the log file.
+                div.form-group
+                    label.col-sm-3.control-label Max Files
+                    div.col-sm-9
+                        input.form-control(type='number', placeholder='6', data-ng-model='settings.loggers.file.maxFiles', data-bw-setting='settings')
+                        span.help-block The maximum number of log files to keep.
+                div.form-group
+                    label.col-sm-3.control-label Max File Size (bytes)
+                    div.col-sm-9
+                        input.form-control(type='number', placeholder='102400', data-ng-model='settings.loggers.file.maxSize', data-bw-setting='settings')
+                        span.help-block The maximum file size for each log file, in bytes.
+                div.form-group
+                    label.col-sm-3.control-label Log Level
+                    div.col-sm-9
+                        select.form-control(data-ng-model='settings.loggers.file.level', data-ng-options='(level | inflector:"humanize") for level in logLevels', data-bw-setting='settings')
+                        span.help-block Logs of this level or higher will be written to file. e.g., "debug" &gt; "info" &gt; "warn" &gt; "error"

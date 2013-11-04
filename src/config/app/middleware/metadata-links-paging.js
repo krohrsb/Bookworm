@@ -62,6 +62,8 @@ module.exports = function (req, res, next) {
         req._metadata.links.next = createDynamicLink(next, limit);
         req._metadata.links.last = createDynamicLink(last, limit);
         req._metadata.total = totalRecords;
+        req._metadata.offset = offset;
+        req._metadata.limit = limit;
     };
 
     if (typeof req.query.offset === 'undefined') {
