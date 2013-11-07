@@ -24,7 +24,7 @@ var authorService = require('../library/author');
  */
 var ActionService = function () {
     "use strict";
-    this._actions = ['refreshAuthorNewBooks', 'refreshAuthor', 'refreshActiveAuthors', 'findAndDownloadWantedBooks', 'killProcess', 'forcePostProcess'];
+    this._actions = ['refreshAuthorNewBooks', 'refreshAuthor', 'refreshActiveAuthors', 'refreshActiveAuthorsNewBooks', 'findAndDownloadWantedBooks', 'killProcess', 'forcePostProcess'];
     events.EventEmitter.call(this);
 };
 
@@ -103,8 +103,11 @@ ActionService.prototype.performGeneralAction = function (action) {
     return this.hasAction(action).then(function (hasAction) {
         var err;
         if (hasAction) {
+            logger.debug('Attempting action %s', action);
             if (action === 'refreshActiveAuthors') {
-                return libraryService.refreshActiveAuthors();
+                return libraryService.refreshActiveAuthors(false);
+            } else if (action === 'refreshActiveAuthorsNewBooks') {
+                return libraryService.refreshActiveAuthors(true);
             } else if (action === 'findAndDownloadWantedBooks') {
                 return libraryService.findAndDownloadWantedBooks();
             } else if (action === 'forcePostProcess') {

@@ -7,8 +7,9 @@
     "use strict";
     var module = angular.module('bookworm.book.controllers', [], function () {});
 
-    module.controller('BookCtrl', ['$scope', 'book', function ($scope, book) {
+    module.controller('BookCtrl', ['$scope', 'book', 'releases', function ($scope, book, releases) {
         $scope.book = book;
+        $scope.releases = releases;
     }]);
 
     module.controller('BooksCtrl', ['$scope', 'books', function ($scope, books) {

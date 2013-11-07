@@ -7,7 +7,7 @@
 // Dependencies
 var events = require('events');
 var util = require('util');
-var schedule = require('node-schedule');
+var later = require('later');
 var _ = require('lodash');
 var Q = require('q');
 
@@ -16,82 +16,170 @@ var settingService = require('../setting');
 var logger = require('../log').logger();
 
 /**
- * Schedule Service -- To Schedule jobs
+ * Schedule Job, holds data for a scheduled job.
+ * @param {object} config - the job config
  * @constructor
- * @alias module:schedule
  */
-var ScheduleService = function () {
+var ScheduleJob = function (config) {
     "use strict";
-    this._jobs = {};
+    this.config = config;
+    this.name = config.name;
+    this.action = config.action;
+    this.settingsKey = config.settingsKey;
+
+    if (typeof config.schedule === 'function') {
+        this.scheduleSpec = config.schedule(settingService.get(this.settingsKey));
+    } else {
+        this.scheduleSpec = config.schedule;
+    }
+
+    this.timer = null;
 
     // Watch for setting 'sets' so we can update jobs accordingly.
     settingService.on('set', function (key) {
-        this.updateJobs(key);
+        if (key === this.settingsKey) {
+            if (typeof this.config.schedule === 'function') {
+                this.scheduleSpec = this.config.schedule(settingService.get(key));
+            } else {
+                this.scheduleSpec = this.config.schedule;
+            }
+            this.schedule().then(function () {
+                logger.info('Job %s rescheduled', this.name);
+            }.bind(this));
+        }
     }.bind(this));
 
+    events.EventEmitter.call(this);
+
+};
+
+util.inherits(ScheduleJob, events.EventEmitter);
+
+/**
+ * Schedule the job using the schedule spec defined for it.
+ * @returns {Promise} A Promise of type Promise<Object, Error>
+ */
+ScheduleJob.prototype.schedule = function () {
+    "use strict";
+    return this.clear().then(function () {
+        this.timer = later.setInterval(this._getAction(this.action), this.scheduleSpec);
+        this.getNextOccurrence().then(function (occurence) {
+            this.emit('schedule', this, occurence);
+        }.bind(this));
+
+        return this.timer;
+    }.bind(this));
+};
+
+/**
+ * Clear the scheduled job
+ * @returns {Promise} A Promise of type Promise<,Error>
+ */
+ScheduleJob.prototype.clear = function () {
+    "use strict";
+    if (this.timer) {
+        this.timer.clear();
+    }
+    this.emit('clear');
+    return Q();
+};
+
+/**
+ * Creates a wrapper function for the action for logging/error handling.
+ * @param {function} action - The action function.
+ * @returns {function} - The wrapped function
+ * @private
+ */
+ScheduleJob.prototype._getAction = function (action) {
+    "use strict";
+    return function () {
+        logger.info('Initiating %s job', this.name);
+        return action().then(function () {
+            logger.info('Job %s finished', this.name);
+            this.getNextOccurrence().then(function (occurrence) {
+                this.emit('occurrence', this, occurrence);
+                logger.info('Job %s next occurrence at %s', this.name, occurrence.toString());
+            }.bind(this));
+        }.bind(this), function (err) {
+            logger.warn('Job %s finished with error', this.name);
+            logger.err(err);
+        }.bind(this));
+    }.bind(this);
+};
+
+/**
+ * Retrieve the next occurrence of this scheduled job.
+ * @returns {Promise} A Promise of type Promise<String, Error>
+ */
+ScheduleJob.prototype.getNextOccurrence = function () {
+    "use strict";
+    var next;
+    next = later.schedule(this.scheduleSpec).next(2)[1];
+    this.emit('next', next);
+    return Q(next);
+};
+
+
+/**
+ * Schedule service to hold a collection of schedules.
+ * @constructor
+ */
+var ScheduleService = function () {
+    "use strict";
+    this._jobs = [];
     events.EventEmitter.call(this);
 };
 
 util.inherits(ScheduleService, events.EventEmitter);
 
+
 /**
- * Schedule a Job
- * @param {object} definition - Job definition, has name, action, spec
- * @returns {Promise} A promise of type Promise<Job, Error>
+ * Schedule a job
+ * @param {ScheduleJob} job - The job to schedule
+ * @returns {Promise} A Promise of type Promise<ScheduleJob, Error>
  */
-ScheduleService.prototype.scheduleJob = function (definition) {
-    'use strict';
+ScheduleService.prototype.scheduleJob = function (job) {
+    "use strict";
     var deferred = Q.defer();
-    definition = definition || {};
 
-    var job, spec;
-
-    if (definition.name in this._jobs) {
-        this._jobs[definition.name].cancel();
-        delete this._jobs[definition.name];
-    }
-    if (definition.name && definition.action && definition.spec) {
-        job = new schedule.Job(definition.name, definition.action);
-        job.definition = definition;
-
-        if (typeof definition.spec === 'function') {
-            spec = definition.spec();
-        } else {
-            spec = definition.spec;
-        }
-        logger.trace('Scheduling job', spec);
-
-        job.schedule(spec);
-
-        this._jobs[definition.name] = job;
+    if (job) {
+        job.on('schedule', function (job, next) {
+            this.emit('job:schedule', job, next);
+        }.bind(this));
+        job.on('occurrence', function (job, next) {
+            this.emit('job:occurrence', job, next);
+        }.bind(this));
+        job.schedule();
+        this._jobs.push(job);
         deferred.resolve(job);
     } else {
-        deferred.reject(new Error('Job Definition not valid'));
+        deferred.reject(new Error('Job not defined'));
     }
     return deferred.promise;
-
 };
 
 /**
- * Update jobs (refresh their spec) based on an update key.
- * @param {string} updateKey - The setting key assocaited with the job
+ * Retrieve a job by name
+ * @param {string} name - The name of the job
+ * @returns {Promise} A Promise of type Promise<Job|undefined, Error>
  */
-ScheduleService.prototype.updateJobs = function (updateKey) {
+ScheduleService.prototype.getJob = function (name) {
     "use strict";
-
-    _.forEach(this._jobs, function (value, key) {
-        var job;
-        if (value && value.definition.settingsKey == updateKey) {
-            job = this._jobs[key];
-            this.scheduleJob(job.definition, function (err, job) {
-                if (err) {
-                    logger.error(err);
-                } else {
-                    logger.debug('Rescheduled %s job -- interval changed', job.name);
-                }
-            });
-        }
-    }.bind(this));
+    return Q(_.find(this._jobs, function (job) {
+        return job.name === name;
+    }));
 };
 
-module.exports = ScheduleService;
+/**
+ * Get all jobs
+ * @returns {Promise} A Promise of type Promise<ScheduleJob[], Error>
+ */
+ScheduleService.prototype.getJobs = function () {
+    "use strict";
+    return Q(this._jobs);
+};
+
+module.exports = {
+    ScheduleJob: ScheduleJob,
+    ScheduleService: ScheduleService
+};

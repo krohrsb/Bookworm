@@ -35,10 +35,11 @@ form.form-horizontal(role='form', data-ng-controller='NotificationCtrl')
                 div.form-group
                     label.col-sm-3.control-label Test
                     div.col-sm-9
+                        div.input-group
+                            input.form-control(type='text', placeholder='some message', data-ng-model='nmaMessage')
+                            span.input-group-btn
+                                button.btn.btn-default(data-ng-click='nmaNotify(nmaMessage)') Notify
+                                button.btn.btn-default(data-ng-click='nmaVerify()') Verify
                         div.alert.alert-info
                             p {{nmaResult}}
 
-                        div.btn-group
-                            button.btn.btn-default.btn-sm(data-ng-click='nmaNotify(nmaMessage)') Notify
-                            button.btn.btn-default.btn-sm(data-ng-click='nmaVerify()') Verify
-                        input.form-control(type='text', placeholder='some message', data-ng-model='nmaMessage')

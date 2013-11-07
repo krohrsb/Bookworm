@@ -8,7 +8,10 @@
 
     angular.module('ui', ['ui.router', 'ui.route', 'ui.inflector', 'ui.event'], function () {});
 
+    angular.module('bookworm.manage', ['bookworm.manage.controllers'], function () {});
+
     angular.module('bookworm.notify', ['bookworm.notify.controllers'], function () {});
+
     angular.module('bookworm.setting', ['bookworm.setting.routes', 'bookworm.setting.directives', 'bookworm.setting.controllers'], function () {});
 
     angular.module('bookworm.log', ['bookworm.log.routes', 'bookworm.log.controllers'], function () {});
@@ -23,13 +26,13 @@
 
     angular.module('bookworm.release', ['bookworm.release.directives'], function () {});
 
-    angular.module('bookworm', ['ui', 'ui.bootstrap', 'ngAnimate', 'toaster', 'restangular', 'ngProgressLite', 'truncate', 'bookworm.core',
-            'bookworm.book', 'bookworm.author', 'bookworm.release', 'bookworm.search', 'bookworm.log', 'bookworm.setting', 'bookworm.notify'],
+    angular.module('bookworm', ['btford.socket-io', 'ui', 'ui.bootstrap', 'ngAnimate', 'toaster', 'restangular', 'ngProgressLite', 'truncate', 'bookworm.core',
+            'bookworm.book', 'bookworm.author', 'bookworm.release', 'bookworm.search', 'bookworm.log', 'bookworm.setting', 'bookworm.notify', 'bookworm.manage'],
             ['RestangularProvider', function (RestangularProvider) {
         RestangularProvider.setBaseUrl('/api/v1');
         RestangularProvider.setDefaultHeaders({'X-Requested-With': 'XMLHttpRequest'});
     }])
-    .run(['Restangular', 'ngProgressLite', function (Restangular, ngProgressLite) {
+    .run(['Restangular', 'ngProgressLite', 'toaster', function (Restangular, ngProgressLite, toaster) {
         Restangular.setRequestInterceptor(function (element) {
             ngProgressLite.start();
             return element;
@@ -47,6 +50,7 @@
         });
         Restangular.setErrorInterceptor(function (response) {
             ngProgressLite.done();
+            toaster.pop('error', 'Error', response.data.message);
             return response;
         });
     }]);

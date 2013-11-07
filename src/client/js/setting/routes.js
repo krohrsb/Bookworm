@@ -34,6 +34,16 @@
                 url: '/settings/notify',
                 templateUrl: 'partials/settings/notify',
                 controller: 'SettingsCtrl'
+            })
+            .state('settings-postProcess', {
+                url: '/settings/postProcess',
+                templateUrl: 'partials/settings/post-process',
+                controller: 'SettingsCtrl'
+            })
+            .state('settings-manage', {
+                url: '/settings/manage',
+                templateUrl: 'partials/settings/manage',
+                controller: 'SettingsCtrl'
             });
     }]);
 }(angular));

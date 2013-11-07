@@ -20,7 +20,7 @@
             link: function(scope, element, attrs) {
                 scope.updateStatus = function (status, author) {
                     author.status = status;
-                    author.put({expand: 'books'}).then(function (updatedAuthor) {
+                    author.put().then(function (updatedAuthor) {
                         scope.author = updatedAuthor;
                         angular.forEach(scope.author.books, function (book) {
                             Restangular.restangularizeElement(scope.author, book, 'books');

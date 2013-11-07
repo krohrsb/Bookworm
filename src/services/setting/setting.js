@@ -55,9 +55,14 @@ SettingsService.prototype.initialize = function () {
 
     configFile = path.join(base, 'config', this._fileStore.get('NODE_ENV') || 'development' + '.json');
 
-    if (!fs.existsSync(configFile)) {
-        fs.outputFileSync(configFile, '{}');
+    try {
+        if (!fs.existsSync(configFile)) {
+            fs.outputFileSync(configFile, '{}');
+        }
+    } catch (e) {
+        logger.err(e);
     }
+
 
     this._fileStore.file(configFile);
 
@@ -66,7 +71,12 @@ SettingsService.prototype.initialize = function () {
     this._memoryStore.set('environment:env', this._fileStore.get('NODE_ENV') || 'development');
     this._memoryStore.set('environment:configFile', configFile);
     this._memoryStore.set('environment:baseDirectory', base);
-    this._memoryStore.set('environment:package', fs.readJSONSync(path.join(base, 'package.json')));
+    try {
+        this._memoryStore.set('environment:package', fs.readJSONSync(path.join(base, 'package.json')));
+    } catch (e) {
+        logger.err(e);
+    }
+
     this._memoryStore.set('environment:userAgent', 'Bookworm/' + this._memoryStore.get('environment:package').version.replace(' ', '-') + ' (' + os.platform() + ' ' + os.release() + ')');
 
 };

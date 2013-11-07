@@ -19,12 +19,10 @@
                 controller: 'BookCtrl',
                 resolve: {
                     book: function (Restangular, $stateParams) {
-                        return Restangular.one('books', $stateParams.id).get({expand: 'releases'}).then(function(book) {
-                            angular.forEach(book.releases, function (release) {
-                                Restangular.restangularizeElement(book, release, 'releases');
-                            });
-                            return book;
-                        });
+                        return Restangular.one('books', $stateParams.id).get();
+                    },
+                    releases: function (Restangular, $stateParams) {
+                        return Restangular.one('books', $stateParams.id).all('releases').getList();
                     }
                 }
             })
@@ -34,7 +32,7 @@
                 controller: 'BooksCtrl',
                 resolve: {
                     books: function (Restangular) {
-                        return Restangular.all('books').getList({status: 'wanted'});
+                        return Restangular.all('books').getList({status: 'wanted', sort: 'published'});
                     }
                 }
             });

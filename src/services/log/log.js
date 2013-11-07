@@ -46,7 +46,12 @@ LogService.prototype.initialize = function () {
 
     defaults = this._getDefaults();
     // create log file if it doesn't already exist
-    fs.createFileSync(path.join(this._settingService.get('loggers:file:path')));
+    try {
+        fs.createFileSync(path.join(this._settingService.get('loggers:file:path')));
+    } catch (e) {
+        logger.err(e);
+    }
+
 
     //add colors
     winston.addColors(defaults.colors);

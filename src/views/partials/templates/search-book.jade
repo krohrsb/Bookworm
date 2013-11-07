@@ -1,11 +1,11 @@
-div.panel.panel-default
+div.panel.panel-default(data-ng-show='!added')
     div.panel-heading
         h3.panel-title {{book.title}}
     div.panel-body
         span.book-author.text-muted
             small by
                 a(data-ui-sref='searchAuthor({query: book.authorName})')  {{book.authorName}}
-                |  - {{book.published | date:'yyyy'}}
+                |  - {{book.published | date:'mediumDate'}}
         div.media
             img.media-object.pull-left(data-ng-src='{{book.imageSmall}}', alt='{{book.title}} Cover')
             div.media-body {{book.description | words: 75}}

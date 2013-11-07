@@ -51,10 +51,11 @@ form.form-horizontal(role='form')
                         input.form-control(type='number', placeholder='6', data-ng-model='settings.loggers.file.maxFiles', data-bw-setting='settings')
                         span.help-block The maximum number of log files to keep.
                 div.form-group
-                    label.col-sm-3.control-label Max File Size (bytes)
+                    label.col-sm-3.control-label Max File Size
                     div.col-sm-9
                         input.form-control(type='number', placeholder='102400', data-ng-model='settings.loggers.file.maxSize', data-bw-setting='settings')
-                        span.help-block The maximum file size for each log file, in bytes.
+                        span.label.label-default.pull-right Bytes
+                        span.help-block The maximum file size for each log file.
                 div.form-group
                     label.col-sm-3.control-label Log Level
                     div.col-sm-9

@@ -56,7 +56,7 @@ function initializeControllers (app) {
         initializeController('index', app);
         logger.info('Application Started');
     }).catch(function (err) {
-        logger.error(err.message);
+        logger.err(err);
     });
 }
 module.exports = initializeControllers;

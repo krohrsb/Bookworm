@@ -31,7 +31,7 @@ function getAll (req, res, next) {
     var options = {
         limit: req.query.limit,
         skip: req.query.offset,
-        order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : '')) : ''
+        order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : ' DESC')) : ''
     };
 
     if (req.query.status) {

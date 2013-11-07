@@ -25,7 +25,7 @@ function getAll (req, res, next) {
     authorService.all({
         limit: req.query.limit,
         skip: req.query.offset,
-        order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : '')) : ''
+        order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : ' DESC')) : ''
     }, {
         expand: req.query.expand
     }).then(res.json.bind(res), next);
@@ -65,7 +65,8 @@ function getByIdBooks (req, res, next) {
     bookService.all({
         where: {
             authorId: req.params.id
-        }
+        },
+        order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : ' DESC')) : ''
     }, {
         expand: req.query.expand
     }).then(function (books) {
@@ -128,7 +129,8 @@ function update (req, res, next) {
     "use strict";
     logger.trace('Controller::Author::update({..data..})');
     authorService.updateAll(req.body, {
-        expand: req.query.expand
+        expand: req.query.expand,
+        sort: req.query.sort
     }).then(function (authors) {
         if (authors) {
             res.json(200, authors);

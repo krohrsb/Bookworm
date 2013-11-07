@@ -7,23 +7,23 @@
 var Q = require('q');
 
 // Local Dependencies
-var ScheduleService = require('./schedule');
+var ScheduleService = require('./schedule').ScheduleService;
+var ScheduleJob = require('./schedule').ScheduleJob;
 var scheduleService = new ScheduleService();
 var logger = require('../log').logger();
-var jobDefinitions = require('./config');
+var jobConfigs = require('./config');
 
-
-Q.all(jobDefinitions.map(function (jobDefinition) {
+Q.all(jobConfigs.map(function (jobConfig) {
     "use strict";
-    logger.debug('Scheduling %s job', jobDefinition.name);
-    return scheduleService.scheduleJob(jobDefinition);
-}))
-.then(function (jobs) {
+    var job;
+    job = new ScheduleJob(jobConfig);
+    return scheduleService.scheduleJob(job);
+})).then(function (jobs) {
     "use strict";
     logger.debug('Scheduled %s jobs', jobs.length);
 }, function (err) {
     "use strict";
-    logger.error(err);
+    logger.err(err);
     throw err;
 });
 

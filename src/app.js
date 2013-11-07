@@ -9,7 +9,6 @@ var appConfig = require('./config/app');
 var routesConfig = require('./config/routes');
 var databaseConfig = require('./config/database');
 var modelsConfig = require('./config/database/models');
-
 exports.createApp = function () {
     var app;
 

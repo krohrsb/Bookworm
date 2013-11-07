@@ -26,7 +26,7 @@
         }];
 
         $scope.nmaResult = 'n/a';
-        $scope.nmaMessage = 'Hello World';
+        $scope.nmaMessage = '';
 
         $scope.nmaVerify = function () {
             Restangular.one('notifiers', 'nma').one('verify', '').get().then(function (data) {

@@ -1,0 +1,50 @@
+include includes/nav
+div.page-header.hidden-xs
+    h1 Settings
+        small post process
+form.form-horizontal(role='form')
+    fieldset
+        legend Post Processor
+        div.col-sm-6
+            div.form-group
+                label.col-sm-3.control-label Frequency
+                div.col-sm-9
+                    input.form-control(type='number', placeholder='10', data-ng-model='settings.postProcessor.frequency', data-bw-setting='settings')
+                    span.label.label-default.pull-right Minutes
+                    span.help-block The frequency in which the post processor is ran.
+            div.form-group
+                label.col-sm-3.control-label Download Directory
+                div.col-sm-9
+                    input.form-control(type='text', placeholder='/home/me/downloads', data-ng-model='settings.postProcessor.downloadDirectory', data-bw-setting='settings')
+                    span.help-block The directory your downloaded books are found in.
+            div.form-group
+                label.col-sm-3.control-label Destination Directory
+                div.col-sm-9
+                    input.form-control(type='text', placeholder='/home/me/ebooks', data-ng-model='settings.postProcessor.destinationDirectory', data-bw-setting='settings')
+                    span.help-block The root directory you wish to place processed books in.
+            div.form-group
+                label.col-sm-3.control-label Folder Pattern
+                div.col-sm-9
+                    input.form-control(type='text', placeholder='$Author-$title($Year)', data-ng-model='settings.postProcessor.folderFormat', data-bw-setting='settings')
+
+                    span.help-block Format of the destination folder structure.
+                    p
+                        code $First, $first, $Title, $title, $Author, $author, $Year
+                    p
+                        code $First/$Author/$Title($Date) --> C/Clive Cussler/Striker(2013-01-02)/
+
+            div.form-group
+                label.col-sm-3.control-label Keep Original Files?
+                div.checkbox.col-sm-9
+                    input(type='checkbox', value='', data-ng-model='settings.postProcessor.keepOriginalFiles', data-bw-setting='settings')
+                    span Should Bookworm keep original downloaded files? If not, it will delete them after processing.
+            div.form-group
+                label.col-sm-3.control-label Directory Permissions
+                div.col-sm-9
+                    input.form-control(type='text', placeholder='0755', data-ng-model='settings.postProcessor.directoryPermissions', data-bw-setting='settings')
+                    span.help-block Directory permissions (octal notation). e.g., 0755 or 0775
+            div.form-group
+                label.col-sm-3.control-label OPF Filename
+                div.col-sm-9
+                    input.form-control(type='text', placeholder='metadata.opf', data-ng-model='settings.postProcessor.opfName', data-bw-setting='settings')
+                    span.help-block The name of the OPF file generated (for say, Calibre).

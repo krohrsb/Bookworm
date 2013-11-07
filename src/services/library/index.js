@@ -21,7 +21,7 @@ bookService.on('update', function (book, propertiesChanged) {
         if (book.status === 'wanted' || book.status === 'wanted_new') {
             logger.info('Book %s is now %s, searching for a release', book.title, book.status);
             libraryService.findAndWantRelease(book).fail(function (err) {
-                logger.error(err.message);
+                logger.err(err);
             });
         } else if (book.status === 'skipped' || book.status === 'excluded') {
             logger.info('Book %s is now %s, resetting stored releases', book.title, book.status);
@@ -35,7 +35,7 @@ bookService.on('update', function (book, propertiesChanged) {
                     return null;
                 }
             }).fail(function (err) {
-               logger.error(err.message);
+               logger.err(err);
             });
         }
     }

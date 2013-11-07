@@ -37,9 +37,7 @@
 
                 scope.updateStatus = function (status, book) {
                     book.status = status;
-                    book.put().then(function (updatedBook) {
-                        scope.book = updatedBook;
-                    });
+                    book.put();
                 };
             }
         };

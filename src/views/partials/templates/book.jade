@@ -8,7 +8,7 @@ div.panel(data-ng-show='book', data-ng-class='{"panel-success": book.status == "
         span.book-author.text-muted
             small by
                 a(data-ui-sref='author({id: book.authorId})')  {{book.authorName}}
-                |  - {{book.published | date:'yyyy'}}
+                |  - {{book.published | date:'mediumDate'}}
         span.label.pull-right(data-ng-class='{"label-success": book.status == "downloaded", "label-danger": book.status == "wanted", "label-info": book.status == "snatched", "label-default": book.status == "skipped", "label-warning": book.status == "excluded"}')  {{book.status | inflector:'humanize'}}
 
         div.media

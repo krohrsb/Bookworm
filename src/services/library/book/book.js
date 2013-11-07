@@ -248,6 +248,7 @@ BookService.prototype.updateById = function (id, data, options) {
  */
 BookService.prototype.update = function (book, data, attrMask) {
     "use strict";
+    data = data || {};
     data.updated = Date.now();
     data = mask(data, attrMask || this._validUpdateAttributesMask);
 

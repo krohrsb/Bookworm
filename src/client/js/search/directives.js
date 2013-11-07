@@ -18,12 +18,12 @@
             },
             link: function(scope, element, attrs) {
                 var books;
-
+                scope.added = false;
                 books = Restangular.all('books');
 
                 scope.addBook = function (book) {
                     books.post(book).then(function (book) {
-                        console.log('added book: ' + book.id);
+                        scope.added = true;
                     });
                 };
             }

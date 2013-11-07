@@ -8,7 +8,7 @@ module.exports = {
         startIndex: 0,
         langRestrict: 'en',
         printType: 'books',
-        orderBy: 'relevance',
+        orderBy: 'newest',
         key: ''
     },
     cacheOptions: {

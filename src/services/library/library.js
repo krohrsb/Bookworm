@@ -96,7 +96,17 @@ LibraryService.prototype.findAndWantRelease = function (book) {
                 return Q.all(remoteReleases.map(function (release) {
                     release.bookId = book.id;
                     release.updated = Date.now();
-                    return releaseService.create(release);
+                    return releaseService.findOne({
+                        where: {
+                            guid: release.guid
+                        }
+                    }).then(function (existingRelease) {
+                        if (existingRelease) {
+                            return existingRelease;
+                        } else {
+                            return releaseService.create(release);
+                        }
+                    });
                 }));
             }).then(function (releases) {
                 return _.first(releases);
@@ -111,6 +121,7 @@ LibraryService.prototype.findAndWantRelease = function (book) {
     });
 };
 
+
 /**
  * Download a release for a book
  * @param {object} book - Book object
@@ -121,12 +132,7 @@ LibraryService.prototype.downloadRelease = function (book, release) {
     "use strict";
     if (release) {
         return sabnzbd.add(release.link, null, release.nzbTitle).then(function () {
-            release.status = 'snatched';
-            book.status = 'snatched';
-            book.updated = Date.now();
-            release.updated = Date.now();
-            release.bookId = book.id;
-            return Q.all([Q.ninvoke(release, 'save'), Q.ninvoke(book, 'save')]).spread(function (release) {
+            return Q.all([bookService.update(book, {status: 'snatched', updated: Date.now()}), releaseService.update(release, {status: 'snatched', updated: Date.now(), bookId: book.id})]).spread(function (release) {
                 return release;
             });
         });
@@ -232,10 +238,12 @@ LibraryService.prototype.refreshAuthor = function (author, options) {
 
 /**
  * Refresh all active authors - grabbing their new books.
+ * @param {boolean} [onlyNewBooks] - only search for new books?
  * @returns {Promise} A promise of type Promise<Author[], Error>
  */
-LibraryService.prototype.refreshActiveAuthors = function () {
+LibraryService.prototype.refreshActiveAuthors = function (onlyNewBooks) {
     "use strict";
+    logger.info('Refreshing all active authors and %s only new books', (onlyNewBooks) ? '': 'not');
     return authorService.all({
         where: {
             status: 'active'
@@ -244,7 +252,7 @@ LibraryService.prototype.refreshActiveAuthors = function () {
             if (_.isArray(authors)) {
                 return Q.all(authors.map(function (author) {
                     return this.refreshAuthor(author, {
-                        onlyNewBooks: false
+                        onlyNewBooks: onlyNewBooks
                     });
                 }.bind(this)));
             } else {
@@ -259,6 +267,7 @@ LibraryService.prototype.refreshActiveAuthors = function () {
  */
 LibraryService.prototype.findAndDownloadWantedBooks = function () {
     "use strict";
+    logger.info('Searching for all wanted books for active authors');
     return authorService.all({
         where: {
             status: 'active'

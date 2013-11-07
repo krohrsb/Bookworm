@@ -12,10 +12,16 @@ var logger = require('../../services/log').logger();
 // Local Dependencies
 var settingService = require('../../services/setting');
 
-var dbPath = path.join(settingService.get('environment:base'), settingService.get('database:path'));
+var dbPath = path.join(settingService.get('environment:baseDirectory'), settingService.get('database:path'));
 
+var exists = false;
 
-var exists = fs.existsSync(dbPath);
+try {
+    exists = fs.existsSync(dbPath);
+} catch (e) {
+    logger.err(e);
+}
+
 
 var db = new Schema('sqlite3', {
     database: dbPath

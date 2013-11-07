@@ -25,12 +25,10 @@
                 controller: 'AuthorCtrl',
                 resolve: {
                     author: function (Restangular, $stateParams) {
-                        return Restangular.one('authors', $stateParams.id).get({expand: 'books'}).then(function(author) {
-                            angular.forEach(author.books, function (book) {
-                                Restangular.restangularizeElement(author, book, 'books');
-                            });
-                            return author;
-                        });
+                        return Restangular.one('authors', $stateParams.id).get();
+                    },
+                    books: function (Restangular, $stateParams) {
+                        return Restangular.one('authors', $stateParams.id).all('books').getList({sort: 'published'});
                     }
                 }
             });

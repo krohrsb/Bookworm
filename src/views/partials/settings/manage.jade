@@ -1,0 +1,48 @@
+include includes/nav
+div.page-header.hidden-xs
+    h1 Settings
+        small manage
+form.form-horizontal(role='form', data-ng-controller='ManageCtrl')
+    fieldset
+        div.col-sm-6
+            legend Authors and Books
+            div.form-group
+                div.col-sm-9
+                    button.btn.btn-default(data-ng-click='action("findAndDownloadWantedBooks")')
+                        i.glyphicon.glyphicon-search
+                        |  Search Wanted
+                    span.help-block Search for all wanted books for active authors.
+            div.form-group
+                div.col-sm-9
+                    button.btn.btn-default(data-ng-click='action("refreshActiveAuthorsNewBooks")')
+                        i.glyphicon.glyphicon-refresh
+                        |  Refresh New Books
+                    span.help-block Check all active authors for new books.
+            div.form-group
+                div.col-sm-9
+                    button.btn.btn-default(data-ng-click='action("refreshActiveAuthors")')
+                        i.glyphicon.glyphicon-refresh
+                        |  Refresh Active Authors
+                    span.help-block Refresh data for all active authors (may take a while).
+            legend Post Processor
+            div.form-group
+                div.col-sm-9
+                    button.btn.btn-default(data-ng-click='action("forcePostProcess")')
+                        i.glyphicon.glyphicon-retweet
+                        |  Initiate Post Processor
+                    span.help-block Manually initiate the post processor.
+        div.col-sm-6
+            legend Database
+            div.form-group
+                div.col-sm-9
+                    button.btn.btn-default(data-ng-click='action("backupDatabase")')
+                        i.glyphicon.glyphicon-save
+                        |  Backup
+                    span.help-block Backup the database
+            legend System
+            div.form-group
+                div.col-sm-9
+                    button.btn.btn-default(data-ng-click='action("killProcess")')
+                        i.glyphicon.glyphicon-off
+                        |  Shutdown/Restart
+                    span.help-block Kill the process by sending SIGUSR2 signal. May restart your instance if using something like &quot;forever&quot;.

@@ -3,7 +3,7 @@ div.page-header.hidden-xs
         small {{author.status | inflector:"humanize"}}
 
 div(data-bw-author, data-author='author', data-expanded='true')
-div(data-ng-show='author.books && author.books.length')
-    div(data-ng-repeat='book in author.books', data-bw-book, data-book='book', data-expanded='false')
-div(data-ng-hide='author.books && author.books.length')
+div(data-ng-show='books && books.length')
+    div(data-ng-repeat='book in books', data-bw-book, data-book='book', data-expanded='false')
+div(data-ng-hide='books && books.length')
     p {{author.name}} doesn't have any books right now....

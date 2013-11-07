@@ -17,17 +17,20 @@ form.form-horizontal(role='form')
                     label.col-sm-3.control-label Retention
                     div.col-sm-9
                         input.form-control(type='number', placeholder='1500', data-ng-model='settings.searchers.newznab.retention', data-bw-setting='settings')
+                        span.label.label-default.pull-right Days
                         span.help-block The server retention.
                 div.form-group
                     label.col-sm-3.control-label Frequency
                     div.col-sm-9
                         input.form-control(type='number', placeholder='500', data-ng-model='settings.searchers.newznab.frequency', data-bw-setting='settings')
-                        span.help-block How often Bookworm should search for nzb's. Iin minutes.
+                        span.label.label-default.pull-right Minutes
+                        span.help-block How often Bookworm should search for nzb's.
                 div.form-group
                     label.col-sm-3.control-label Cache TTL
                     div.col-sm-9
                         input.form-control(type='number', placeholder='60000', data-ng-model='settings.searchers.newznab.cache', data-bw-setting='settings')
-                        span.help-block How long should Bookworm cache unique requests to newznab providers? In milliseconds.
+                        span.label.label-default.pull-right Milliseconds
+                        span.help-block How long should Bookworm cache unique requests to newznab providers?
 
         div.col-sm-6(data-ng-show='settings.searchers.newznab.enabled')
             legend Hosts

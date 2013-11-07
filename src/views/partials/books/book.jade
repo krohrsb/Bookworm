@@ -6,6 +6,6 @@ div(data-bw-book, data-book='book', data-expanded='true')
 
 h3 Releases
 
-div(data-ng-show='book.releases.length', data-ng-repeat='release in book.releases', data-bw-release, data-release='release')
-div(data-ng-hide='book.releases.length')
+div(data-ng-show='releases.length', data-ng-repeat='release in releases', data-bw-release, data-release='release')
+div(data-ng-hide='releases.length')
     p No releases loaded yet, try marking the book as wanted.

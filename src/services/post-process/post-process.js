@@ -252,7 +252,7 @@ PostProcessService.prototype.process = function () {
         logger.info('Post Processor finished. Processed %s releases', releases.length);
         return releases;
     }).fail(function (err) {
-        logger.error(err.message);
+        logger.err(err);
         throw err;
     });
 };
