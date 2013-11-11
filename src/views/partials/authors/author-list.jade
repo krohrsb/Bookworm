@@ -1,7 +1,7 @@
 div.page-header.hidden-xs
     h1 All
         small authors
-div(data-ng-repeat='author in authors', data-bw-author, data-author='author', data-expanded='false')
+div.animate(data-ng-repeat='author in authors', data-bw-author, data-author='author', data-expanded='false')
 
 div(data-ng-hide='authors && authors.length')
     p You don't have any authors yet...go find some!

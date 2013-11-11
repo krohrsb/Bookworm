@@ -3,6 +3,6 @@ div.page-header
         small books
 div(data-ng-controller='BookListCtrl')
     div(data-ng-show='books && books.length', data-ng-controller='BookListCtrl')
-        div(data-ng-repeat='book in books', data-bw-book, data-book='book')
+        div.animate(data-ng-repeat='book in books', data-bw-book, data-book='book')
     div(data-ng-hide='books && books.length')
         p You don't want any books for some unfortunate reason....

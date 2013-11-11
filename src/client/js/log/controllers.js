@@ -8,14 +8,17 @@
     var module = angular.module('bookworm.log.controllers', [], function () {});
 
     module.controller('LogsCtrl', ['$scope', 'Restangular', 'socket', function ($scope, Restangular, socket) {
-        var logs, limit;
-        limit = 20;
+        var logs;
+
+        $scope.limit = 20;
+        $scope.maxSize = 5;
 
         logs = Restangular.all('logs');
 
-        logs.getList({limit: limit}).then(function (data) {
+        logs.getList({limit: $scope.limit}).then(function (data) {
             $scope.logs = data;
             $scope.totalItems = data.metadata.total;
+            $scope.limit = data.metadata.limit;
         });
 
         $scope.currentPage = 1;

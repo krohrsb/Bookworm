@@ -7,7 +7,7 @@ div(data-bw-author, data-author='author', data-expanded='true')
 div(data-ng-controller='BookListCtrl')
     pagination.pagination-small(data-total-items='totalItems', data-page='currentPage', data-items-per-page='limit', data-max-size='maxSize', boundary-links='true')
     div(data-ng-show='books && books.length')
-        div.book-item(data-ng-repeat='book in books | page:currentPage:limit')
+        div.animate(data-ng-repeat='book in books | page:currentPage:limit')
             div(data-bw-book, data-book='book', data-expanded='false')
     div(data-ng-hide='books && books.length')
         p {{author.name}} doesn't have any books right now....
