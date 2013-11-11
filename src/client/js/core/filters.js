@@ -40,4 +40,17 @@
 
         };
     });
+
+    module.filter('page', function () {
+        return function (arr, currentPage, limit) {
+            var start;
+            if (!angular.isUndefined(arr) && angular.isArray(arr)) {
+                start = (currentPage - 1) * limit;
+                return arr.slice(start, start + limit);
+            } else {
+                return arr;
+            }
+
+        };
+    });
 }(angular, jsonMask));

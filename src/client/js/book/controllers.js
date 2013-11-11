@@ -52,7 +52,14 @@
     }]);
 
     module.controller('BookListCtrl', ['$scope', function ($scope) {
+        $scope.limit = 5;
+        $scope.currentPage = 1;
+        $scope.maxSize = 5;
+        $scope.totalItems = 0;
 
+        $scope.$watch('books', function (newVal) {
+            $scope.totalItems = newVal.length;
+        });
     }]);
 
 

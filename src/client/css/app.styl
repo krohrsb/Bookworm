@@ -1,7 +1,14 @@
+
+/** Mixins **/
+animation()
+  -webkit-animation: arguments;
+  -moz-animation: arguments;
+  -ms-animation: arguments;
+  animation: arguments;
+
+
 .ngProgressLiteBar
   z-index 9998
-
-
 
 table.logs td
   font-family Lucida Console,Monaco,Nimbus Mono L
@@ -13,10 +20,14 @@ table.logs td.level
 .dot-under
   border-bottom 1px dotted #999
 
-
 .book .media img
   width 128px
 
 .book .media img.img-small
   width: 61px
 
+.ng-enter
+  animation fadeIn 0.5s
+
+.ng-leave
+  animation fadeOut 0.5s
