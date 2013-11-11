@@ -15,10 +15,14 @@
             templateUrl: 'partials/templates/book',
             scope: {
                 book: '=',
-                expanded: '='
+                expanded: '=',
+                selecting: '='
             },
             link: function(scope) {
                 var updateVisibilityChecks;
+
+                scope.book.selected = false;
+
                 scope.buttonVisibility = {
                     showRetryNew: false,
                     showSkip: false,
@@ -33,7 +37,6 @@
                 };
                 updateVisibilityChecks(scope.book.status);
                 scope.$watch('book.status', updateVisibilityChecks);
-
 
                 scope.updateStatus = function (status, book) {
                     book.status = status;

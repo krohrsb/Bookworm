@@ -56,6 +56,7 @@
         $scope.currentPage = 1;
         $scope.maxSize = 5;
         $scope.totalItems = 0;
+        $scope.selecting = false;
 
         $scope.$watch('books', function (newVal) {
             $scope.totalItems = newVal.length;
