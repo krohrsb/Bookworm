@@ -9,10 +9,6 @@
 
     module.config(['$stateProvider', function ($stateProvider) {
         $stateProvider
-            .state('books', {
-                url: '/books',
-                templateUrl: 'partials/books/index'
-            })
             .state('book', {
                 url: '/books/{id}',
                 templateUrl: 'partials/books/book',
@@ -29,7 +25,7 @@
             .state('wanted', {
                 url: '/wanted',
                 templateUrl: 'partials/books/wanted',
-                controller: 'BooksCtrl',
+                controller: 'WantedBooksCtrl',
                 resolve: {
                     books: function (Restangular) {
                         return Restangular.all('books').getList({status: 'wanted', sort: 'published'});

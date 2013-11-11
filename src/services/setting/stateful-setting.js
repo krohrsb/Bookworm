@@ -33,8 +33,9 @@ util.inherits(StatefulSetting, events.EventEmitter);
 
 
 /**
- * Iterate over the object recursivly, for each string value attempt to replace with the settings value given that key.
+ * Iterate over the object recursively, for each string value attempt to replace with the settings value given that key.
  * @param {object} obj - object containing setting keys as values.
+ * @param {object} storeKeys - keys to iterate
  * @private
  */
 StatefulSetting.prototype._iterate = function (obj, storeKeys) {

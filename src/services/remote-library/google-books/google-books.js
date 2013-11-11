@@ -24,7 +24,7 @@ var errors = {
 
 /**
  * Google Books Service
- * @param {object] [options] - optional options for the google books api
+ * @param {object} [options] - optional options for the google books api
  * @constructor
  */
 var GoogleBooksService = function (options) {

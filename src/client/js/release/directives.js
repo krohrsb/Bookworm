@@ -16,15 +16,13 @@
             scope: {
                 release: '='
             },
-            link: function(scope, element, attrs) {
+            link: function(scope) {
 
                 scope.collapsed = true;
 
                 scope.updateStatus = function (status, release) {
                     release.status = status;
-                    release.put().then(function (updatedRelease) {
-                        scope.release = updatedRelease;
-                    });
+                    release.put();
                 };
 
             }

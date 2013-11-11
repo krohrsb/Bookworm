@@ -17,7 +17,7 @@
                 book: '=',
                 expanded: '='
             },
-            link: function(scope, element, attrs) {
+            link: function(scope) {
                 var updateVisibilityChecks;
                 scope.buttonVisibility = {
                     showRetryNew: false,

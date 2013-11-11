@@ -1,9 +1,11 @@
 div.page-header.hidden-xs
     h1 {{author.name}}
-        small {{author.status | inflector:"humanize"}}
+        small {{author.status}}
 
 div(data-bw-author, data-author='author', data-expanded='true')
-div(data-ng-show='books && books.length')
-    div(data-ng-repeat='book in books', data-bw-book, data-book='book', data-expanded='false')
-div(data-ng-hide='books && books.length')
-    p {{author.name}} doesn't have any books right now....
+
+div(data-ng-controller='BookListCtrl')
+    div(data-ng-show='books && books.length')
+        div.book-item(data-ng-repeat='book in books', data-bw-book, data-book='book', data-expanded='false')
+    div(data-ng-hide='books && books.length')
+        p {{author.name}} doesn't have any books right now....

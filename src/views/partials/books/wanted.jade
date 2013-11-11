@@ -1,8 +1,8 @@
 div.page-header
     h1 Wanted
-        small Books
-
-div(data-ng-show='books && books.length')
-    div(data-ng-repeat='book in books', data-bw-book, data-book='book')
-div(data-ng-hide='books && books.length')
-    p You don't want any books for some unfortunate reason....
+        small books
+div(data-ng-controller='BookListCtrl')
+    div(data-ng-show='books && books.length', data-ng-controller='BookListCtrl')
+        div(data-ng-repeat='book in books', data-bw-book, data-book='book')
+    div(data-ng-hide='books && books.length')
+        p You don't want any books for some unfortunate reason....

@@ -6,7 +6,6 @@
 // Dependencies
 var util = require('util');
 var request = require('request');
-var parseXml = require('xml2js').parseString;
 var _ = require('lodash');
 var Q = require('q');
 

@@ -100,6 +100,7 @@ ActionService.prototype.performAuthorAction = function (action, id) {
  */
 ActionService.prototype.performGeneralAction = function (action) {
     "use strict";
+
     return this.hasAction(action).then(function (hasAction) {
         var err;
         if (hasAction) {

@@ -7,7 +7,7 @@
     'use strict';
     var module;
     module = angular.module('bookworm.author.directives', [], function () {});
-    module.directive('bwAuthor', ['Restangular', function (Restangular) {
+    module.directive('bwAuthor', ['Restangular', 'toaster', function (Restangular, toaster) {
         return {
             restrict: 'A',
             replace: true,
@@ -17,7 +17,7 @@
                 author: '=',
                 expanded: '='
             },
-            link: function(scope, element, attrs) {
+            link: function(scope) {
                 scope.updateStatus = function (status, author) {
                     author.status = status;
                     author.put().then(function (updatedAuthor) {
@@ -26,6 +26,15 @@
                             Restangular.restangularizeElement(scope.author, book, 'books');
                         });
                     });
+                };
+                scope.checkNewBooks = function () {
+                    toaster.pop('info', 'Running...', 'Checking for new books...');
+                    Restangular.all('actions').one('authors', scope.author.id).customPOST({action: 'refreshAuthorNewBooks'});
+                };
+
+                scope.refreshAuthor = function () {
+                    toaster.pop('info', 'Running...', 'Refreshing author and book information...');
+                    Restangular.all('actions').one('authors', scope.author.id).customPOST({action: 'refreshAuthor'});
                 };
             }
         };

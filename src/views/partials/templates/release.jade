@@ -1,10 +1,11 @@
 div.panel(data-ng-class='{"panel-success": release.status == "downloaded", "panel-danger": release.status == "wanted", "panel-info": release.status == "snatched", "panel-default": release.status == "available", "panel-warning": release.status == "ignored"}')
     div.panel-heading
         h3.panel-title
+            button.btn.btn-link(data-ng-click='collapsed=!collapsed')
+                span.glyphicon.glyphicon-collapse-down(data-ng-show='collapsed')
+                span.glyphicon.glyphicon-collapse-up(data-ng-show='!collapsed')
             a(data-ng-href='{{release.link}}') {{release.title}}
-            button.btn.btn-link.btn-xs(data-ng-click='collapsed=!collapsed')
-                span.glyphicon.glyphicon-plus(data-ng-show='collapsed')
-                span.glyphicon.glyphicon-minus(data-ng-show='!collapsed')
+
     ul.list-group(data-ng-hide='collapsed')
         li.list-group-item
             span.label.pull-right(data-ng-class='{"label-success": release.status == "downloaded", "label-danger": release.status == "wanted", "label-info": release.status == "snatched", "label-default": release.status == "available", "label-warning": release.status == "ignored"}')  {{release.status | inflector:'humanize'}}

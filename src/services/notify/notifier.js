@@ -54,30 +54,30 @@ Notifier.prototype.enable = function () {
 
 /**
  * Notify, meant to be overridden, abstract.
- * @param {object} options - options
+ * @param {object} [options] - options
  * @returns {Promise} A promise of type Promise<>
  */
-Notifier.prototype.notify = function (options) {
+Notifier.prototype.notify = function () {
     'use strict';
     return Q.defer().promise;
 };
 
 /**
  * Verify, meant to be overridden, abstract.
- * @param {object} options - options
+ * @param {object} [options] - options
  * @returns {Promise} A promise of type Promise<>
  */
-Notifier.prototype.verify = function (options) {
+Notifier.prototype.verify = function () {
     'use strict';
     return Q.defer().promise;
 };
 
 /**
  * Determine if notifier should notify given an trigger. Should be overridden.
- * @param {string} trigger - notification trigger
+ * @param {string} [trigger] - notification trigger
  * @returns {boolean}
  */
-Notifier.prototype.shouldNotify = function (trigger) {
+Notifier.prototype.shouldNotify = function () {
     "use strict";
     return false;
 };

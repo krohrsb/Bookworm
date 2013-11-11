@@ -1,4 +1,4 @@
-div.panel(data-ng-show='author', data-ng-class='{"panel-info": author.status == "active", "panel-warning": author.status == "paused"}')
+div.panel(data-ng-show='author', data-ng-class='{"panel-success": author.status == "active", "panel-danger": author.status == "paused"}')
     div.panel-heading
         h3.panel-title
             a(data-ng-if='!expanded', data-ui-sref='author({id: author.id})')
@@ -20,10 +20,18 @@ div.panel(data-ng-show='author', data-ng-class='{"panel-info": author.status == 
             strong Latest Book:
             a(data-ui-sref='book({id: author.latestBook.id})')  {{author.latestBook.title}} - {{author.latestBook.published | date:'mediumDate'}}
     div.panel-footer(data-ng-if='expanded')
-        div.btn-group
-            button.btn.btn-default.btn-xs(data-ng-if='author.status == "paused"', data-ng-click='updateStatus("active", author)')
-                span.glyphicon.glyphicon-play
-                |  Resume
-            button.btn.btn-default.btn-xs(data-ng-if='author.status == "active"', data-ng-click='updateStatus("paused", author)')
-                span.glyphicon.glyphicon-pause
-                |  Pause
+        div.btn-toolbar(role='toolbar')
+            div.btn-group
+                button.btn.btn-default.btn-sm(data-ng-if='author.status == "paused"', data-ng-click='updateStatus("active", author)')
+                    span.glyphicon.glyphicon-play
+                    |  Resume
+                button.btn.btn-default.btn-sm(data-ng-if='author.status == "active"', data-ng-click='updateStatus("paused", author)')
+                    span.glyphicon.glyphicon-pause
+                    |  Pause
+            div.btn-group
+                button.btn.btn-default.btn-sm(data-ng-click='refreshAuthor()')
+                    span.glyphicon.glyphicon-refresh
+                    |  Refresh
+                button.btn.btn-default.btn-sm(data-ng-click='checkNewBooks()')
+                    span.glyphicon.glyphicon-bookmark
+                    |  Check for new Books

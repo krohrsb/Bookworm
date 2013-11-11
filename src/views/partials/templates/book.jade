@@ -1,4 +1,4 @@
-div.panel(data-ng-show='book', data-ng-class='{"panel-success": book.status == "downloaded", "panel-danger": book.status == "wanted", "panel-info": book.status == "snatched", "panel-default": book.status == "skipped", "panel-warning": book.status == "excluded"}')
+div.panel.book(data-ng-class='{"panel-success": book.status == "downloaded", "panel-danger": book.status == "wanted", "panel-info": book.status == "snatched", "panel-default": book.status == "skipped", "panel-warning": book.status == "excluded"}')
     div.panel-heading
         h3.panel-title
             a(data-ng-if='!expanded', data-ui-sref='book({id: book.id})')
@@ -12,7 +12,7 @@ div.panel(data-ng-show='book', data-ng-class='{"panel-success": book.status == "
         span.label.pull-right(data-ng-class='{"label-success": book.status == "downloaded", "label-danger": book.status == "wanted", "label-info": book.status == "snatched", "label-default": book.status == "skipped", "label-warning": book.status == "excluded"}')  {{book.status | inflector:'humanize'}}
 
         div.media
-            img.media-object.pull-left(data-ng-src='{{(expanded) ? book.image : book.imageSmall}}', alt='{{book.title}} Cover')
+            img.media-object.pull-left(data-ng-class='{"img-small": !expanded}', data-ng-src='{{(expanded) ? book.image : book.imageSmall}}', alt='{{book.title}} Cover')
             div.media-body.hidden-xs {{(expanded) ? book.description : (book.description | words: 75)}}
             div.media-body.visible-xs {{(expanded) ? (book.description | words: 75) : (book.description | words: 20)}}
     ul.list-group(data-ng-if='expanded')

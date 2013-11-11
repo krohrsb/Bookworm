@@ -16,20 +16,20 @@
             scope: {
                 book: '='
             },
-            link: function(scope, element, attrs) {
+            link: function(scope) {
                 var books;
                 scope.added = false;
                 books = Restangular.all('books');
 
                 scope.addBook = function (book) {
-                    books.post(book).then(function (book) {
+                    books.post(book).then(function () {
                         scope.added = true;
                     });
                 };
             }
         };
     }]);
-    module.directive('bwSearchAuthor', ['Restangular', function (Restangular) {
+    module.directive('bwSearchAuthor', ['$state', 'Restangular', function ($state, Restangular) {
         return {
             restrict: 'A',
             replace: true,
@@ -38,7 +38,7 @@
             scope: {
                 author: '='
             },
-            link: function(scope, element, attrs) {
+            link: function(scope) {
 
                 var authors;
 
@@ -46,7 +46,7 @@
 
                 scope.addAuthor = function (author) {
                     authors.post(author).then(function (author) {
-                        console.log('added author: ' + author.id);
+                        $state.go('author', {id: author.id});
                     });
                 };
             }

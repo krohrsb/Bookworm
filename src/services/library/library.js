@@ -227,13 +227,14 @@ LibraryService.prototype.refreshAuthor = function (author, options) {
         q: 'inauthor:' + author.name,
         pagingQueryLimit: limit
     }).then(function (remoteBooks) {
-            return Q.ninvoke(author, 'getBooks').then(function (books) {
-                return bookService.merge(author, books, remoteBooks, !options.onlyNewBooks);
-            });
-        }).then(function (books) {
-            author.books = books;
-            return author;
-        }.bind(this));
+        return Q.ninvoke(author, 'getBooks').then(function (books) {
+            return bookService.merge(author, books, remoteBooks, !options.onlyNewBooks);
+        });
+    }).then(function (books) {
+        author.books = books;
+        this.emit('author:updatedBooks', author);
+        return author;
+    }.bind(this));
 };
 
 /**

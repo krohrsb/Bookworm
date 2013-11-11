@@ -26,12 +26,42 @@ form.form-horizontal(role='form')
                 label.col-sm-3.control-label Folder Pattern
                 div.col-sm-9
                     input.form-control(type='text', placeholder='$Author-$title($Year)', data-ng-model='settings.postProcessor.folderFormat', data-bw-setting='settings')
-
                     span.help-block Format of the destination folder structure.
-                    p
-                        code $First, $first, $Title, $title, $Author, $author, $Year
-                    p
-                        code $First/$Author/$Title($Date) --> C/Clive Cussler/Striker(2013-01-02)/
+                    div.table-responsive
+                        table.table.table-condensed.table-hover.table-bordered.table-striped
+                            thead
+                                th Variable
+                                th Example
+                                th Description
+                            tbody
+                                tr
+                                    td $First
+                                    td C
+                                    td First letter of author, upper case.
+                                tr
+                                    td $first
+                                    td c
+                                    td First letter of author, lower case.
+                                tr
+                                    td $Title
+                                    td Zero Hour
+                                    td Title of book, proper case.
+                                tr
+                                    td $title
+                                    td zero hour
+                                    td Title of book, lower case.
+                                tr
+                                    td $Author
+                                    td Clive Cussler
+                                    td Author name, proper case.
+                                tr
+                                    td $author
+                                    td clive cussler
+                                    td Author name, lower case.
+                                tr
+                                    td $Year
+                                    td 2013
+                                    td Book year.
 
             div.form-group
                 label.col-sm-3.control-label Keep Original Files?

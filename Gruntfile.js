@@ -161,6 +161,16 @@ module.exports = function (grunt) {
                         dest: 'build/client/favicon.ico'
                     }
                 ]
+            },
+            images: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'src/client/img',
+                        src: ['**'],
+                        dest: 'build/client/img/'
+                    }
+                ]
             }
         },
         watch: {
@@ -170,11 +180,18 @@ module.exports = function (grunt) {
             },
             clientScript: {
                 files: ['<%= jshint.client.src %>'],
-                tasks: ['jshint', 'uglify:dev']
+                tasks: ['jshint:client', 'uglify:dev']
             },
             clientStyles: {
                 files: ['src/client/css/*.styl'],
                 tasks: ['stylus']
+            },
+            express: {
+                files: ['<%=jshint.app.src%>'],
+                tasks: ['jshint:app', 'express:dev'],
+                options: {
+                    nospawn: true
+                }
             }
         },
         stylus: {
@@ -183,6 +200,28 @@ module.exports = function (grunt) {
                     'build/client/css/<%= pkg.name %>.css': 'src/client/css/*.styl'
                 }
 
+            }
+        },
+        express: {
+            options: {
+                port: process.env.PORT || 3000
+            },
+            dev: {
+                options: {
+                    script: 'bin/bookworm.js',
+                    debug: true
+                }
+            },
+            prod: {
+                options: {
+                    script: 'bin/bookworm.js',
+                    node_env: 'production'
+                }
+            }
+        },
+        open: {
+            server: {
+                url: 'http://localhost:<%=express.options.port%>'
             }
         }
     });
@@ -208,10 +247,38 @@ module.exports = function (grunt) {
     // Load the plugin that provides the "stylus" task.
     grunt.loadNpmTasks('grunt-contrib-stylus');
 
-    // Default task(s).
-    grunt.registerTask('build-prod', ['jshint', 'clean', 'uglify', 'stylus', 'copy']);
+    // Load the plugin that provides the "express-server" task.
+    grunt.loadNpmTasks('grunt-express-server');
 
-    // Dev task(s)
-    grunt.registerTask('default', ['jshint', 'clean', 'uglify:dev', 'stylus', 'copy']);
+    // Load the plugin that provides the "open" task.
+    grunt.loadNpmTasks('grunt-open');
+
+    grunt.registerTask('express-keepalive', 'Keep grunt running', function() {
+        this.async();
+    });
+
+    grunt.registerTask('server', function (target) {
+        if (target === 'dist') {
+            return grunt.task.run(['build', 'express:prod', 'open', 'express-keepalive']);
+        }
+
+        return grunt.task.run([
+            'express:dev',
+            'open',
+            'watch'
+        ]);
+    });
+
+    grunt.registerTask('build', [
+        'clean',
+        'uglify:dev',
+        'stylus',
+        'copy'
+    ]);
+
+    grunt.registerTask('default', [
+        'jshint',
+        'build'
+    ]);
 
 };

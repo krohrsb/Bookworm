@@ -39,11 +39,11 @@ var Book = db.define('Book', {
     apiLink: String,
     image: {
         type: String,
-        "default": '/img/no-image.gif'
+        "default": '/img/no-image.png'
     },
     imageSmall: {
         type: String,
-        "default": '/img/no-image.gif'
+        "default": '/img/no-image.png'
     },
     status: {
         type: String,
