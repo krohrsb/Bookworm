@@ -1,0 +1,20 @@
+div.page-header
+    h1 Logs
+        small whats going on?
+pager(data-total-items='totalItems', data-page='currentPage')
+div.table-responsive
+    table.table.table-condensed.table-hover.logs
+        thead
+            tr
+                th(style='width:18%;') Time
+                th(style='width:4%;') Level
+                th Message
+        tfoot
+        tbody
+            tr.animate(data-ng-repeat='log in logs')
+                td.time {{log.timestamp | date:'medium'}}
+                td.level
+                    span.label(data-ng-class='{"label-primary": log.level == "info", "label-danger": log.level == "error", "label-warning": log.level == "warn", "label-success": log.level == "debug"}') {{log.level}}
+                td.message {{log.message}}
+                    //button.btn.btn-small.pull-right(data-ng-show='log.stack', data-ng-click='log.showStack = !log.showStack') {{(!log.showStack && "Show") || (log.showStack && "Hide")}} Stack Trace
+                    //pre(data-ng-show='log.stack && log.showStack') {{log.stack}}

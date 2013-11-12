@@ -1,9 +1,9 @@
 .idea/
-dist/
-cache/
-components/
-bower_components/
-build/
+/dist/
+/cache/
+/components/
+/bower_components/
+/build/
 atlassian-ide-plugin.xml
 lib-cov
 *.seed
@@ -16,8 +16,8 @@ lib-cov
 *.db
 *.log
 *.bak
-config/*.json
+/config/*.json
 pids
-logs
-results
+/logs
+/results
 node_modules/

@@ -18,6 +18,9 @@ var exists = false;
 
 try {
     exists = fs.existsSync(dbPath);
+    if (!exists) {
+        fs.createFileSync(dbPath);
+    }
 } catch (e) {
     logger.err(e);
 }
