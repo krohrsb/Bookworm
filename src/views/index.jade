@@ -33,10 +33,40 @@ block nav
                     a(data-ui-sref='logs')
                         span.glyphicon.glyphicon-list
                         |  Logs
-                li(data-ui-route='/settings', data-ng-class='{active: $uiRoute}')
-                    a(data-ui-sref='settings')
+                li.dropdown(data-ui-route='/settings', data-ng-class='{active: $uiRoute}')
+                    a.dropdown-toggle(data-toggle='dropdown')
                         span.glyphicon.glyphicon-cog
                         |  Settings
+                        span.caret
+                    ul.dropdown-menu
+                        li
+                            a(data-ui-sref='settings')
+                                span.glyphicon.glyphicon-cog
+                                |  General
+                        li
+                            a(data-ui-sref='settings-search-newznab')
+                                span.glyphicon.glyphicon-search
+                                |  Searching - Newznab
+                        li
+                            a(data-ui-sref='settings-search-googlebooks')
+                                span.glyphicon.glyphicon-book
+                                |  Searching - Google Books
+                        li
+                            a(data-ui-sref='settings-download')
+                                span.glyphicon.glyphicon-cloud-download
+                                |  Downloading
+                        li
+                            a(data-ui-sref='settings-notify')
+                                span.glyphicon.glyphicon-info-sign
+                                |  Notifying
+                        li
+                            a(data-ui-sref='settings-postProcess')
+                                span.glyphicon.glyphicon-retweet
+                                |  Post Processing
+                        li
+                            a(data-ui-sref='settings-manage')
+                                span.glyphicon.glyphicon-wrench
+                                |  Managing
 block view
 
     div.row(data-ui-view)

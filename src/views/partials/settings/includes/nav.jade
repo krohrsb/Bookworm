@@ -1,19 +1,35 @@
 ul.nav.nav-tabs
     li(data-ui-route='/settings', data-ng-class='{active: $uiRoute}')
-        a(data-ui-sref='settings') General
+        a(data-ui-sref='settings')
+            span.glyphicon.glyphicon-cog
+            |  General
     li.dropdown(data-ui-route='/settings/search/[a-zA-Z]*', data-ng-class='{active: $uiRoute}')
-        a.dropdown-toggle(data-toggle='dropdown') Searching
+        a.dropdown-toggle(data-toggle='dropdown')
+            span.glyphicon.glyphicon-search
+            |  Searching
             span.caret
         ul.dropdown-menu
             li
-                a(data-ui-sref='settings-search-newznab') Newznab
+                a(data-ui-sref='settings-search-newznab')
+                    span.glyphicon.glyphicon-search
+                    |  Newznab
             li
-                a(data-ui-sref='settings-search-googlebooks') Google Books
+                a(data-ui-sref='settings-search-googlebooks')
+                    span.glyphicon.glyphicon-book
+                    |  Google Books
     li(data-ui-route='/settings/download', data-ng-class='{active: $uiRoute}')
-        a(data-ui-sref='settings-download') Downloading
+        a(data-ui-sref='settings-download')
+            span.glyphicon.glyphicon-cloud-download
+            |  Downloading
     li(data-ui-route='/settings/notify', data-ng-class='{active: $uiRoute}')
-        a(data-ui-sref='settings-notify') Notifying
+        a(data-ui-sref='settings-notify')
+            span.glyphicon.glyphicon-info-sign
+            |  Notifying
     li(data-ui-route='/settings/postProcess', data-ng-class='{active: $uiRoute}')
-        a(data-ui-sref='settings-postProcess') Post Processing
+        a(data-ui-sref='settings-postProcess')
+            span.glyphicon.glyphicon-retweet
+            |  Post Processing
     li(data-ui-route='/settings/manage', data-ng-class='{active: $uiRoute}')
-        a(data-ui-sref='settings-manage') Managing
+        a(data-ui-sref='settings-manage')
+            span.glyphicon.glyphicon-wrench
+            |  Managing
