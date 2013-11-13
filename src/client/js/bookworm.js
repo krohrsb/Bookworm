@@ -2,11 +2,11 @@
  * @author Kyle Brown <blackbarn@gmail.com>
  * @since 10/23/13 3:12 PM
  */
-/*global angular*/
-(function (angular) {
+/*global angular, _*/
+(function (angular, _) {
     'use strict';
 
-    angular.module('ui', ['ui.router', 'ui.route', 'ui.inflector', 'ui.event'], function () {});
+    angular.module('ui', ['ui.bootstrap', 'ui.router', 'ui.route', 'ui.inflector', 'ui.event', 'ui.format'], function () {});
 
     angular.module('bookworm.manage', ['bookworm.manage.controllers'], function () {});
 
@@ -36,7 +36,7 @@
     }]);
 
     /* end patch*/
-    angular.module('bookworm', ['btford.socket-io', 'ui', 'ui.bootstrap', 'ngAnimate', 'toaster', 'restangular', 'ngProgressLite', 'truncate', 'bookworm.core',
+    angular.module('bookworm', ['btford.socket-io', 'ui', 'ngAnimate', 'toaster', 'restangular', 'ngProgressLite', 'truncate', 'bookworm.core',
             'bookworm.book', 'bookworm.author', 'bookworm.release', 'bookworm.search', 'bookworm.log', 'bookworm.setting', 'bookworm.notify', 'bookworm.manage'],
             ['RestangularProvider', function (RestangularProvider) {
         RestangularProvider.setBaseUrl('/api/v1');
@@ -45,6 +45,10 @@
     .run(['Restangular', 'ngProgressLite', 'toaster', function (Restangular, ngProgressLite, toaster) {
         Restangular.setRequestInterceptor(function (element) {
             ngProgressLite.start();
+            if (_.isObject(element) && element['0']) {
+                console.warn('Restangular not fixed yet, turning array back into array');
+                element = _.toArray(element);
+            }
             return element;
         });
         Restangular.setResponseInterceptor(function (response, operation) {
@@ -67,4 +71,4 @@
 
 
 
-}(angular));
+}(angular, _));

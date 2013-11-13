@@ -21,7 +21,9 @@
             link: function(scope) {
                 var updateVisibilityChecks;
 
-                scope.book.selected = false;
+                if (typeof scope.book.selected === 'undefined') {
+                    scope.book.selected = false;
+                }
 
                 scope.buttonVisibility = {
                     showRetryNew: false,

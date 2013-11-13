@@ -7,7 +7,7 @@
     "use strict";
     var module = angular.module('bookworm.author.controllers', [], function () {});
 
-    module.controller('AuthorCtrl', ['$scope', 'socket', 'author', 'books', function ($scope, socket, author, books) {
+    module.controller('AuthorCtrl', ['$scope', 'socket', 'author', 'books', 'toaster', function ($scope, socket, author, books, toaster) {
         $scope.author = author;
         $scope.books = books;
         socket.forward('book:update', $scope);
@@ -24,6 +24,7 @@
                         break;
                     }
                 }
+
             }
 
         });
@@ -32,6 +33,7 @@
             if (ev.targetScope.author.id.toString() === author.id.toString()) {
                 ev.targetScope.author.all('books').getList({sort: 'published'}).then(function (books) {
                     ev.targetScope.books = books;
+                    toaster.pop('info', 'Updated Books', author.name + '\'s books have been updated');
                 });
             }
         });

@@ -24,7 +24,7 @@
     "angular-socket-io": "~0.2.0",
     "socket.io-client": "~0.9.16",
     "angular-ui-router": "~0.2.0",
-    "restangular": "~1.1.6",
+    "restangular": "1.1.8",
     "angular": "~1.2.0",
     "ngprogress-lite": "~1.0.1",
     "angular-truncate": "*",

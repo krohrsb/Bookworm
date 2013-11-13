@@ -4,15 +4,4 @@ div.page-header.hidden-xs
 
 div(data-bw-author, data-author='author', data-expanded='true')
 
-div(data-ng-controller='BookListCtrl')
-
-    pagination(data-total-items='totalItems', data-page='currentPage', data-items-per-page='limit', data-max-size='maxSize', boundary-links='true')
-
-    div.pagination
-        button.btn.btn-default.btn-sm(data-ng-click='selecting=!selecting')
-            span.glyphicon.glyphicon-check(data-ng-hide='selecting')
-            span.glyphicon.glyphicon-unchecked(data-ng-show='selecting')
-    div.animate(data-ng-repeat='book in books | page:currentPage:limit')
-        div(data-bw-book, data-book='book', data-expanded='false', data-selecting='selecting')
-    div(data-ng-hide='books && books.length')
-        p {{author.name}} doesn't have any books right now....
+include ../includes/book-list
