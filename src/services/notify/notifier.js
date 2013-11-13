@@ -9,7 +9,7 @@ var util = require('util');
 var _ = require('lodash');
 var Q = require('q');
 
-// Local Depenencies
+// Local Dependencies
 var notifierDefaults = require('./notifier-defaults');
 
 var Notifier = function (options) {
@@ -54,7 +54,6 @@ Notifier.prototype.enable = function () {
 
 /**
  * Notify, meant to be overridden, abstract.
- * @param {object} [options] - options
  * @returns {Promise} A promise of type Promise<>
  */
 Notifier.prototype.notify = function () {
@@ -64,7 +63,6 @@ Notifier.prototype.notify = function () {
 
 /**
  * Verify, meant to be overridden, abstract.
- * @param {object} [options] - options
  * @returns {Promise} A promise of type Promise<>
  */
 Notifier.prototype.verify = function () {
@@ -74,7 +72,6 @@ Notifier.prototype.verify = function () {
 
 /**
  * Determine if notifier should notify given an trigger. Should be overridden.
- * @param {string} [trigger] - notification trigger
  * @returns {boolean}
  */
 Notifier.prototype.shouldNotify = function () {
