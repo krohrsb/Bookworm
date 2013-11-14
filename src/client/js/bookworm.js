@@ -18,7 +18,7 @@
 
     angular.module('bookworm.search', ['bookworm.search.routes', 'bookworm.search.directives', 'bookworm.search.controllers'], function () {});
 
-    angular.module('bookworm.core', ['bookworm.core.routes', 'bookworm.core.directives', 'bookworm.core.controllers', 'bookworm.core.filters'], function () {});
+    angular.module('bookworm.core', ['bookworm.core.services', 'bookworm.core.routes', 'bookworm.core.directives', 'bookworm.core.controllers', 'bookworm.core.filters'], function () {});
 
     angular.module('bookworm.book', ['bookworm.book.routes', 'bookworm.book.directives', 'bookworm.book.controllers'], function () {});
 
@@ -41,6 +41,7 @@
             ['RestangularProvider', function (RestangularProvider) {
         RestangularProvider.setBaseUrl('/api/v1');
         RestangularProvider.setDefaultHeaders({'X-Requested-With': 'XMLHttpRequest'});
+
     }])
     .run(['Restangular', 'ngProgressLite', 'toaster', function (Restangular, ngProgressLite, toaster) {
         Restangular.setRequestInterceptor(function (element) {
@@ -64,8 +65,16 @@
         });
         Restangular.setErrorInterceptor(function (response) {
             ngProgressLite.done();
-            toaster.pop('error', 'Error', response.data.message);
+            toaster.pop('error', 'Error', response.data.message || response.status);
             return response;
+        });
+        Restangular.addElementTransformer('authors', false, function (elem) {
+            if (elem.books) {
+                angular.forEach(elem.books, function (book) {
+                    Restangular.restangularizeElement(elem, book, 'books');
+                });
+            }
+            return elem;
         });
     }]);
 

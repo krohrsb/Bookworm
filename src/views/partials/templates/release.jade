@@ -29,5 +29,5 @@ div.panel(data-ng-class='{"panel-success": release.status == "downloaded", "pane
     div.panel-footer
         div.btn-group
             button.btn.btn-default.btn-sm(data-ng-click='updateStatus("wanted", release)') Download
-            button.btn.btn-default.btn-sm(data-ng-if='release.status != "ignored"', data-ng-click='updateStatus("ignored", release)') Ignore
-            button.btn.btn-default.btn-sm(data-ng-if='release.status == "ignored"', data-ng-click='updateStatus("available", release)') Un-ignore
+            button.btn.btn-default.btn-sm(data-ng-if='release.status != "ignored"', data-ng-click='updateStatus("ignored")') Ignore
+            button.btn.btn-default.btn-sm(data-ng-if='release.status == "ignored"', data-ng-click='updateStatus("available")') Un-ignore

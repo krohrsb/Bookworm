@@ -9,5 +9,6 @@ module.exports = function (app) {
     app.set('view options', {
         layout: false
     });
+    app.disable('etag');
 
 };

@@ -7,37 +7,15 @@
     "use strict";
     var module = angular.module('bookworm.author.controllers', [], function () {});
 
-    module.controller('AuthorCtrl', ['$scope', 'socket', 'author', 'books', 'toaster', function ($scope, socket, author, books, toaster) {
+    module.controller('AuthorCtrl', ['$scope', 'socket', 'author', 'toaster', function ($scope, socket, author, toaster) {
         $scope.author = author;
-        $scope.books = books;
-        socket.forward('book:update', $scope);
-        socket.forward('author:updatedBooks', $scope);
 
-        $scope.$on('socket:book:update', function (ev, updatedBook) {
-            var i, len, book;
-            if (ev.targetScope.author.id.toString() === updatedBook.authorId.toString()) {
-                for (i = 0, len = ev.targetScope.books.length; i < len; i = i + 1) {
-                    book = ev.targetScope.books[i];
-                    if (book.id.toString() === updatedBook.id.toString()) {
-                        book.status = updatedBook.status;
-                        book.updated = updatedBook.updated;
-                        break;
-                    }
-                }
-
-            }
-
-        });
-
-        $scope.$on('socket:author:updatedBooks', function (ev, author) {
-            if (ev.targetScope.author.id.toString() === author.id.toString()) {
-                ev.targetScope.author.all('books').getList({sort: 'published'}).then(function (books) {
-                    ev.targetScope.books = books;
-                    toaster.pop('info', 'Updated Books', author.name + '\'s books have been updated');
-                });
+        // separate author.books so we can use book list separately
+        $scope.$watch('author.books', function (books) {
+            if (books) {
+                $scope.books = books;
             }
         });
-
 
     }]);
 

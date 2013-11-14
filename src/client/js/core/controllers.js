@@ -8,7 +8,7 @@
     var module = angular.module('bookworm.core.controllers', [], function () {});
 
     module.controller('NavCtrl', ['$scope', function ($scope) {
-        $scope.searchExpanded = false;
+
     }]);
 
 }(angular));

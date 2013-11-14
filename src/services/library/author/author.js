@@ -118,24 +118,25 @@ AuthorService.prototype.expandAuthorLatestBook = function (author) {
  */
 AuthorService.prototype.expandAuthor = function (expands, author) {
     "use strict";
+    var types;
     if (expands) {
-
+        types = expands.split(',');
         return Q.fcall(function () {
-            if (_.contains(expands, 'books')) {
+            if (_.contains(types, 'books')) {
                 return this.expandAuthorBooks(author);
             } else {
                 return author;
             }
         }.bind(this))
         .then(function (author) {
-            if (_.contains(expands, 'latestBook')) {
+            if (_.contains(types, 'latestBook')) {
                 return this.expandAuthorLatestBook(author);
             } else {
                 return author;
             }
         }.bind(this))
         .then(function (author) {
-            if (_.contains(expands, 'booksCount')) {
+            if (_.contains(types, 'booksCount')) {
                 return this.expandAuthorBooksCount(author);
             } else {
                 return author;

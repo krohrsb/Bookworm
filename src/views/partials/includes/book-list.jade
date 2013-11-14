@@ -17,13 +17,13 @@ div(data-ng-controller='BookListCtrl')
                 button.btn.btn-default.btn-sm(title='Show/Hide Excluded', data-ng-click='toggleShowExcluded()')
                     span.glyphicon.glyphicon-eye-close(data-ng-show='showExcluded')
                     span.glyphicon.glyphicon-eye-open(data-ng-hide='showExcluded')
-            div.input-group.col-sm-6.pull-right.animate(data-ng-if='selecting')
+            div.input-group.col-sm-7.pull-right.animate(data-ng-if='selecting')
                 span.input-group-btn
                     button.btn.btn-primary.btn-sm(data-ng-click='setSelected(selectingStatus)') Set Selected as
                 select.form-control(data-ng-model='selectingStatus', data-ng-options='(status | inflector:"humanize") for status in statuses')
 
     div.row
-        div.col-sm-12.animate(data-ng-repeat='book in filteredBooks = (books | filter:bookFilter | page:currentPage:limit)')
+        div.col-sm-12.animate(data-ng-repeat='book in filteredBooks = (books | orderBy:"published":true | filter:bookFilter | page:currentPage:limit)')
             div(data-bw-book, data-book='book', data-expanded='false', data-selecting='selecting')
         div.col-sm-12(data-ng-hide='books && books.length')
             p(data-ng-if='author') {{author.name}} doesn't have any books yet...

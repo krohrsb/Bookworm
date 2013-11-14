@@ -25,10 +25,7 @@
                 controller: 'AuthorCtrl',
                 resolve: {
                     author: function (Restangular, $stateParams) {
-                        return Restangular.one('authors', $stateParams.id).get();
-                    },
-                    books: function (Restangular, $stateParams) {
-                        return Restangular.one('authors', $stateParams.id).all('books').getList({sort: 'published'});
+                        return Restangular.one('authors', $stateParams.id).get({expand: 'books,latestBook,booksCount'});
                     }
                 }
             });

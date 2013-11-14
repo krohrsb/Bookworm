@@ -8,6 +8,8 @@ var authorService = require('../services/library/author');
 
 var bookService = require('../services/library/book');
 
+var libraryService = require('../services/library');
+
 var ModelValidationService = require('../services/model-validation');
 var modelValidationService = new ModelValidationService();
 
@@ -41,13 +43,30 @@ function getAll (req, res, next) {
 function getById (req, res, next) {
     'use strict';
     logger.trace('Controller::Author::getById(%s)', req.params.id);
+
     authorService.find(req.params.id, {
         expand: req.query.expand
     }).then(function (author) {
         if (author) {
+            if (req.query.refresh) {
+                return libraryService.refreshAuthor(author, {
+                    onlyNewBooks: req.query.new || true
+                }).then(function (author) {
+                    return authorService.find(author.id, {
+                        expand: req.query.expand
+                    });
+                });
+            } else {
+                return author;
+            }
+        } else {
+            return null;
+        }
+    }).then(function (author) {
+        if (author) {
             res.json(author);
         } else {
-            res.send(404);
+            res.json(404);
         }
     }, next);
 }

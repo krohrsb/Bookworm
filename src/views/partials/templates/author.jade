@@ -13,19 +13,19 @@ div.panel(data-ng-show='author', data-ng-class='{"panel-success": author.status 
         li.list-group-item
             strong Updated:
             |  {{author.updated | date:'medium'}}
-        li.list-group-item(data-ng-if='author.booksCount')
+        li.list-group-item(data-ng-show='author.booksCount')
             strong Books:
             |  {{author.booksCount}}
-        li.list-group-item(data-ng-if='author.latestBook')
+        li.list-group-item(data-ng-show='author.latestBook')
             strong Latest Book:
             a(data-ui-sref='book({id: author.latestBook.id})')  {{author.latestBook.title}} - {{author.latestBook.published | date:'mediumDate'}}
-    div.panel-footer(data-ng-if='expanded')
+    div.panel-footer
         div.btn-toolbar(role='toolbar')
             div.btn-group
-                button.btn.btn-default.btn-sm(data-ng-if='author.status == "paused"', data-ng-click='updateStatus("active", author)')
+                button.btn.btn-default.btn-sm(data-ng-if='author.status == "paused"', data-ng-click='updateStatus("active")')
                     span.glyphicon.glyphicon-play
                     |  Resume
-                button.btn.btn-default.btn-sm(data-ng-if='author.status == "active"', data-ng-click='updateStatus("paused", author)')
+                button.btn.btn-default.btn-sm(data-ng-if='author.status == "active"', data-ng-click='updateStatus("paused")')
                     span.glyphicon.glyphicon-pause
                     |  Pause
             div.btn-group

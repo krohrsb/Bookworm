@@ -41,11 +41,11 @@ div
                 |  {{book.updated | date:'medium'}}
         div.panel-footer
             div.btn-group
-                button.btn.btn-default.btn-sm(data-ng-if='buttonVisibility.showRetryNew', data-ng-click='updateStatus("wanted", book)') Retry
-                button.btn.btn-default.btn-sm(data-ng-if='buttonVisibility.showRetryNew', data-ng-click='updateStatus("wanted_new", book)') New
-                button.btn.btn-default.btn-sm(data-ng-if='buttonVisibility.showSkip', data-ng-click='updateStatus("skipped", book)') Skip
-                button.btn.btn-default.btn-sm(data-ng-if='buttonVisibility.showWant', data-ng-click='updateStatus("wanted", book)') Want
-                button.btn.btn-default.btn-sm(data-ng-if='buttonVisibility.showExclude', data-ng-click='updateStatus("excluded", book)') Exclude
+                button.btn.btn-default.btn-sm(data-ng-if='buttonVisibility.showRetryNew', data-ng-click='updateStatus("wanted")') Retry
+                button.btn.btn-default.btn-sm(data-ng-if='buttonVisibility.showRetryNew', data-ng-click='updateStatus("wanted_new")') New
+                button.btn.btn-default.btn-sm(data-ng-if='buttonVisibility.showSkip', data-ng-click='updateStatus("skipped")') Skip
+                button.btn.btn-default.btn-sm(data-ng-if='buttonVisibility.showWant', data-ng-click='updateStatus("wanted")') Want
+                button.btn.btn-default.btn-sm(data-ng-if='buttonVisibility.showExclude', data-ng-click='updateStatus("excluded")') Exclude
 
     div.panel.book(data-ng-if='selecting', data-ng-class='#{panelClassString}')
         div.panel-heading
