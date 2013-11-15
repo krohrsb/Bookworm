@@ -159,7 +159,7 @@ BookService.prototype.expandBooks = function (expands, books) {
 };
 
 /**
- * Retrieve all books given the search critera in the 'where' object.
+ * Retrieve all books given the search criteria in the 'where' object.
  * @param {object} where - search criteria, can be empty.
  * @param {object} [options] - search options, such as expands
  * @returns {Promise} A promise of type Promise<Book[], Error>

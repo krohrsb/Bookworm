@@ -15,10 +15,27 @@
             templateUrl: 'partials/templates/author',
             scope: {
                 author: '=',
-                expanded: '='
+                expanded: '=',
+                selecting: '='
             },
             link: function(scope) {
+                //forward event for socket.io
+                socket.forward('author:update', scope);
 
+                /**
+                 * On author update, check to see if we are the author and if so update our details.
+                 */
+                scope.$on('socket:author:update', function (ev, updatedAuthor) {
+                    if (ev.targetScope.author.id.toString() === updatedAuthor.id.toString()) {
+                        ev.targetScope.author.status = updatedAuthor.status;
+                        ev.targetScope.author.updated = updatedAuthor.updated;
+                    }
+                });
+
+                //if this author's selected state is not set, set it to false
+                if (typeof scope.author.selected === 'undefined') {
+                    scope.author.selected = false;
+                }
                 /**
                  * Update the status of an author
                  * @param {string} status - The status to update to
@@ -29,6 +46,7 @@
                     scope.author.status = status;
                     //store local reference to the books as we aren't touching/updating them any.
                     books = scope.author.books;
+
                     //update the author, request an updated one with latestBook and booksCount filled out
                     scope.author.put({expand: 'latestBook,booksCount'}).then(function (updatedAuthor) {
                         //set author

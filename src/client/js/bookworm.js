@@ -6,6 +6,7 @@
 (function (angular, _) {
     'use strict';
 
+    // Define Modules
     angular.module('ui', ['ui.bootstrap', 'ui.router', 'ui.route', 'ui.inflector', 'ui.event', 'ui.format'], function () {});
 
     angular.module('bookworm.manage', ['bookworm.manage.controllers'], function () {});
@@ -34,24 +35,38 @@
                 "  <li ng-repeat=\"page in pages\" ng-class=\"{active: page.active, disabled: page.disabled}\"><a ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
                 "</ul>\n" + "");
     }]);
-
     /* end patch*/
+
+
+    // Define Main Module
     angular.module('bookworm', ['btford.socket-io', 'ui', 'ngAnimate', 'toaster', 'restangular', 'ngProgressLite', 'truncate', 'bookworm.core',
             'bookworm.book', 'bookworm.author', 'bookworm.release', 'bookworm.search', 'bookworm.log', 'bookworm.setting', 'bookworm.notify', 'bookworm.manage'],
             ['RestangularProvider', function (RestangularProvider) {
         RestangularProvider.setBaseUrl('/api/v1');
         RestangularProvider.setDefaultHeaders({'X-Requested-With': 'XMLHttpRequest'});
 
-    }])
-    .run(['Restangular', 'ngProgressLite', 'toaster', function (Restangular, ngProgressLite, toaster) {
-        Restangular.setRequestInterceptor(function (element) {
+    }]).run(['$filter', 'Restangular', 'ngProgressLite', 'toaster', function ($filter, Restangular, ngProgressLite, toaster) {
+        // Define Request Interceptor
+        Restangular.setRequestInterceptor(function (element, operation) {
             ngProgressLite.start();
             if (_.isObject(element) && element['0']) {
                 console.warn('Restangular not fixed yet, turning array back into array');
                 element = _.toArray(element);
             }
+
+            if (operation.toLowerCase() === 'put') {
+                if (_.isArray(element)) {
+                    element.forEach(function (item, index, arr) {
+                        arr[index] = $filter('mask')(item, 'id,status');
+                    });
+                } else {
+                    element = $filter('mask')(element, 'id,status');
+                }
+            }
             return element;
         });
+
+        // Define Response Interceptor
         Restangular.setResponseInterceptor(function (response, operation) {
             ngProgressLite.done();
             var newResponse;
@@ -63,15 +78,28 @@
             }
             return newResponse;
         });
+
+        // Define error interceptor
         Restangular.setErrorInterceptor(function (response) {
             ngProgressLite.done();
             toaster.pop('error', 'Error', response.data.message || response.status);
             return response;
         });
+
+        // Define Element Transformers
         Restangular.addElementTransformer('authors', false, function (elem) {
             if (elem.books) {
                 angular.forEach(elem.books, function (book) {
                     Restangular.restangularizeElement(elem, book, 'books');
+                });
+            }
+            return elem;
+        });
+
+        Restangular.addElementTransformer('books', false, function (elem) {
+            if (elem.releases) {
+                angular.forEach(elem.releases, function (release) {
+                    Restangular.restangularizeElement(elem, release, 'releases');
                 });
             }
             return elem;

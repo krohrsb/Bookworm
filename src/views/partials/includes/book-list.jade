@@ -1,26 +1,11 @@
 div(data-ng-controller='BookListCtrl')
-    div.row.book-list-controls(data-ng-show='books && books.length')
+    div.row.list-controls(data-ng-show='books && books.length')
         div.col-sm-5
             pagination(data-total-items='totalItems', data-page='currentPage', data-items-per-page='limit', data-max-size='maxSize', boundary-links='true')
         div.col-sm-2
             span.animate(data-ng-if='selecting') {{ totalSelected }} / {{ books.length }} selected
-        div.col-sm-5.book-toolbar
-            div.btn-group.pull-right
-                button.btn.btn-default.btn-sm.animate(data-ng-if='selecting', data-ng-click='toggleSelectAll()', title='Toggle Select All')
-                    span.glyphicon.glyphicon-check(data-ng-show='allSelected')
-                    span.glyphicon.glyphicon-unchecked(data-ng-hide='allSelected')
-                button.btn.btn-default.btn-sm(data-ng-click='toggleSelecting()', title='Toggle list view')
-                    span.glyphicon.glyphicon-th-list(data-ng-hide='selecting')
-                    span.glyphicon.glyphicon-th(data-ng-show='selecting')
-                button.btn.btn-default.btn-sm(title='Filter Books')
-                    span.glyphicon.glyphicon-filter
-                button.btn.btn-default.btn-sm(title='Show/Hide Excluded', data-ng-click='toggleShowExcluded()')
-                    span.glyphicon.glyphicon-eye-close(data-ng-show='showExcluded')
-                    span.glyphicon.glyphicon-eye-open(data-ng-hide='showExcluded')
-            div.input-group.col-sm-7.pull-right.animate(data-ng-if='selecting')
-                span.input-group-btn
-                    button.btn.btn-primary.btn-sm(data-ng-click='setSelected(selectingStatus)') Set Selected as
-                select.form-control(data-ng-model='selectingStatus', data-ng-options='(status | inflector:"humanize") for status in statuses')
+        div.col-sm-5
+            div(data-bw-list-toolbar, data-selecting='selecting', data-ignore-status='ignoreStatus', data-statuses='statuses', data-on-toggle-select-all='toggleSelectAll(allSelected)', data-show-ignore-status='showIgnoreStatus', data-on-set-selected='setSelected(status)')
 
     div.row
         div.col-sm-12.animate(data-ng-repeat='book in filteredBooks = (books | orderBy:"published":true | filter:bookFilter | page:currentPage:limit)')

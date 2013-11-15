@@ -65,11 +65,11 @@ module.exports = function (req, res, next) {
         req._metadata.offset = offset;
         req._metadata.limit = limit;
     };
-
-    if (typeof req.query.offset === 'undefined') {
+    // only place the new value in the query object if it was defined before.
+    if (typeof req.query.offset !== 'undefined') {
         req.query.offset = offset;
     }
-    if (typeof req.query.limit === 'undefined') {
+    if (typeof req.query.limit !== 'undefined') {
         req.query.limit = limit;
     }
     next();

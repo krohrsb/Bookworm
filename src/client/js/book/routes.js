@@ -19,13 +19,13 @@
                     }
                 }
             })
-            .state('wanted', {
-                url: '/wanted',
-                templateUrl: 'partials/books/wanted',
-                controller: 'WantedBooksCtrl',
+            .state('books', {
+                url: '/books?status&sort',
+                templateUrl: 'partials/books/books',
+                controller: 'BooksCtrl',
                 resolve: {
-                    books: function (Restangular) {
-                        return Restangular.all('books').getList({status: 'wanted', sort: 'published'});
+                    books: function (Restangular, $stateParams) {
+                        return Restangular.all('books').getList($stateParams);
                     }
                 }
             });

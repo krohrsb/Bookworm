@@ -7,73 +7,121 @@
     "use strict";
     var module = angular.module('bookworm.book.controllers', [], function () {});
 
+    /**
+     * Book Controller. For a singular book.
+     * Real simple, simply grabs and defines the book. Most of the book logic is in its directive.
+     * @param {object} $scope - The scope
+     * @param {object} book - The book data.
+     */
     module.controller('BookCtrl', ['$scope', 'book', function ($scope, book) {
         $scope.book = book;
     }]);
 
 
-    module.controller('WantedBooksCtrl', ['$scope', 'books', function ($scope, books) {
+    /**
+     * Books Controller. For the book listing pages.
+     * @param {object} $scope - The scope
+     * @param {object} $stateParams - Angular UI Router state params
+     * @param {object[]} books - An array of book objects
+     */
+    module.controller('BooksCtrl', ['$scope', '$stateParams', 'books', function ($scope, $stateParams, books) {
+        // store reference to books
         $scope.books = books;
+        // set the status to display, default to All
+        $scope.status = $stateParams.status || 'All';
+        // when status is excluded set the default showIgnoreStatus to true so that you can actually see them.
+        if ($scope.status === 'excluded') {
+            $scope.showIgnoreStatus = true;
+        }
 
     }]);
 
+    /**
+     * Book List Controller. For listing books.
+     * @param {object} $scope - The scope
+     * @param {object} Restangular - Restangular instance
+     * @param {object} toaster - Toaster instance
+     */
     module.controller('BookListCtrl', ['$scope', 'Restangular', 'toaster', function ($scope, Restangular, toaster) {
+        /**
+         * The amount of books to show on one page.
+         * @type {number}
+         */
         $scope.limit = 5;
+        /**
+         * The current page number.
+         * @type {number}
+         */
         $scope.currentPage = 1;
+        /**
+         * The maximum amount of 'pages' the pager will show.
+         * @type {number}
+         */
         $scope.maxSize = 5;
-        $scope.selecting = false;
-        $scope.allSelected = false;
+        /**
+         * Reference to the list of filtered books
+         * @type {Array}
+         */
         $scope.filteredBooks = [];
+        /**
+         * Total amount of selected books (when selecting)
+         * @type {number}
+         */
         $scope.totalSelected = 0;
-        $scope.showExcluded = false;
-        $scope.statuses = ['skipped', 'excluded', 'downloaded', 'wanted'];
-        $scope.selectingStatus = $scope.statuses[0];
 
         /**
-         * Watch the selecting boolean
-         * If selecting, increase the limit of books shown.
+         * The ignore status (for show/hide toggle)
+         * @type {string}
          */
-        $scope.$watch('selecting', function (newVal) {
-            if (newVal) {
-                $scope.limit = 10;
-            } else {
-                $scope.toggleSelectAll(false);
-                $scope.limit = 5;
-            }
-        });
+        $scope.ignoreStatus = 'excluded';
+        /**
+         * List of valid book statuses.
+         * @type {Array}
+         */
+        $scope.statuses = ['skipped', 'excluded', 'downloaded', 'wanted'];
+
+        // if show ignore status wasn't defined by a parent controller, default to false.
+        if (typeof $scope.showIgnoreStatus === 'undefined') {
+            $scope.showIgnoreStatus = false;
+        }
+
+        /**
+         * Toggle Selecting handler. Passed to toolbar directive.
+         * When toggled use selecting boolean to alter the limit of items shown.
+         * @param {boolean} selecting - Indicates if we are 'selecting' or not (multiple items)
+         */
+        $scope.toggleSelecting = function (selecting) {
+            $scope.limit = (selecting) ? 10: 5;
+        };
+
 
         /**
          * Watch the books array
-         * Calculate total selected
+         * Calculate total selected and total items.
+         * Doing deep check to trigger on individual book updates (for selected)
          */
         $scope.$watch('books', function (books) {
             if (books) {
                 $scope.totalItems = books.length;
                 $scope.totalSelected = _.compact(_.pluck($scope.books, 'selected')).length;
             }
-
         }, true);
 
         /**
          * Toggle selected state of all filtered books
-         * @param {boolean} [select] - Force a selected state
+         * @param {boolean} select - The select state to enforce
          */
         $scope.toggleSelectAll = function (select) {
-
-            if (typeof select !== 'undefined') {
-                $scope.allSelected = select;
-            } else {
-                $scope.allSelected = !$scope.allSelected;
-            }
 
             // first clear all selected (so when paging it will de-select)
             angular.forEach($scope.books, function (book) {
                 book.selected = false;
             });
             // set current filtered books selected state
+            // only select visible/applicable books
             angular.forEach($scope.filteredBooks, function (book) {
-                if ($scope.showExcluded || book.status !== 'excluded') {
-                    book.selected = $scope.allSelected;
+                if ($scope.showIgnoreStatus || book.status !== $scope.ignoreStatus) {
+                    book.selected = select;
                 }
             });
 
@@ -85,6 +133,7 @@
          */
         $scope.setSelected = function (status) {
             var selectedBooks = [];
+            //go through filtered books for all selected. If their status is to change, push it to the working array.
             angular.forEach($scope.filteredBooks, function (book) {
                 if (book.selected) {
                     if (!angular.equals(book.status, status)) {
@@ -93,6 +142,7 @@
                     }
                 }
             });
+            // if we have books to put, otherwise tell the user they don't
             if (selectedBooks.length) {
                 Restangular.all('books').customPUT(selectedBooks).then(function () {
                     toaster.pop('success', 'Updated', 'Finished updating ' + selectedBooks.length + ' book' + ((selectedBooks.length > 1) ? 's': '') + '.');
@@ -102,16 +152,14 @@
             }
         };
 
+        /**
+         * Filter books using custom criteria
+         * @param {object} book - A book object
+         * @returns {boolean} True will pass, false will filter out.
+         */
         $scope.bookFilter = function (book) {
-            return !(!$scope.showExcluded && book.status === 'excluded');
-        };
-
-        $scope.toggleShowExcluded = function () {
-            $scope.showExcluded = !$scope.showExcluded;
-        };
-
-        $scope.toggleSelecting = function () {
-            $scope.selecting = !$scope.selecting;
+            // this filters out ignored books by status
+            return !(!$scope.showIgnoreStatus && book.status === $scope.ignoreStatus);
         };
     }]);
 

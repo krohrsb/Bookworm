@@ -1,4 +1,4 @@
 div.page-header
-    h1 Wanted
+    h1 {{status | inflector:'humanize'}}
         small books
 include ../includes/book-list

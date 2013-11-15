@@ -5,9 +5,9 @@
 
 var socketIO = require('socket.io');
 var logger = require('../../services/log').logger();
+var authorService = require('../../services/library/author');
 var bookService = require('../../services/library/book');
 var releaseService = require('../../services/library/release');
-var libraryService = require('../../services/library');
 
 module.exports.initialize = function (server) {
     "use strict";
@@ -31,8 +31,8 @@ module.exports.initialize = function (server) {
             socket.emit('release:create', release);
         });
 
-        libraryService.on('author:updatedBooks', function (author) {
-            socket.emit('author:updatedBooks', author);
+        authorService.on('update', function (author, changedAttributes) {
+            socket.emit('author:update', author, changedAttributes);
         });
 
     });

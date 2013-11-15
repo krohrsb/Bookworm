@@ -1,0 +1,18 @@
+div.list-toolbar
+    div.btn-group.pull-right
+        div.pull-right
+            button.btn.btn-default.btn-sm.animate(data-ng-if='selecting', data-ng-click='toggleSelectAll()', title='Toggle Select All')
+                span.glyphicon.glyphicon-check(data-ng-show='allSelected')
+                span.glyphicon.glyphicon-unchecked(data-ng-hide='allSelected')
+            button.btn.btn-default.btn-sm(data-ng-click='toggleSelecting()', title='Toggle list view')
+                span.glyphicon.glyphicon-th-list(data-ng-hide='selecting')
+                span.glyphicon.glyphicon-th(data-ng-show='selecting')
+            button.btn.btn-default.btn-sm(title='Filter')
+                span.glyphicon.glyphicon-filter
+            button.btn.btn-default.btn-sm(title='Show/Hide {{ignoreStatus}}', data-ng-click='toggleIgnoreStatus()')
+                span.glyphicon.glyphicon-eye-close(data-ng-show='showIgnoreStatus')
+                span.glyphicon.glyphicon-eye-open(data-ng-hide='showIgnoreStatus')
+        div.input-group.animate.col-sm-7.pull-right(data-ng-show='selecting')
+            span.input-group-btn
+                button.btn.btn-primary.btn-sm(data-ng-click='setSelected(selectingStatus)') Set Selected as
+            select.form-control(data-ng-model='selectingStatus', data-ng-options='(status | inflector:"humanize") for status in statuses')

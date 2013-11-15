@@ -23,10 +23,35 @@ block nav
                     a(data-ui-sref='search')
                         span.glyphicon.glyphicon-search
                         |  Search
-                li(data-ui-route='/wanted', data-ng-class='{active: $uiRoute}')
-                    a(data-ui-sref='wanted')
-                        span.glyphicon.glyphicon-heart
-                        |  Wanted
+                li.dropdown(data-ui-route='/books', data-ng-class='{active: $uiRoute}')
+                    a.dropdown-toggle(data-toggle='dropdown')
+                        span.glyphicon.glyphicon-book
+                        |  Books
+                        span.caret
+                    ul.dropdown-menu
+                        li
+                            a(data-ui-sref='books({status: ""})')
+                                span.glyphicon.glyphicon-book
+                                |  All
+                        li
+                            a(data-ui-sref='books({status: "wanted"})')
+                                span.glyphicon.glyphicon-heart
+                                |  Wanted
+                            a(data-ui-sref='books({status: "snatched"})')
+                                span.glyphicon.glyphicon-cloud
+                                |  Snatched
+                        li
+                            a(data-ui-sref='books({status: "downloaded"})')
+                                span.glyphicon.glyphicon-cloud-download
+                                |  Downloaded
+                        li
+                            a(data-ui-sref='books({status: "skipped"})')
+                                span.glyphicon.glyphicon-forward
+                                |  Skipped
+                        li
+                            a(data-ui-sref='books({status: "excluded"})')
+                                span.glyphicon.glyphicon-ban-circle
+                                |  Excluded
                 li(data-ui-route='/authors', data-ng-class='{active: $uiRoute}')
                     a(data-ui-sref='authors')
                         span.glyphicon.glyphicon-list-alt
