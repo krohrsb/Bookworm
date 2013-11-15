@@ -5,7 +5,7 @@
 /*global angular*/
 (function (angular) {
     "use strict";
-    var module = angular.module('authorworm.author.controllers', [], function () {});
+    var module = angular.module('bookworm.author.controllers', [], function () {});
 
     /**
      * Author Controller. For a singular author.
