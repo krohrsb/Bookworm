@@ -9,12 +9,7 @@
 
     module.config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
 
-        $urlRouterProvider.otherwise("/index");
+        $urlRouterProvider.otherwise("/authors");
 
-        $stateProvider
-            .state('index', {
-                url: '/index',
-                templateUrl: 'partials/index'
-            });
     }]);
 }(angular));
