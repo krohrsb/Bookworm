@@ -54,5 +54,9 @@ div
                 a(data-ui-sref='book({id: book.id})')
                     span.book-title {{book.title}}
                 span.text-muted
-                    small , {{book.published | date:'mediumDate'}}
-                span.label.pull-right(data-ng-class='#{labelClassString}') {{book.status | inflector:'humanize'}}
+                    small  by
+                a(data-ui-sref='author({id: book.authorId})')
+                    span.text-muted
+                        small {{book.authorName}}
+                span.hidden-xs.published.text-muted.pull-right {{book.published | date:'mediumDate'}}
+                span.hidden-xs.status.label.pull-right(data-ng-class='#{labelClassString}') {{book.status | inflector:'humanize'}}

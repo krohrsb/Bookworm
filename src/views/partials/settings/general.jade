@@ -3,7 +3,7 @@ include includes/nav
 div.page-header.hidden-xs
     h1 Settings
         small general
-form.form-horizontal(role='form')
+form.form-horizontal(role='form', name='generalForm')
     fieldset
         div.col-sm-6
             legend Server
@@ -28,10 +28,11 @@ form.form-horizontal(role='form')
                     input.form-control(type='password', data-ng-model='settings.server.password', data-bw-setting='settings')
                     span.help-block Password if using authentication.
             div.form-group
-                label.col-sm-3.control-label API Key
+                label.col-sm-3.control-label(for='serverApiKey') API Key
                 div.col-sm-9
-                    input.form-control(type='text', data-ng-model='settings.server.apiKey', data-bw-setting='settings')
+                    input.form-control(name='serverApiKey', type='text', data-ng-model='settings.server.apiKey', data-bw-setting='settings')
                     span.help-block API Key for restricting API access. Only enforced if you define one.
+                    button.btn.btn-defualt.btn-sm(data-ng-click='generateApiKey()') Generate Key
         div.col-sm-6
             legend Logging
             div.form-group

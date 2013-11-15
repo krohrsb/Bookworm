@@ -18,6 +18,13 @@
 
                 mask = attrs.ngModel.split('[')[0].split('.').slice(1).join('/');
 
+                scope.$on('setting:populate', function (ev, key) {
+                    if (attrs.ngModel === key) {
+                        ngModel.$pristine = false;
+                        ngModel.$dirty = true;
+                        element[0].focus();
+                    }
+                });
                 /**
                  * Flash a class for a period of time.
                  * @param {string} klass - the class to add to the form-group

@@ -42,6 +42,5 @@ div
                 input(type='checkbox', data-ng-model='author.selected')
                 a(data-ui-sref='author({id: author.id})')
                     span.book-title {{author.name}}
-                span.text-muted
-                    small , {{author.updated | date:'mediumDate'}}
-                span.label.pull-right(data-ng-class='{"label-success": author.status == "active", "label-danger": author.status == "paused"}') {{author.status | inflector:'humanize'}}
+                span.hidden-xs.updated.text-muted.pull-right {{author.updated | date:'mediumDate'}}
+                span.hidden-xs.status.label.pull-right(data-ng-class='{"label-success": author.status == "active", "label-danger": author.status == "paused"}') {{author.status | inflector:'humanize'}}
