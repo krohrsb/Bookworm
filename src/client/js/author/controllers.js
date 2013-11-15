@@ -40,8 +40,27 @@
      * @param {object} Restangular - Restangular instance
      * @param {object} toaster - Toaster instance
      */
-    module.controller('AuthorListCtrl', ['$scope', 'Restangular', 'toaster', function ($scope, Restangular, toaster) {
+    module.controller('AuthorListCtrl', ['$scope', 'Restangular', 'toaster', '$localStorage', function ($scope, Restangular, toaster, $localStorage) {
 
+        /**
+         * Local Storage
+         * @type {object}
+         */
+        $scope.$storage = $localStorage.$default({
+            showIgnoreStatus: false,
+            selecting: false
+        });
+
+        /**
+         * Indicates if we are to show the ignored status or not.
+         * @type {boolean}
+         */
+        $scope.showIgnoreStatus = $scope.$storage.showIgnoreStatus;
+        /**
+         * Indicates if we are in multi-select mode
+         * @type {boolean}
+         */
+        $scope.selecting = $scope.$storage.selecting;
         /**
          * The amount of authors to show on one page.
          * @type {number}
@@ -78,20 +97,23 @@
          */
         $scope.statuses = ['active', 'paused'];
 
-        /**
-         * Show the ignored status of authors.
-         * @type {boolean}
-         */
-        $scope.showIgnoreStatus = true;
 
         /**
-         * Toggle Selecting handler. Passed to toolbar directive.
+         * Watch selecting for change.
          * When toggled use selecting boolean to alter the limit of items shown.
          * @param {boolean} selecting - Indicates if we are 'selecting' or not (multiple items)
          */
-        $scope.toggleSelecting = function (selecting) {
-            $scope.limit = (selecting) ? 10: 5;
-        };
+        $scope.$watch('selecting', function (selecting) {
+            $scope.$storage.selecting = selecting;
+            $scope.limit = ((selecting) ? 10 : 5);
+        });
+
+        /**
+         * Watch and update local storage.
+         */
+        $scope.$watch('showIgnoreStatus', function (show) {
+            $scope.$storage.showIgnoreStatus = show;
+        });
 
 
         /**
@@ -119,7 +141,7 @@
             });
             // set current filtered author selected state
             angular.forEach($scope.filteredAuthors, function (author) {
-                if ($scope.showIgnoreStatus || author.status !== $scope.ignoreStatus) {
+                if ($scope.$storage.showIgnoreStatus || author.status !== $scope.ignoreStatus) {
                     author.selected = select;
                 }
             });
@@ -155,7 +177,7 @@
          * @returns {boolean} True will pass, false will filter out.
          */
         $scope.authorFilter = function (author) {
-            return !(!$scope.showIgnoreStatus && author.status === $scope.ignoreStatus);
+            return !(!$scope.$storage.showIgnoreStatus && author.status === $scope.ignoreStatus);
         };
     }]);
 }(angular));

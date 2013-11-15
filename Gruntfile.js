@@ -98,6 +98,12 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'bower_components/ngstorage',
+                        src: ['ngStorage.js'],
+                        dest: 'build/client/components/angular-storage'
+                    },
+                    {
+                        expand: true,
                         cwd: 'bower_components/restangular/dist',
                         src: ['*.js'],
                         dest: 'build/client/components/restangular'

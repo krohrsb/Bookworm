@@ -42,7 +42,30 @@
      * @param {object} Restangular - Restangular instance
      * @param {object} toaster - Toaster instance
      */
-    module.controller('BookListCtrl', ['$scope', 'Restangular', 'toaster', function ($scope, Restangular, toaster) {
+    module.controller('BookListCtrl', ['$scope', 'Restangular', 'toaster', '$localStorage', function ($scope, Restangular, toaster, $localStorage) {
+
+
+        // if show ignore status wasn't defined by a parent controller, default to false.
+        if (typeof $scope.showIgnoreStatus === 'undefined') {
+            $scope.showIgnoreStatus = false;
+        }
+
+        $scope.$storage = $localStorage.$default({
+            showIgnoreStatus: $scope.showIgnoreStatus,
+            selecting: false
+        });
+
+        /**
+         * Indicates if we are to show the ignored status or not.
+         * @type {boolean}
+         */
+        $scope.showIgnoreStatus = $scope.$storage.showIgnoreStatus;
+        /**
+         * Indicates if we are in multi-select mode
+         * @type {boolean}
+         */
+        $scope.selecting = $scope.$storage.selecting;
+
         /**
          * The amount of books to show on one page.
          * @type {number}
@@ -80,20 +103,22 @@
          */
         $scope.statuses = ['skipped', 'excluded', 'downloaded', 'wanted'];
 
-        // if show ignore status wasn't defined by a parent controller, default to false.
-        if (typeof $scope.showIgnoreStatus === 'undefined') {
-            $scope.showIgnoreStatus = false;
-        }
-
         /**
-         * Toggle Selecting handler. Passed to toolbar directive.
+         * Watch selecting for change.
          * When toggled use selecting boolean to alter the limit of items shown.
          * @param {boolean} selecting - Indicates if we are 'selecting' or not (multiple items)
          */
-        $scope.toggleSelecting = function (selecting) {
-            $scope.limit = (selecting) ? 10: 5;
-        };
+        $scope.$watch('selecting', function (selecting) {
+            $scope.$storage.selecting = selecting;
+            $scope.limit = ((selecting) ? 10 : 5);
+        });
 
+        /**
+         * Watch and update local storage.
+         */
+        $scope.$watch('showIgnoreStatus', function (show) {
+            $scope.$storage.showIgnoreStatus = show;
+        });
 
         /**
          * Watch the books array

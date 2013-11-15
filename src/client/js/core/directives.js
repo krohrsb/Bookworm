@@ -23,11 +23,6 @@
             },
             link: function(scope) {
                 /**
-                 * Denotes if we are in selecting mode or not.
-                 * @type {boolean}
-                 */
-                scope.selecting = false;
-                /**
                  * Denotes if all are selected or not
                  * @type {boolean}
                  */

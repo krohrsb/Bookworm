@@ -8,6 +8,7 @@ var util = require('util');
 var request = require('request');
 var _ = require('lodash');
 var Q = require('q');
+var xml2js = require('xml2js');
 
 // Local Dependencies
 var Notifier = require('../notifier');
@@ -92,7 +93,7 @@ NotifyMyAndroid.prototype.verify = function () {
     })
     .then(function (body) {
         if (body && body[1]) {
-            return Q.nfcall(parseXml, body[1]).then(function (response) {
+            return Q.ninvoke(xml2js, 'parseString', body[1]).then(function (response) {
                 this.emit('verify', response);
                 return response;
             }.bind(this));
@@ -129,7 +130,7 @@ NotifyMyAndroid.prototype.notify = function (options) {
             form: settings
         }).then(function (body) {
             if (body && body[1]) {
-                return Q.nfcall(parseXml, body[1]).then(function (response) {
+                return Q.ninvoke(xml2js, 'parseString', body[1]).then(function (response) {
                     this.emit('notify', response);
                     return response;
                 }.bind(this));
