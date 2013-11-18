@@ -74,10 +74,10 @@ function getActions (req, res, next) {
 
 function setup (app) {
     "use strict";
-    app.get('/api/v1/actions', getActions);
-    app.post('/api/v1/actions/authors/:id', performAuthorAction);
-    app.post('/api/v1/actions/authors', performAuthorsAction);
-    app.post('/api/v1/actions/general', performGeneralAction);
+    app.get('/api/v1/actions', app.passport.authenticate('localapikey'), getActions);
+    app.post('/api/v1/actions/authors/:id', app.passport.authenticate('localapikey'), performAuthorAction);
+    app.post('/api/v1/actions/authors', app.passport.authenticate('localapikey'), performAuthorsAction);
+    app.post('/api/v1/actions/general', app.passport.authenticate('localapikey'), performGeneralAction);
 }
 
 module.exports.setup = setup;

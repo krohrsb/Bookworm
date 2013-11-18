@@ -31,7 +31,7 @@ form.form-horizontal(role='form', name='generalForm')
                 label.col-sm-3.control-label(for='serverApiKey') API Key
                 div.col-sm-9
                     input.form-control(name='serverApiKey', type='text', data-ng-model='settings.server.apiKey', data-bw-setting='settings')
-                    span.help-block API Key for restricting API access. Only enforced if you define one.
+                    span.help-block API Key for restricting API access. Only enforced if you define one. Changes take effect on page refresh.
                     button.btn.btn-defualt.btn-sm(data-ng-click='generateApiKey()') Generate Key
         div.col-sm-6
             legend Logging

@@ -16,7 +16,8 @@ function index (req, res, next) {
     "use strict";
     logger.trace('Controllers::index::index');
     res.render('index', {
-        env: settingService.get('environment:env')
+        env: settingService.get('environment:env'),
+        apiKey: settingService.get('server:apiKey')
     });
 }
 
@@ -34,7 +35,8 @@ function partial (req, res, next) {
     category = req.params.category;
     logger.trace('Controllers::index::partial(%s, %s)', category, name);
     res.render('partials/' + category + ((name) ? '/' + name : ''), {
-        env: settingService.get('environment:env')
+        env: settingService.get('environment:env'),
+        apiKey: settingService.get('server:apiKey')
     });
 }
 

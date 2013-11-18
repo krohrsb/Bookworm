@@ -60,8 +60,8 @@ function queryAuthors (req, res, next) {
 
 function setup (app) {
     "use strict";
-    app.get('/api/v1/library/authors', queryAuthors);
-    app.get('/api/v1/library/books', queryBooks);
-    app.get('/api/v1/library/books/:id', bookById);
+    app.get('/api/v1/library/authors', app.passport.authenticate('localapikey'), queryAuthors);
+    app.get('/api/v1/library/books', app.passport.authenticate('localapikey'), queryBooks);
+    app.get('/api/v1/library/books/:id', app.passport.authenticate('localapikey'), bookById);
 }
 module.exports.setup = setup;

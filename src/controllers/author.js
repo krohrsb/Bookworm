@@ -199,13 +199,13 @@ function remove (req, res, next) {
 
 function setup (app) {
     "use strict";
-    app.get('/api/v1/authors', getAll);
-    app.get('/api/v1/authors/:id', getById);
-    app.get('/api/v1/authors/:id/books', getByIdBooks);
-    app.post('/api/v1/authors', create);
-    app.put('/api/v1/authors/:id', updateById);
-    app.put('/api/v1/authors', update);
-    app.del('/api/v1/authors', remove);
-    app.del('/api/v1/authors/:id', removeById);
+    app.get('/api/v1/authors', app.passport.authenticate('localapikey'), getAll);
+    app.get('/api/v1/authors/:id', app.passport.authenticate('localapikey'), getById);
+    app.get('/api/v1/authors/:id/books', app.passport.authenticate('localapikey'), getByIdBooks);
+    app.post('/api/v1/authors', app.passport.authenticate('localapikey'), create);
+    app.put('/api/v1/authors/:id', app.passport.authenticate('localapikey'), updateById);
+    app.put('/api/v1/authors', app.passport.authenticate('localapikey'), update);
+    app.del('/api/v1/authors', app.passport.authenticate('localapikey'), remove);
+    app.del('/api/v1/authors/:id', app.passport.authenticate('localapikey'), removeById);
 }
 module.exports.setup = setup;

@@ -30,6 +30,6 @@ function releases (req, res, next) {
 
 function setup (app) {
     "use strict";
-    app.get('/api/v1/releases', releases);
+    app.get('/api/v1/releases', app.passport.authenticate('localapikey'), releases);
 }
 module.exports.setup = setup;

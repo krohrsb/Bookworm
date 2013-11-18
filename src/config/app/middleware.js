@@ -14,7 +14,14 @@ var apiKeyStrategy = require('./middleware/passport-apikey');
 
 
 module.exports = function (app) {
+    passport.serializeUser(function(user, done) {
+        done(null, user.id);
+    });
 
+    passport.deserializeUser(function(id, done) {
+        done(null, {id: id});
+    });
+    app.passport = passport;
     passport.use(apiKeyStrategy);
 
     // specify middleware
@@ -24,28 +31,13 @@ module.exports = function (app) {
     app.use(express.methodOverride());
     app.use(express.static(__dirname + '/../../../build/client'));
     app.use(express.session({secret: '^wCE6LfbY!9Lr4H#SoPp0Xb'}));
-    app.use(passport.initialize());
-    app.use(passport.session());
-
-    app.configure('production', function () {
-        app.use(function (req, res, next) {
-            passport.authenticate('localapikey', function (err, user) {
-                if (err) {
-                    next(err);
-                } else if (!user) {
-                    res.send(401);
-                } else {
-                    next();
-                }
-            })(req, res, next);
-        });
-    });
 
     app.use(metadataLinksBase);
 
     app.use(metadataLinksPaging);
 
     app.use(partialResponse());
+    app.use(passport.initialize());
 
     //app.use(requestLogger.create(logger));
     //app.use('/cache', express.static(__dirname + '/../../cache'));

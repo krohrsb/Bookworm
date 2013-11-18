@@ -1,6 +1,8 @@
 div.page-header.hidden-xs
     h1 {{book.title}}
-        small  by {{book.authorName}}
+        small  by
+        a(data-ui-sref='author({id: book.authorId})')
+            small {{book.authorName}}
 
 div(data-bw-book, data-book='book', data-expanded='true')
 

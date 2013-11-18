@@ -2,8 +2,8 @@
  * @author Kyle Brown <blackbarn@gmail.com>
  * @since 10/23/13 3:12 PM
  */
-/*global angular, _*/
-(function (angular, _) {
+/*global angular, _, bookworm*/
+(function (angular, _, bookworm) {
     'use strict';
 
     // Define Modules
@@ -44,6 +44,12 @@
             ['RestangularProvider', function (RestangularProvider) {
         RestangularProvider.setBaseUrl('/api/v1');
         RestangularProvider.setDefaultHeaders({'X-Requested-With': 'XMLHttpRequest'});
+        if (!_.isEmpty(bookworm.apiKey)) {
+            RestangularProvider.setDefaultRequestParams({
+                apikey: bookworm.apiKey
+            });
+        }
+
 
     }]).run(['$filter', 'Restangular', 'ngProgressLite', 'toaster', function ($filter, Restangular, ngProgressLite, toaster) {
         // Define Request Interceptor
@@ -108,4 +114,4 @@
 
 
 
-}(angular, _));
+}(angular, _, bookworm));

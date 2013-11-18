@@ -20,10 +20,10 @@ module.exports = new LocalAPIKeyStrategy(function (apikey, done){
     localApiKey = settingService.get("server:apiKey");
     if (localApiKey === apikey) {
         done(null, {
-            name: 'local',
+            id: 'local',
             apiKey: apikey
         });
     } else {
-        done();
+        done(null, false);
     }
 });

@@ -177,15 +177,15 @@ function remove (req, res, next) {
 
 function setup (app) {
     "use strict";
-    app.get('/api/v1/releases', getAll);
-    app.get('/api/v1/releases/:id', getById);
-    app.get('/api/v1/books/:bid/releases/:id', getById);
-    app.get('/api/v1/releases/:id/book', getByIdBook);
-    app.post('/api/v1/releases', create);
-    app.put('/api/v1/releases/:id', updateById);
-    app.put('/api/v1/books/:bid/releases/:id', updateById);
-    app.put('/api/v1/releases', update);
-    app.del('/api/v1/releases', remove);
-    app.del('/api/v1/releases/:id', removeById);
+    app.get('/api/v1/releases', app.passport.authenticate('localapikey'), getAll);
+    app.get('/api/v1/releases/:id', app.passport.authenticate('localapikey'), getById);
+    app.get('/api/v1/books/:bid/releases/:id', app.passport.authenticate('localapikey'), getById);
+    app.get('/api/v1/releases/:id/book', app.passport.authenticate('localapikey'), getByIdBook);
+    app.post('/api/v1/releases', app.passport.authenticate('localapikey'), create);
+    app.put('/api/v1/releases/:id', app.passport.authenticate('localapikey'), updateById);
+    app.put('/api/v1/books/:bid/releases/:id', app.passport.authenticate('localapikey'), updateById);
+    app.put('/api/v1/releases', app.passport.authenticate('localapikey'), update);
+    app.del('/api/v1/releases', app.passport.authenticate('localapikey'), remove);
+    app.del('/api/v1/releases/:id', app.passport.authenticate('localapikey'), removeById);
 }
 module.exports.setup = setup;

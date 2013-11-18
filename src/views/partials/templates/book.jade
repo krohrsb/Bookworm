@@ -37,6 +37,9 @@ div
                 strong Page Count:
                 |  {{book.pageCount}}
             li.list-group-item
+                strong Link:
+                a(data-ng-href='{{book.link | dereferrer}}', target='_blank') {{book.provider | inflector:'humanize'}} Page
+            li.list-group-item
                 strong Updated:
                 |  {{book.updated | date:'medium'}}
         div.panel-footer

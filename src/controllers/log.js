@@ -30,6 +30,6 @@ function logs (req, res, next) {
 
 function setup (app) {
     "use strict";
-    app.get('/api/v1/logs', logs);
+    app.get('/api/v1/logs', app.passport.authenticate('localapikey'), logs);
 }
 module.exports.setup = setup;

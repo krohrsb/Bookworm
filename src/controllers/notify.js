@@ -86,8 +86,8 @@ function getNotifiers (req, res, next) {
 }
 function setup (app) {
     "use strict";
-    app.get('/api/v1/notifiers', getNotifiers);
-    app.get('/api/v1/notifiers/:name/verify', verify);
-    app.put('/api/v1/notifiers/:name/notify', notify);
+    app.get('/api/v1/notifiers', app.passport.authenticate('localapikey'), getNotifiers);
+    app.get('/api/v1/notifiers/:name/verify', app.passport.authenticate('localapikey'), verify);
+    app.put('/api/v1/notifiers/:name/notify', app.passport.authenticate('localapikey'), notify);
 }
 module.exports.setup = setup;
