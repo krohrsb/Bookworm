@@ -93,7 +93,9 @@ PostProcessService.prototype.getDirectoryRelease = function (directory) {
                     guid: guid
                 }
             }).then(function (release) {
-                release.directory = directory;
+                if (release) {
+                    release.directory = directory;
+                }
                 return release;
             });
         } else {

@@ -13,21 +13,29 @@ animation()
 .ngProgressLiteBar
   z-index 9998
 
-table.logs td
-  font-family Lucida Console,Monaco,Nimbus Mono L
-  font-size 11px
-
-table.logs td.level
-  font-size 12px
+table.logs
+  td
+    font-family Lucida Console,Monaco,Nimbus Mono L
+    font-size 11px
+    &.level
+      font-size 12px
+  tr.log-error
+    color #ff4548
 
 .dot-under
   border-bottom 1px dotted #999
 
-.book .media img
-  width 128px
-
-.book .media img.img-small
-  width: 61px
+.book, .author
+  .media
+    img
+      width 128px
+      &.img-small
+        width 61px
+  input[type='checkbox']
+    margin-right 5px
+  .published, .updated
+      width 120px
+      text-align right
 
 .animate
   &.ng-enter
@@ -35,14 +43,6 @@ table.logs td.level
 
   &.ng-leave
     animation fadeOut 0.5s
-
-.book, .author
-  input[type='checkbox']
-    margin-right: 5px
-  .published, .updated
-    width 120px
-    text-align right
-
 
 .pagination
   margin 0
@@ -53,3 +53,4 @@ table.logs td.level
   margin-bottom 5px
 .list-toolbar .form-control
   height 30px
+

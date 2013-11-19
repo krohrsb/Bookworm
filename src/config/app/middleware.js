@@ -11,9 +11,10 @@ var metadataLinksBase = require('./middleware/metadata-links-base');
 var metadataLinksPaging = require('./middleware/metadata-links-paging');
 var passport = require('passport');
 var apiKeyStrategy = require('./middleware/passport-apikey');
-
-
+var settingService = require('../../services/setting');
+var uuid = require('node-uuid');
 module.exports = function (app) {
+
     passport.serializeUser(function(user, done) {
         done(null, user.id);
     });
@@ -24,6 +25,11 @@ module.exports = function (app) {
     app.passport = passport;
     passport.use(apiKeyStrategy);
 
+    if (!settingService.get('server:apiKey')) {
+        logger.warn('API Key not set, generating a new one');
+        settingService.set('server:apiKey', uuid.v4().replace(/-+/g, ''));
+        settingService.save();
+    }
     // specify middleware
     app.use(express.cookieParser());
     app.use(express.bodyParser());

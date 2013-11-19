@@ -94,8 +94,10 @@ GoogleBooksParserService.prototype.parseResponses = function (responses) {
  */
 GoogleBooksParserService.prototype.parseAuthor = function (volume, query) {
     "use strict";
-    var authorRegex, result, queriedAuthor, author;
-    authorRegex = /inauthor:\s*([\w\s]+)/g;
+    //var authorRegex, result, queriedAuthor, author;
+    //authorRegex = /inauthor:\s*([\w\s]+)/g;
+
+    var tokens, authorText, i;
     query = decodeURIComponent(query).replace('+', ' ');
     if (_.isEmpty(volume)) {
         return null;
@@ -104,16 +106,19 @@ GoogleBooksParserService.prototype.parseAuthor = function (volume, query) {
             return volume.author;
         } else if (volume.authors) {
             if (!_.isEmpty(query)) {
-                result = authorRegex.exec(query);
-                if (_.isArray(result) && !_.isEmpty(result[1])) {
-                    queriedAuthor = result[1];
-                    author = _.find(volume.authors, function (author) {
-                        return (author && author.toLowerCase().indexOf(queriedAuthor.toLowerCase()) !== -1);
-                    });
-                    return author;
-                } else {
-                    return _.first(volume.authors);
+                tokens = query.split(':');
+                for (i = 0; i < tokens.length; i = i + 1) {
+                    var values;
+                    if (tokens[i].toLowerCase() === 'inauthor' || tokens[i].match(/inauthor$/g)) {
+                        values = tokens[i + 1].split(' ');
+                        if (tokens[i + 2]) {
+                            values = values.splice(0, values.length - 1);
+                        }
+                        authorText = values.join(' ');
+                        break;
+                    }
                 }
+                return authorText || _.first(volume.authors);
             } else {
                 return _.first(volume.authors);
             }

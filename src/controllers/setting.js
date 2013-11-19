@@ -82,7 +82,6 @@ function set (req, res, next) {
 
 function setup (app) {
     "use strict";
-    console.log(app.passport);
     app.get('/api/v1/settings', app.passport.authenticate('localapikey'), settings);
     app.get('/api/v1/settings/:id', app.passport.authenticate('localapikey'), byId);
     app.put('/api/v1/settings', app.passport.authenticate('localapikey'), set);

@@ -7,7 +7,7 @@
     'use strict';
 
     // Define Modules
-    angular.module('ui', ['ui.bootstrap', 'ui.router', 'ui.route', 'ui.inflector', 'ui.event', 'ui.format'], function () {});
+    angular.module('ui', ['ui.bootstrap', 'ui.router', 'ui.route', 'ui.inflector', 'ui.event', 'ui.format', 'ui.validate'], function () {});
 
     angular.module('bookworm.manage', ['bookworm.manage.controllers'], function () {});
 
@@ -44,11 +44,9 @@
             ['RestangularProvider', function (RestangularProvider) {
         RestangularProvider.setBaseUrl('/api/v1');
         RestangularProvider.setDefaultHeaders({'X-Requested-With': 'XMLHttpRequest'});
-        if (!_.isEmpty(bookworm.apiKey)) {
-            RestangularProvider.setDefaultRequestParams({
-                apikey: bookworm.apiKey
-            });
-        }
+        RestangularProvider.setDefaultRequestParams({
+            apikey: bookworm.apiKey
+        });
 
 
     }]).run(['$filter', 'Restangular', 'ngProgressLite', 'toaster', function ($filter, Restangular, ngProgressLite, toaster) {
@@ -88,7 +86,8 @@
         // Define error interceptor
         Restangular.setErrorInterceptor(function (response) {
             ngProgressLite.done();
-            toaster.pop('error', 'Error', response.data.message || response.status);
+            console.log(response);
+            toaster.pop('error', 'Error', response.data.message || (response.status + ' ' + response.data));
             return response;
         });
 

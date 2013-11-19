@@ -11,10 +11,9 @@ div.table-responsive
                 th Message
         tfoot
         tbody
-            tr.animate(data-ng-repeat='log in logs')
+            tr.animate(data-ng-repeat='log in logs', data-ng-class='"log-" + log.level')
                 td.time {{log.timestamp | date:'medium'}}
-                td.level
-                    span.label(data-ng-class='{"label-primary": log.level == "info", "label-danger": log.level == "error", "label-warning": log.level == "warn", "label-success": log.level == "debug"}') {{log.level}}
+                td.level {{log.level}}
                 td.message {{log.message}}
                     //button.btn.btn-small.pull-right(data-ng-show='log.stack', data-ng-click='log.showStack = !log.showStack') {{(!log.showStack && "Show") || (log.showStack && "Hide")}} Stack Trace
                     //pre(data-ng-show='log.stack && log.showStack') {{log.stack}}

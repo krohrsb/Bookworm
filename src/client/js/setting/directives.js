@@ -29,16 +29,19 @@
                  * Flash a class for a period of time.
                  * @param {string} klass - the class to add to the form-group
                  */
-                flashClass = function (klass) {
+                flashClass = function (klass, duration) {
                     var elem = element.parents('.form-group');
                     if (flashToken) {
                         elem.removeClass(klass);
                         $timeout.cancel(flashToken);
                     }
                     elem.addClass(klass);
-                    flashToken = $timeout(function () {
-                        elem.removeClass(klass);
-                    }, 3000);
+                    if (duration) {
+                        flashToken = $timeout(function () {
+                            elem.removeClass('has-success has-warning has-error');
+                        }, duration);
+                    }
+
                 };
 
                 /**
@@ -47,7 +50,7 @@
                 save = function () {
                     if (ngModel.$dirty && ngModel.$valid) {
                         Restangular.all('settings').customPUT($filter('mask')(scope.settings, mask)).then(function () {
-                            flashClass('has-success');
+                            flashClass('has-success', 3000);
                             ngModel.$setPristine();
                         }, function (err) {
                             toaster.pop('error', 'Error', err.data.message);
@@ -55,6 +58,10 @@
                         });
                     } else if (ngModel.$invalid) {
                         flashClass('has-warning');
+                        $timeout(function () {
+                            toaster.pop('warning', 'Invalid', (attrs.invalidText || 'Field not valid'));
+                        }, 0);
+
                     }
                 };
                 //bind
