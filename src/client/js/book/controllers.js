@@ -164,15 +164,15 @@
                     if (!angular.equals(book.status, status)) {
                         book.status = status;
                         selectedBooks.push(book);
-                        if (status === $scope.ignoreStatus) {
-                            book.selected = false;
-                        }
                     }
                 }
             });
             // if we have books to put, otherwise tell the user they don't
             if (selectedBooks.length) {
                 Restangular.all('books').customPUT(selectedBooks).then(function () {
+                    selectedBooks.forEach(function (book) {
+                        book.selected = false;
+                    });
                     toaster.pop('success', 'Updated', 'Finished updating ' + selectedBooks.length + ' book' + ((selectedBooks.length > 1) ? 's': '') + '.');
                 });
             } else {

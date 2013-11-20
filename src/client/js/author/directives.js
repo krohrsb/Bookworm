@@ -7,7 +7,7 @@
     'use strict';
     var module;
     module = angular.module('bookworm.author.directives', [], function () {});
-    module.directive('bwAuthor', ['$q', 'socket', 'Restangular', 'toaster', function ($q, socket, Restangular, toaster) {
+    module.directive('bwAuthor', ['$q', 'socket', 'Restangular', 'toaster', '$timeout', function ($q, socket, Restangular, toaster, $timeout) {
         return {
             restrict: 'A',
             replace: true,
@@ -62,9 +62,11 @@
                 scope.checkNewBooks = function () {
                     toaster.pop('info', 'Please Wait', 'Checking for new books...');
                     //get a new refreshed author, only caring about 'new' books.
-                    scope.author.get({refresh: true, 'new': true, expand: 'books,latestBook,booksCount'}).then(function (updatedAuthor) {
+                    scope.author.get({refresh: true, newBooks: true, expand: 'books,latestBook,booksCount'}).then(function (updatedAuthor) {
                         scope.author = updatedAuthor;
-                        toaster.pop('success', 'Finished', 'Refreshed author\'s books.');
+                        $timeout(function () {
+                            toaster.pop('success', 'Finished', 'Refreshed author\'s books.');
+                        }, 0);
                     });
                 };
 
@@ -73,9 +75,12 @@
                  */
                 scope.refreshAuthor = function () {
                     toaster.pop('info', 'Please Wait', 'Refreshing author and book information...');
-                    scope.author.get({refresh: true, 'new': false, expand: 'books,latestBook,booksCount'}).then(function (updatedAuthor) {
+                    scope.author.get({refresh: true, newBooks: false, expand: 'books,latestBook,booksCount'}).then(function (updatedAuthor) {
                         scope.author = updatedAuthor;
-                        toaster.pop('success', 'Finished', 'Refreshed author\'s information.');
+                        $timeout(function () {
+                            toaster.pop('success', 'Finished', 'Refreshed author\'s information.');
+                        }, 0);
+
                     });
                 };
             }

@@ -11,8 +11,8 @@ div
                 span.book-title(data-ng-if='expanded') {{book.title}}
         div.panel-body
             span.book-author.text-muted
-                small by
-                    a(data-ui-sref='author({id: book.authorId})')  {{book.authorName}}
+                small by&nbsp;
+                    a(data-ui-sref='author({id: book.authorId})') {{book.authorName}}
                     |  - {{book.published | date:'mediumDate'}}
             span.label.label-primary.pull-right(data-ng-show='isInFuture(book.published)') Coming Soon
             span.label.pull-right(data-ng-class='#{labelClassString}') {{book.status | inflector:'humanize'}}

@@ -21,7 +21,7 @@ var postProcessSettings = new StatefulSetting({
 
 var postProcessService = new PostProcessService(postProcessSettings.get());
 
-postProcessSettings.on('update', function (options) {
+postProcessSettings.on('updated', function (options) {
     "use strict";
     postProcessService.updateSettings(options);
 });

@@ -50,7 +50,7 @@ function getById (req, res, next) {
         if (author) {
             if (req.query.refresh) {
                 return libraryService.refreshAuthor(author, {
-                    onlyNewBooks: req.query.new || true
+                    onlyNewBooks: (req.query.newBooks === 'true')
                 }).then(function (author) {
                     return authorService.find(author.id, {
                         expand: req.query.expand

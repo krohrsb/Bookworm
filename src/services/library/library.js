@@ -217,15 +217,17 @@ LibraryService.prototype.refreshAuthor = function (author, options) {
     "use strict";
     var limit;
     options = options || {};
+    options.onlyNewBooks = (typeof options.onlyNewBooks === 'string' && options.onlyNewBooks === 'true') || (typeof options.onlyNewBooks === 'boolean' && options.onlyNewBooks);
     if (options.pagingQueryLimit) {
         limit = options.pagingQueryLimit;
     } else {
-        limit = ((typeof options.onlyNewBooks === 'string' && options.onlyNewBooks === 'true') || (typeof options.onlyNewBooks === 'boolean' && options.onlyNewBooks)) ? settingService.get('searchers:googleBooks:pagingLimits:searchNewBooks') : settingService.get('searchers:googleBooks:pagingLimits:refreshAuthor');
+        limit = (options.onlyNewBooks) ? settingService.get('searchers:googleBooks:pagingLimits:searchNewBooks') : settingService.get('searchers:googleBooks:pagingLimits:refreshAuthor');
     }
     logger.info('Refreshing author %s', author.name);
     return remoteLibraryService.pagingQuery({
         q: 'inauthor:' + author.name,
-        pagingQueryLimit: limit
+        pagingQueryLimit: limit,
+        orderBy: (options.onlyNewBooks) ? 'newest' : 'relevance'
     }).then(function (remoteBooks) {
         return Q.ninvoke(author, 'getBooks').then(function (books) {
             return bookService.merge(author, books, remoteBooks, !options.onlyNewBooks);

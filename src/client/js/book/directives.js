@@ -40,8 +40,8 @@
                  * On Release creation, add it to the book's collection
                  */
                 scope.$on('socket:release:create', function (ev, createdRelease) {
-                    if (ev.targetScope.book.id === createdRelease.bookId) {
-                        ev.targetScope.releases.unshift(createdRelease);
+                    if (ev.targetScope.book.id.toString() === createdRelease.bookId.toString()) {
+                        ev.targetScope.book.releases.push(createdRelease);
                     }
                 });
 
