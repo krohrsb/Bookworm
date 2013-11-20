@@ -33,6 +33,7 @@ module.exports = {
             frequency: 720,
             enabled: false,
             cache: 60000,
+            ignoredWords: '',
             hosts: []
         },
         googleBooks: {

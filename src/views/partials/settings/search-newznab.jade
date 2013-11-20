@@ -31,6 +31,11 @@ form.form-horizontal(role='form')
                         input.form-control(type='number', placeholder='60000', data-ng-model='settings.searchers.newznab.cache', data-bw-setting)
                         span.label.label-default.pull-right Milliseconds
                         span.help-block How long should Bookworm cache unique requests to newznab providers?
+                div.form-group
+                    label.col-sm-3.control-label Ignored Words
+                    div.col-sm-9
+                        input.form-control(type='text', placeholder='mobi, preview, sample', data-ng-model='settings.searchers.newznab.ignoredWords', data-bw-setting)
+                        span.help-block Comma separated list of words to ignore in releases.
 
         div.col-sm-6(data-ng-show='settings.searchers.newznab.enabled')
             legend Hosts

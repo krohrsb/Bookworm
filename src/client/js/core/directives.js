@@ -7,6 +7,21 @@
     'use strict';
     var module;
     module = angular.module('bookworm.core.directives', [], function () {});
+
+    module.directive('navbarMainCollapse', ['$rootScope', function ($rootScope) {
+        return {
+            restrict: 'C',
+            link: function (scope, element) {
+                $rootScope.$on('$stateChangeSuccess', function () {
+                    if (!element.hasClass('collapse')) {
+                        element.collapse('hide');
+                    }
+
+                });
+            }
+        };
+    }]);
+
     module.directive('bwListToolbar', function () {
         return {
             restrict: 'A',

@@ -186,5 +186,28 @@ GoogleBooksParserService.prototype.collateAuthors = function (books) {
     }.bind(this));
 };
 
+/**
+ * Detect ignored words
+ * @param {array} ignoredWords - list of ignored words to check for
+ * @param {string} haystack - the string to check for ignored words
+ * @returns {null|string}
+ */
+GoogleBooksParserService.prototype.detectIgnoredWords = function (ignoredWords, haystack) {
+    "use strict";
+    var i, workingWord, ignoredWord;
+    ignoredWord = null;
+    if (haystack && ignoredWords && ignoredWords.length) {
+        for (i = 0; i < ignoredWords.length; i = i + 1) {
+            workingWord = ignoredWords[i];
+            workingWord = workingWord.replace(/^\s+/g, '').replace(/\s+$/g, '');
+            if (!_.isEmpty(workingWord) && haystack.indexOf(workingWord) !== -1) {
+                ignoredWord = workingWord;
+                break;
+            }
+        }
+    }
+    return ignoredWord;
+};
+
 
 module.exports = GoogleBooksParserService;

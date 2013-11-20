@@ -3,9 +3,9 @@ extends layout
 
 block nav
     toaster-container(toaster-options='{"time-out": 3000}')
-    nav.navbar.navbar-default(data-ng-controller='NavCtrl', role='navigation')
+    nav.navbar.navbar-default.navbar-fixed-top(data-ng-controller='NavCtrl', role='navigation')
         div.navbar-header
-            button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-ex1-collapse')
+            button.navbar-toggle(type='button', data-toggle='collapse', data-target='.navbar-main-collapse')
                 span.sr-only Toggle navigation
                 span.icon-bar
                 span.icon-bar
@@ -13,7 +13,7 @@ block nav
             a.navbar-brand(href='#/')
                 span.brand-emphasis Book
                 span worm
-        div.collapse.navbar-collapse.navbar-ex1-collapse
+        div.collapse.navbar-collapse.navbar-main-collapse(data-bw-nav-collapse)
             ul.nav.navbar-nav
                 li(data-ui-route='/authors', data-ng-class='{active: $uiRoute}')
                     a(data-ui-sref='authors')

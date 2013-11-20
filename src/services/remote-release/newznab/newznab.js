@@ -10,10 +10,11 @@ var Q = require('q');
 var _ = require('lodash');
 
 // Local Dependencies
-
+var logger = require('../../log').logger();
 var Release = require('../../../models/release');
 var NewznabAPIService = require('./newznab-api');
 var NewznabParser = require('./newznab-parser');
+var settingService = require('../../setting');
 
 /**
  * Newznab Service - Query one or more newznab hosts for releases.
@@ -137,10 +138,16 @@ NewznabService.prototype._query = function (url, options) {
  */
 NewznabService.prototype.constructRelease = function (release) {
     "use strict";
-    var attributes, guid, usenetDate, deferred, size, grabs, review;
+    var attributes, guid, usenetDate, deferred, size, grabs, review, ignoredWords, ignoredWord;
     deferred = Q.defer();
 
     if (release) {
+
+        ignoredWords = settingService.get('searchers:newznab:ignoredWords') || '';
+        ignoredWords = ignoredWords.split(',');
+
+        ignoredWord = this._parser.detectIgnoredWords(ignoredWords, release.title);
+
         attributes = _.pluck(release.attr, '@attributes');
 
         usenetDate = _.find(attributes, function (attr) {
@@ -163,21 +170,27 @@ NewznabService.prototype.constructRelease = function (release) {
             return attr.name === 'review';
         }).value;
 
-        deferred.resolve({
-            title: release.title,
-            nzbTitle: release.title + '.bw(' + guid + ')',
-            description: release.description,
-            grabs: grabs,
-            review: review,
-            providerName: release.channelTitle,
-            providerType: 'newznab',
-            usenetDate: usenetDate,
-            size: size,
-            link: release.link,
-            status: 'available',
-            guid: guid,
-            updated: Date.now()
-        });
+        if (ignoredWord) {
+            logger.info('Release title contains an ignored word, skipping.', {ignoredWord: ignoredWord, title: release.title});
+            deferred.resolve();
+        } else {
+            deferred.resolve({
+                title: release.title,
+                nzbTitle: release.title + '.bw(' + guid + ')',
+                description: release.description,
+                grabs: grabs,
+                review: review,
+                providerName: release.channelTitle,
+                providerType: 'newznab',
+                usenetDate: usenetDate,
+                size: size,
+                link: release.link,
+                status: 'available',
+                guid: guid,
+                updated: Date.now()
+            });
+        }
+
     } else {
         deferred.resolve();
     }
