@@ -56,7 +56,9 @@ GoogleBooksService.prototype.updateSettings = function (settings) {
  */
 GoogleBooksService.prototype.constructBook = function(options, data) {
     "use strict";
-    var volume, book, author, isbn, description, languages, published, deferred;
+    var volume, book, author, isbn, description, languages, published, deferred, ignoredWords, ignoredWord, workingWord, hasIgnored, i;
+    hasIgnored = false;
+    ignoredWord = '';
     deferred = Q.defer();
 
     if (_.isEmpty(data)) {
@@ -85,6 +87,20 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
         //noinspection JSUnresolvedVariable
         published = moment(volume.publishedDate, 'YYYY-MM-DD');
 
+        ignoredWords = settingService.get('searchers:googleBooks:ignoredWords') || '';
+        ignoredWords = ignoredWords.split(',');
+
+        if (ignoredWords.length) {
+            for (i = 0; i < ignoredWords.length; i = i + 1) {
+                workingWord = ignoredWords[i];
+                workingWord = workingWord.replace(/^\s+/g, '').replace(/\s+$/g, '');
+                if (!_.isEmpty(workingWord) && volume.title.indexOf(workingWord) !== -1) {
+                    ignoredWord = workingWord;
+                    hasIgnored = true;
+                    break;
+                }
+            }
+        }
         if (_.isEmpty(volume.title)) {
             logger.debug('Title not defined for book, skipping.', {guid: data.id});
             deferred.resolve();
@@ -99,6 +115,9 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
             deferred.resolve();
         } else if (settingService.get('searchers:googleBooks:filters:isbn') && _.isEmpty(isbn)) {
             logger.debug('Industry Identifier (ISBN) not available for Book, skipping.', {title: volume.title});
+            deferred.resolve();
+        } else if (hasIgnored) {
+            logger.info('Book title contains an ignored word', {ignoredWord: ignoredWord, title: volume.title});
             deferred.resolve();
         } else {
             //noinspection JSUnresolvedVariable,JSUnresolvedFunction
