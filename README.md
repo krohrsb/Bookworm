@@ -50,9 +50,9 @@ Install NPM and Bower dependencies
 ```
 npm install && bower install
 ```
-Build the project (linting, static asset management etc)
+Build the project
 ```
-grunt build
+grunt
 ```
 
 Now that it is initialized, you can start it up!
@@ -61,7 +61,7 @@ node bin/bookworm.js
 ```
 or
 ```
-npm start
+grunt server
 ```
 or whatever method you wish to use to start up a node script. (supervisor, forever, etc)
 
