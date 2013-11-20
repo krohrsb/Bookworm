@@ -378,7 +378,7 @@ BookService.prototype.merge = function (author, destination, source, mergeData) 
         }.bind(this)).then(function (destination) {
             return _.reject(source, function (sourceBook) {
                 return _.any(destination, function (destinationBook) {
-                    return sourceBook.guid === destinationBook.guid;
+                    return (sourceBook.guid === destinationBook.guid || sourceBook.title === destinationBook.title);
                 });
             });
         }).then(function (newBooks) {

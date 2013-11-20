@@ -7,6 +7,23 @@ animation()
   animation: arguments;
 
 
+panel(borderColor, backgroundColor)
+  textColor = #fff
+  border-color borderColor
+  > .panel-heading
+    color textColor
+    background-color backgroundColor
+    border-color borderColor
+    > .dropdown .caret
+      border-color #fff transparent
+  > .panel-heading + .panel-collapse .panel-body
+    border-top-color borderColor
+  > .panel-footer + .panel-collapse .panel-body
+    border-bottom-color borderColor
+
+.panel-test
+  panel(red, blue)
+
 .navbar-brand .brand-emphasis
   color #FFA500
 
@@ -53,4 +70,7 @@ table.logs
   margin-bottom 5px
 .list-toolbar .form-control
   height 30px
+
+.label
+  margin auto 3px
 

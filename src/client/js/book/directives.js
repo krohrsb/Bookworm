@@ -7,7 +7,7 @@
     'use strict';
     var module;
     module = angular.module('bookworm.book.directives', [], function () {});
-    module.directive('bwBook', ['socket', 'Restangular', function (socket, Restangular) {
+    module.directive('bwBook', ['$window', 'socket', function ($window, socket) {
         return {
             restrict: 'A',
             replace: true,
@@ -72,7 +72,6 @@
 
                 //watch for status change for visibility updates
                 scope.$watch('book.status', updateVisibilityChecks);
-
                 /**
                  * Update a book's status
                  * @param {string} status - The status to update to
@@ -85,6 +84,15 @@
                         scope.book = updatedBook;
                         scope.book.releases = releases;
                     });
+                };
+
+                /**
+                 * Determine if the given date is in the future or not.
+                 * @param {string} date - The date string
+                 * @returns {boolean}
+                 */
+                scope.isInFuture = function (date) {
+                    return $window.moment(new Date()).isBefore(date);
                 };
             }
         };

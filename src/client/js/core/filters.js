@@ -3,7 +3,7 @@
  * @since 10/30/13 4:16 PM
  */
 /*global angular*/
-(function (angular, mask) {
+(function (angular) {
     'use strict';
     var module = angular.module('bookworm.core.filters', []);
 
@@ -12,16 +12,26 @@
      * @param {object} obj - The object we are masking
      * @param {string} maskString - The JSON Mask string to apply
      */
-    module.filter('mask', function () {
+    module.filter('mask', ['$window', function ($window) {
         return function (obj, maskString) {
-            if (typeof maskString === 'string' && maskString.length) {
-                return mask(obj, maskString);
+            if ($window.jsonMask && typeof maskString === 'string' && maskString.length) {
+                return $window.jsonMask(obj, maskString);
             } else {
                 return obj;
             }
 
         };
-    });
+    }]);
+
+    module.filter('moment', ['$window', function ($window) {
+        return function (obj) {
+            if ($window.moment) {
+                return $window.moment(obj);
+            } else {
+                return obj;
+            }
+        };
+    }]);
 
     /**
      * Dereferrer filter
@@ -77,4 +87,4 @@
 
         };
     });
-}(angular, jsonMask));
+}(angular));

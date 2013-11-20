@@ -167,7 +167,7 @@ GoogleBooksAPIService.prototype.pagingQuery = function (options) {
             // 2. previous response had positive total items
             // 3. previous response had items array returned
             // 4. paging query limit is less than 0 (limitless, other than the above critera) or query has not exceeded the paging query limit
-            if (body && body.totalItems && body.items && (query.paging.pagingQueryLimit < 0 || query.paging.count <= query.paging.pagingQueryLimit)) {
+            if (body && body.totalItems && body.items && (query.paging.pagingQueryLimit < 0 || query.paging.count < query.paging.pagingQueryLimit)) {
                 query.startIndex = query.startIndex + query.maxResults;
                 queue.push(query);
             }

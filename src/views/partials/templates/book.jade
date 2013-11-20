@@ -14,7 +14,8 @@ div
                 small by
                     a(data-ui-sref='author({id: book.authorId})')  {{book.authorName}}
                     |  - {{book.published | date:'mediumDate'}}
-            span.label.pull-right(data-ng-class='#{labelClassString}')  {{book.status | inflector:'humanize'}}
+            span.label.label-primary.pull-right(data-ng-show='isInFuture(book.published)') Coming Soon
+            span.label.pull-right(data-ng-class='#{labelClassString}') {{book.status | inflector:'humanize'}}
 
             div.media
                 img.media-object.pull-left(data-ng-class='{"img-small": !expanded}', data-ng-src='{{(expanded) ? book.image : book.imageSmall}}', alt='{{book.title}} Cover')
@@ -37,11 +38,11 @@ div
                 strong Page Count:
                 |  {{book.pageCount}}
             li.list-group-item
-                strong Link:
+                strong Link:&nbsp;
                 a(data-ng-href='{{book.link | dereferrer}}', target='_blank') {{book.provider | inflector:'humanize'}} Page
             li.list-group-item
                 strong Updated:
-                |  {{book.updated | date:'medium'}}
+                |  {{book.updated | amCalendar}}
         div.panel-footer
             div.btn-group
                 button.btn.btn-default.btn-sm(data-ng-if='buttonVisibility.showRetryNew', data-ng-click='updateStatus("wanted")') Retry
@@ -62,4 +63,5 @@ div
                     span.text-muted
                         small {{book.authorName}}
                 span.hidden-xs.published.text-muted.pull-right {{book.published | date:'mediumDate'}}
+                span.label.pull-right.label-primary(data-ng-show='isInFuture(book.published)') Coming Soon
                 span.hidden-xs.status.label.pull-right(data-ng-class='#{labelClassString}') {{book.status | inflector:'humanize'}}

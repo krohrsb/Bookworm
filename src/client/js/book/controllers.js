@@ -164,6 +164,9 @@
                     if (!angular.equals(book.status, status)) {
                         book.status = status;
                         selectedBooks.push(book);
+                        if (status === $scope.ignoreStatus) {
+                            book.selected = false;
+                        }
                     }
                 }
             });

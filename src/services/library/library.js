@@ -220,7 +220,7 @@ LibraryService.prototype.refreshAuthor = function (author, options) {
     if (options.pagingQueryLimit) {
         limit = options.pagingQueryLimit;
     } else {
-        limit = (options.onlyNewBooks) ? settingService.get('searchers:googleBooks:pagingLimits:searchNewBooks') : settingService.get('searchers:googleBooks:pagingLimits:refreshAuthor');
+        limit = ((typeof options.onlyNewBooks === 'string' && options.onlyNewBooks === 'true') || (typeof options.onlyNewBooks === 'boolean' && options.onlyNewBooks)) ? settingService.get('searchers:googleBooks:pagingLimits:searchNewBooks') : settingService.get('searchers:googleBooks:pagingLimits:refreshAuthor');
     }
     logger.info('Refreshing author %s', author.name);
     return remoteLibraryService.pagingQuery({

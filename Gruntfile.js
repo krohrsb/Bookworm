@@ -74,6 +74,12 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'bower_components/moment',
+                        src: ['*.js'],
+                        dest: 'build/client/components/moment'
+                    },
+                    {
+                        expand: true,
                         cwd: 'bower_components/angular-ui-utils/modules',
                         src: ['**'],
                         dest: 'build/client/components/angular-ui-utils/'
@@ -101,6 +107,12 @@ module.exports = function (grunt) {
                         cwd: 'bower_components/ngstorage',
                         src: ['ngStorage.js'],
                         dest: 'build/client/components/angular-storage'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/angular-moment',
+                        src: ['angular-moment.js', 'angular-moment.min.js'],
+                        dest: 'build/client/components/angular-moment'
                     },
                     {
                         expand: true,

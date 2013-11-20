@@ -58,6 +58,11 @@ GoogleBooksParserService.prototype.parseResponse = function (response) {
             items = _.uniq(response.items, function (item) {
                 return item.id;
             });
+            //ensure no duplicate book titles
+            items = _.uniq(items, function (item) {
+                return item.volumeInfo && item.volumeInfo.title;
+            });
+
         } else {
             items = [];
         }
@@ -93,11 +98,8 @@ GoogleBooksParserService.prototype.parseResponses = function (responses) {
  * @returns {null|{string}}
  */
 GoogleBooksParserService.prototype.parseAuthor = function (volume, query) {
-    "use strict";
-    //var authorRegex, result, queriedAuthor, author;
-    //authorRegex = /inauthor:\s*([\w\s]+)/g;
-
-    var tokens, authorText, i;
+    'use strict';
+    var tokens, authorText, i, author;
     query = decodeURIComponent(query).replace('+', ' ');
     if (_.isEmpty(volume)) {
         return null;
@@ -109,7 +111,7 @@ GoogleBooksParserService.prototype.parseAuthor = function (volume, query) {
                 tokens = query.split(':');
                 for (i = 0; i < tokens.length; i = i + 1) {
                     var values;
-                    if (tokens[i].toLowerCase() === 'inauthor' || tokens[i].match(/inauthor$/g)) {
+                    if (tokens[i].toLowerCase() === 'inauthor' || tokens[i].match(/inauthor$/gi)) {
                         values = tokens[i + 1].split(' ');
                         if (tokens[i + 2]) {
                             values = values.splice(0, values.length - 1);
@@ -118,7 +120,10 @@ GoogleBooksParserService.prototype.parseAuthor = function (volume, query) {
                         break;
                     }
                 }
-                return authorText || _.first(volume.authors);
+                author = _.find(volume.authors, function (possibleAuthor) {
+                    return possibleAuthor.toLowerCase().indexOf(authorText.toLowerCase()) !== -1;
+                });
+                return author || _.first(volume.authors);
             } else {
                 return _.first(volume.authors);
             }
