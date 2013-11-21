@@ -4,27 +4,33 @@ div.modal-body
             label.col-sm-2.control-label Name
             div.col-sm-10
                 input.form-control(type='text', data-ng-model='filterObject.name')
+                span.help-block Filter based on the name of the author.
         div.form-group(data-ng-if='filterObject.hasOwnProperty("title")')
             label.col-sm-2.control-label Title
             div.col-sm-10
                 input.form-control(type='text', data-ng-model='filterObject.title')
+                span.help-block Filter based on the title of the book.
         div.form-group(data-ng-if='filterObject.hasOwnProperty("authorName")')
             label.col-sm-2.control-label Author
             div.col-sm-10
                 input.form-control(type='text', data-ng-model='filterObject.authorName')
+                span.help-block Filter based on the author of the book.
         div.form-group(data-ng-if='filterObject.hasOwnProperty("status")')
             label.col-sm-2.control-label Status
             div.col-sm-10
                 input.form-control(type='text', data-ng-model='filterObject.status', data-typeahead='status | inflector:"humanize" for status in statuses | filter: $viewValue')
+                span.help-block Filter on the status.
         div.form-group(data-ng-if='filterObject.hasOwnProperty("published")')
             label.col-sm-2.control-label Published
             div.col-sm-10
                 input.form-control(type='text', data-ng-model='filterObject.published')
+                span.help-block Filter on when the book was published (ISO8601 e.g., 2011-06-02T09:34:29+02:00). Example: 2011 or 2011-06 or 06-02.
         div.form-group(data-ng-if='customFilterObject.hasOwnProperty("rating")')
             label.col-sm-2.control-label Rating
             div.col-sm-10.filter-rating
                 rating(value='customFilterObject.rating')
                 span.badge {{customFilterObject.rating}}
+                span.help-block Filter on the rating of the book (average rating rounded down). e.g., 3 stars will show >=3 and < 4
 div.modal-footer
     button.btn.btn-warning(data-ng-click='clear()') Clear
     button.btn.btn-default(data-ng-click='close()') Close
