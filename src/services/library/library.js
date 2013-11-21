@@ -229,12 +229,29 @@ LibraryService.prototype.refreshAuthor = function (author, options) {
         pagingQueryLimit: limit,
         orderBy: (options.onlyNewBooks) ? 'newest' : 'relevance'
     }).then(function (remoteBooks) {
-        return Q.ninvoke(author, 'getBooks').then(function (books) {
-            return bookService.merge(author, books, remoteBooks, !options.onlyNewBooks);
-        });
+            return Q.fcall(function () {
+                if (!options.onlyNewBooks) {
+                    return remoteLibraryService.pagingQuery({
+                        q: 'inauthor:' + author.name,
+                        pagingQueryLimit: settingService.get('searchers:googleBooks:pagingLimits:searchNewBooks'),
+                        orderBy: 'newest'
+                    });
+                } else {
+                    return [];
+                }
+            }).then(function (newBooks) {
+                return Q.ninvoke(author, 'getBooks').then(function (books) {
+                    return bookService.merge(author, books, remoteBooks, !options.onlyNewBooks).then(function (books) {
+                        if (newBooks.length) {
+                            return bookService.merge(author, books, newBooks, !options.onlyNewBooks);
+                        } else {
+                            return Q(books);
+                        }
+                    });
+                });
+            });
     }).then(function (books) {
         author.books = books;
-        this.emit('author:updatedBooks', author);
         return author;
     }.bind(this));
 };
