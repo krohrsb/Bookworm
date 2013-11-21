@@ -1,0 +1,30 @@
+div.modal-body
+    form.form-horizontal(role='form')
+        div.form-group(data-ng-if='filterObject.hasOwnProperty("name")')
+            label.col-sm-2.control-label Name
+            div.col-sm-10
+                input.form-control(type='text', data-ng-model='filterObject.name')
+        div.form-group(data-ng-if='filterObject.hasOwnProperty("title")')
+            label.col-sm-2.control-label Title
+            div.col-sm-10
+                input.form-control(type='text', data-ng-model='filterObject.title')
+        div.form-group(data-ng-if='filterObject.hasOwnProperty("authorName")')
+            label.col-sm-2.control-label Author
+            div.col-sm-10
+                input.form-control(type='text', data-ng-model='filterObject.authorName')
+        div.form-group(data-ng-if='filterObject.hasOwnProperty("status")')
+            label.col-sm-2.control-label Status
+            div.col-sm-10
+                input.form-control(type='text', data-ng-model='filterObject.status', data-typeahead='status | inflector:"humanize" for status in statuses | filter: $viewValue')
+        div.form-group(data-ng-if='filterObject.hasOwnProperty("published")')
+            label.col-sm-2.control-label Published
+            div.col-sm-10
+                input.form-control(type='text', data-ng-model='filterObject.published')
+        div.form-group(data-ng-if='customFilterObject.hasOwnProperty("rating")')
+            label.col-sm-2.control-label Rating
+            div.col-sm-10.filter-rating
+                rating(value='customFilterObject.rating')
+                span.badge {{customFilterObject.rating}}
+div.modal-footer
+    button.btn.btn-warning(data-ng-click='clear()') Clear
+    button.btn.btn-default(data-ng-click='close()') Close

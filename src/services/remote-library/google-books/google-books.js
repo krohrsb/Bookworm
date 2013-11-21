@@ -117,6 +117,7 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
                 description: description,
                 authorName: author,
                 publisher: volume.publisher,
+                averageRating: (typeof volume.averageRating !== 'undefined') ? volume.averageRating : 0,
                 pageCount: volume.pageCount,
                 published: published.toDate(),
                 image: volume.imageLinks && volume.imageLinks.thumbnail,

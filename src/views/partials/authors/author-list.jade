@@ -3,14 +3,15 @@ div.page-header.hidden-xs
         small authors
 div(data-ng-controller='AuthorListCtrl')
     div.row.list-controls(data-ng-show='authors && authors.length')
+        div.col-sm-4
+            pagination.pagination-sm(data-total-items='totalItems', data-page='currentPage', data-items-per-page='limit', data-max-size='maxSize', boundary-links='true')
+        div.col-sm-3
+            span.animate(data-ng-hide='selecting') {{ prePagedAuthors.length }} {{(filtering) ? 'filtered' : 'total'}} authors
+            span.animate(data-ng-show='selecting') {{ totalSelected }} / {{ prePagedAuthors.length }} selected {{(filtering) ? 'filtered' : 'total'}} authors
         div.col-sm-5
-            pagination(data-total-items='totalItems', data-page='currentPage', data-items-per-page='limit', data-max-size='maxSize', boundary-links='true')
-        div.col-sm-2
-            span.animate(data-ng-if='selecting') {{ totalSelected }} / {{ authors.length }} selected
-        div.col-sm-5
-            div(data-bw-list-toolbar, data-selecting='selecting', data-ignore-status='ignoreStatus', data-statuses='statuses', data-on-toggle-select-all='toggleSelectAll(allSelected)', data-show-ignore-status='showIgnoreStatus', data-on-set-selected='setSelected(status)')
+            div(data-bw-list-toolbar, data-filtering='filtering', data-on-open-filter='openFilter()', data-selecting='selecting', data-ignore-status='ignoreStatus', data-statuses='statuses', data-on-toggle-select-all='toggleSelectAll(allSelected)', data-show-ignore-status='showIgnoreStatus', data-on-set-selected='setSelected(status)')
     div.row
-        div.col-sm-12.animate(data-ng-repeat='author in filteredAuthors = (authors | orderBy:"updated":true | filter:authorFilter | page:currentPage:limit)')
+        div.col-sm-12.animate(data-ng-repeat='author in filteredAuthors = (prePagedAuthors = (authors | orderBy:"updated":true | filter:filterObject | filter:authorFilter) | page:currentPage:limit)')
             div(data-bw-author, data-author='author', data-expanded='false', data-selecting='selecting')
         div.col-sm-12(data-ng-hide='authors && authors.length')
             p You have no authors! Go

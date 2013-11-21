@@ -40,7 +40,7 @@
      * @param {object} Restangular - Restangular instance
      * @param {object} toaster - Toaster instance
      */
-    module.controller('AuthorListCtrl', ['$scope', 'Restangular', 'toaster', '$localStorage', function ($scope, Restangular, toaster, $localStorage) {
+    module.controller('AuthorListCtrl', ['$scope', 'Restangular', 'toaster', '$localStorage', '$modal', function ($scope, Restangular, toaster, $localStorage, $modal) {
 
         /**
          * Local Storage
@@ -97,6 +97,31 @@
          */
         $scope.statuses = ['active', 'paused'];
 
+        /**
+         * Filter object used to filter authors.
+         * @type {object}
+         */
+        $scope.filterObject = {
+            name: '',
+            status: ''
+        };
+
+        /**
+         * Indicates if filtering or not.
+         * @type {boolean}
+         */
+        $scope.filtering = false;
+
+        // watch the filtered object for changes to calculate if we are filtering.
+        $scope.$watch('filterObject', function (obj) {
+            var filtering = false;
+            angular.forEach(obj, function (value) {
+                if (value !== '') {
+                    filtering = true;
+                }
+            });
+            $scope.filtering = filtering;
+        }, true);
 
         /**
          * Watch selecting for change.
@@ -179,5 +204,28 @@
         $scope.authorFilter = function (author) {
             return !(!$scope.$storage.showIgnoreStatus && author.status === $scope.ignoreStatus);
         };
+
+        /**
+         * Open the filter modal.
+         */
+        $scope.openFilter = function () {
+            $modal.open({
+                templateUrl: 'partials/templates/filter-modal',
+                controller: 'FilterModalInstanceCtrl',
+                backdrop: false,
+                resolve: {
+                    filterObject: function () {
+                        return $scope.filterObject;
+                    },
+                    customFilterObject: function () {
+                        return {};
+                    },
+                    statuses: function () {
+                        return $scope.statuses;
+                    }
+                }
+            });
+        };
+
     }]);
 }(angular));

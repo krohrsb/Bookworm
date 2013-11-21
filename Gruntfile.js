@@ -74,6 +74,12 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'bower_components/angular-bootstrap3',
+                        src: ['**', '!bower.json'],
+                        dest: 'build/client/components/angular-bootstrap3'
+                    },
+                    {
+                        expand: true,
                         cwd: 'bower_components/moment',
                         src: ['*.js'],
                         dest: 'build/client/components/moment'

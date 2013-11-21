@@ -34,7 +34,9 @@
                 onToggleSelectAll: '&',
                 showIgnoreStatus: '=',
                 onSetSelected: '&',
-                selecting: '='
+                selecting: '=',
+                onOpenFilter: '&',
+                filtering: '='
             },
             link: function(scope) {
                 /**
@@ -86,6 +88,13 @@
                  */
                 scope.setSelected = function (status) {
                     scope.onSetSelected({status: status});
+                };
+
+                /**
+                 * Open the filter
+                 */
+                scope.openFilter = function () {
+                    scope.onOpenFilter();
                 };
             }
         };

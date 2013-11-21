@@ -27,17 +27,6 @@
 
     angular.module('bookworm.release', ['bookworm.release.directives'], function () {});
 
-    /* angular ui pagination patch */
-
-    angular.module("template/pagination/pagination.html", []).run(["$templateCache", function($templateCache) {
-        $templateCache.put("template/pagination/pagination.html",
-            "<ul class=\"pagination pagination-sm\">\n" +
-                "  <li ng-repeat=\"page in pages\" ng-class=\"{active: page.active, disabled: page.disabled}\"><a ng-click=\"selectPage(page.number)\">{{page.text}}</a></li>\n" +
-                "</ul>\n" + "");
-    }]);
-    /* end patch*/
-
-
     // Define Main Module
     angular.module('bookworm', ['ngStorage', 'btford.socket-io', 'ui', 'angularMoment', 'ngAnimate', 'toaster', 'restangular', 'ngProgressLite', 'truncate', 'bookworm.core',
             'bookworm.book', 'bookworm.author', 'bookworm.release', 'bookworm.search', 'bookworm.log', 'bookworm.setting', 'bookworm.notify', 'bookworm.manage'],

@@ -42,7 +42,7 @@
      * @param {object} Restangular - Restangular instance
      * @param {object} toaster - Toaster instance
      */
-    module.controller('BookListCtrl', ['$scope', 'Restangular', 'toaster', '$localStorage', function ($scope, Restangular, toaster, $localStorage) {
+    module.controller('BookListCtrl', ['$scope', 'Restangular', 'toaster', '$localStorage', '$modal', function ($scope, Restangular, toaster, $localStorage, $modal) {
 
 
         // if show ignore status wasn't defined by a parent controller, default to false.
@@ -102,6 +102,48 @@
          * @type {Array}
          */
         $scope.statuses = ['skipped', 'excluded', 'downloaded', 'wanted'];
+
+        /**
+         * Filter object used to filter books.
+         * @type {object}
+         */
+        $scope.filterObject = {
+            title: '',
+            status: '',
+            authorName: '',
+            published: '',
+        };
+
+        $scope.customFilterObject = {
+            rating: ''
+        };
+
+        /**
+         * Indicates if filtering or not.
+         * @type {boolean}
+         */
+        $scope.filtering = false;
+
+        // watch the filtered object for changes to calculate if we are filtering.
+        $scope.$watch('filterObject', function (obj) {
+            var filtering = false;
+            angular.forEach(obj, function (value) {
+                if (value !== '') {
+                    filtering = true;
+                }
+            });
+            $scope.filtering = filtering;
+        }, true);
+
+        $scope.$watch('customFilterObject', function (obj) {
+            var filtering = false;
+            angular.forEach(obj, function (value) {
+                if (value !== '') {
+                    filtering = true;
+                }
+            });
+            $scope.filtering = filtering;
+        }, true);
 
         /**
          * Watch selecting for change.
@@ -186,10 +228,38 @@
          * @returns {boolean} True will pass, false will filter out.
          */
         $scope.bookFilter = function (book) {
+            var statusFilter, rating, ratingFilter;
             // this filters out ignored books by status
-            return !(!$scope.showIgnoreStatus && book.status === $scope.ignoreStatus);
+            statusFilter = !(!$scope.showIgnoreStatus && book.status === $scope.ignoreStatus);
+            ratingFilter = true;
+            rating = parseInt($scope.customFilterObject.rating, 10);
+            if (!isNaN(rating)) {
+                ratingFilter = Math.floor(parseInt(book.averageRating, 10)) === rating;
+            }
+            return statusFilter && ratingFilter;
+        };
+
+        /**
+         * Open the filter modal.
+         */
+        $scope.openFilter = function () {
+            $modal.open({
+                templateUrl: 'partials/templates/filter-modal',
+                controller: 'FilterModalInstanceCtrl',
+                backdrop: false,
+                resolve: {
+                    filterObject: function () {
+                        return $scope.filterObject;
+                    },
+                    customFilterObject: function () {
+                        return $scope.customFilterObject;
+                    },
+                    statuses: function () {
+                        return $scope.statuses;
+                    }
+                }
+            });
         };
     }]);
-
 
 }(angular));

@@ -34,6 +34,7 @@ var Book = db.define('Book', {
     pageCount: Number,
     publisher: String,
     language: String,
+    averageRating: Number,
     isbn: String,
     provider: String,
     apiLink: String,

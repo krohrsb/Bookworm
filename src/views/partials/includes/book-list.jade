@@ -1,14 +1,15 @@
 div(data-ng-controller='BookListCtrl')
     div.row.list-controls(data-ng-show='books && books.length')
+        div.col-sm-4
+            pagination.pagination-sm(data-total-items='totalItems', data-page='currentPage', data-items-per-page='limit', data-max-size='maxSize', boundary-links='true')
+        div.book-count.col-sm-3
+            span.animate(data-ng-hide='selecting') {{ prePagedBooks.length }} {{(filtering) ? 'filtered' : 'total'}} books
+            span.animate(data-ng-show='selecting') {{ totalSelected }} / {{ prePagedBooks.length }} selected {{(filtering) ? 'filtered' : 'total'}} books
         div.col-sm-5
-            pagination(data-total-items='totalItems', data-page='currentPage', data-items-per-page='limit', data-max-size='maxSize', boundary-links='true')
-        div.col-sm-2
-            span.animate(data-ng-if='selecting') {{ totalSelected }} / {{ books.length }} selected
-        div.col-sm-5
-            div(data-bw-list-toolbar, data-selecting='selecting', data-ignore-status='ignoreStatus', data-statuses='statuses', data-on-toggle-select-all='toggleSelectAll(allSelected)', data-show-ignore-status='showIgnoreStatus', data-on-set-selected='setSelected(status)')
+            div(data-bw-list-toolbar, data-filtering='filtering', data-on-open-filter='openFilter()', data-selecting='selecting', data-ignore-status='ignoreStatus', data-statuses='statuses', data-on-toggle-select-all='toggleSelectAll(allSelected)', data-show-ignore-status='showIgnoreStatus', data-on-set-selected='setSelected(status)')
 
     div.row
-        div.col-sm-12.animate(data-ng-repeat='book in filteredBooks = (books | orderBy:"published":true | filter:bookFilter | page:currentPage:limit)')
+        div.col-sm-12.animate(data-ng-repeat='book in filteredBooks = ((prePagedBooks = (books | orderBy:"published":true | filter:filterObject | filter:bookFilter)) | page:currentPage:limit)')
             div(data-bw-book, data-book='book', data-expanded='false', data-selecting='selecting')
         div.col-sm-12(data-ng-hide='books && books.length')
             p(data-ng-if='author') {{author.name}} doesn't have any books yet...

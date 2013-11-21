@@ -16,6 +16,9 @@ div
                     |  - {{book.published | date:'mediumDate'}}
             span.label.label-primary.pull-right(data-ng-show='isInFuture(book.published)') Coming Soon
             span.label.pull-right(data-ng-class='#{labelClassString}') {{book.status | inflector:'humanize'}}
+            div
+                rating(value='book.averageRating', readonly='true')
+                span.badge {{book.averageRating}}
 
             div.media
                 img.media-object.pull-left(data-ng-class='{"img-small": !expanded}', data-ng-src='{{(expanded) ? book.image : book.imageSmall}}', alt='{{book.title}} Cover')

@@ -7,7 +7,7 @@ div.list-toolbar
             button.btn.btn-default.btn-sm(data-ng-click='toggleSelecting()', title='Toggle list view')
                 span.glyphicon.glyphicon-th-list(data-ng-hide='selecting')
                 span.glyphicon.glyphicon-th(data-ng-show='selecting')
-            button.btn.btn-default.btn-sm(title='Filter')
+            button.btn.btn-sm(title='Filter', data-ng-click='openFilter()', data-ng-class='{"btn-default": !filtering, "btn-primary": filtering}')
                 span.glyphicon.glyphicon-filter
             button.btn.btn-default.btn-sm(title='Show/Hide {{ignoreStatus}}', data-ng-click='toggleIgnoreStatus()')
                 span.glyphicon.glyphicon-eye-close(data-ng-show='showIgnoreStatus')
