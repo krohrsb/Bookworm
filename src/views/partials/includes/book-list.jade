@@ -2,7 +2,7 @@ div(data-ng-controller='BookListCtrl')
     div.row.list-controls(data-ng-show='books && books.length')
         div.col-sm-4
             pagination.pagination-sm(data-total-items='totalItems', data-page='currentPage', data-items-per-page='limit', data-max-size='maxSize', boundary-links='true')
-        div.book-count.col-sm-3
+        div.book-count.col-sm-3.hidden-xs
             span.animate(data-ng-hide='selecting') {{ prePagedBooks.length }} {{(filtering) ? 'filtered' : 'total'}} books
             span.animate(data-ng-show='selecting') {{ totalSelected }} / {{ prePagedBooks.length }} selected {{(filtering) ? 'filtered' : 'total'}} books
         div.col-sm-5

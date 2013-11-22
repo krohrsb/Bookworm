@@ -5,7 +5,7 @@ div(data-ng-controller='AuthorListCtrl')
     div.row.list-controls(data-ng-show='authors && authors.length')
         div.col-sm-4
             pagination.pagination-sm(data-total-items='totalItems', data-page='currentPage', data-items-per-page='limit', data-max-size='maxSize', boundary-links='true')
-        div.col-sm-3
+        div.col-sm-3.hidden-xs
             span.animate(data-ng-hide='selecting') {{ prePagedAuthors.length }} {{(filtering) ? 'filtered' : 'total'}} authors
             span.animate(data-ng-show='selecting') {{ totalSelected }} / {{ prePagedAuthors.length }} selected {{(filtering) ? 'filtered' : 'total'}} authors
         div.col-sm-5
