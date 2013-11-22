@@ -244,16 +244,19 @@ BookService.prototype.updateById = function (id, data, options) {
  * @param {object} book - The book object
  * @param {object} data - An object containing data to update
  * @param {string} [attrMask] - optional mask that determines which fields get updated.
+ * @param {boolean} [suppressEmit] - optional, flag indicates if we should suppress emit or not.
  * @returns {Promise} A promise of type Promise<Book, Error>
  */
-BookService.prototype.update = function (book, data, attrMask) {
+BookService.prototype.update = function (book, data, attrMask, suppressEmit) {
     "use strict";
     data = data || {};
     data.updated = Date.now();
     data = mask(data, attrMask || this._validUpdateAttributesMask);
 
     return Q.ninvoke(book, 'updateAttributes', data).then(function (book) {
-        this.emit('update', book, _.intersection(_.keys(book.toJSON()), _.keys(data)));
+        if (!suppressEmit) {
+            this.emit('update', book, _.intersection(_.keys(book.toJSON()), _.keys(data)));
+        }
         return book;
     }.bind(this));
 };
@@ -370,7 +373,7 @@ BookService.prototype.merge = function (author, destination, source, mergeData) 
                     sourceBook = _.find(source, function (sourceBook) {
                         return destinationBook.guid === sourceBook.guid;
                     });
-                    return this.update(destinationBook, sourceBook, this._validMergeAttributesMask);
+                    return this.update(destinationBook, sourceBook, this._validMergeAttributesMask, true);
                 }.bind(this)));
             } else {
                 return destination;
