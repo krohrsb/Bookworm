@@ -11,7 +11,7 @@ div(data-ng-controller='AuthorListCtrl')
         div.col-sm-5
             div(data-bw-list-toolbar, data-predicate='predicate', data-reverse='reverse', data-type='"author"', data-filtering='filtering', data-on-open-filter='openFilter()', data-selecting='selecting', data-ignore-status='ignoreStatus', data-statuses='statuses', data-on-toggle-select-all='toggleSelectAll(allSelected)', data-show-ignore-status='showIgnoreStatus', data-on-set-selected='setSelected(status)')
     div.row
-        div.col-sm-12.animate(data-ng-repeat='author in filteredAuthors = (prePagedAuthors = (authors | orderBy:predicate:reverse | filter:filterObject | filter:authorFilter) | page:currentPage:limit)')
+        div.col-sm-12(data-ng-repeat='author in filteredAuthors = (prePagedAuthors = (authors | orderBy:predicate:reverse | filter:filterObject | filter:authorFilter) | page:currentPage:limit)')
             div(data-bw-author, data-author='author', data-expanded='false', data-selecting='selecting')
         div.col-sm-12(data-ng-hide='authors && authors.length')
             p You have no authors! Go
