@@ -52,6 +52,18 @@
         });
 
         /**
+         * Sort predicate
+         * @type {string}
+         */
+        $scope.predicate = 'name';
+
+        /**
+         * Sort direction
+         * @type {boolean}
+         */
+        $scope.reverse = false;
+
+        /**
          * Indicates if we are to show the ignored status or not.
          * @type {boolean}
          */

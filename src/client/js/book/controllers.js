@@ -56,6 +56,18 @@
         });
 
         /**
+         * Sort predicate
+         * @type {string}
+         */
+        $scope.predicate = 'published';
+
+        /**
+         * Sort direction
+         * @type {boolean}
+         */
+        $scope.reverse = false;
+
+        /**
          * Indicates if we are to show the ignored status or not.
          * @type {boolean}
          */
@@ -111,7 +123,7 @@
             title: '',
             status: '',
             authorName: '',
-            published: '',
+            published: ''
         };
 
         $scope.customFilterObject = {
@@ -260,6 +272,8 @@
                 }
             });
         };
+
+
     }]);
 
 }(angular));

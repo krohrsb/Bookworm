@@ -1,12 +1,30 @@
 div.list-toolbar
-    div.btn-group.pull-right
-        div.pull-right
+    div.pull-right
+        div.btn-group.pull-right
             button.btn.btn-default.btn-sm.animate(data-ng-if='selecting', data-ng-click='toggleSelectAll()', title='Toggle Select All')
                 span.glyphicon.glyphicon-check(data-ng-show='allSelected')
                 span.glyphicon.glyphicon-unchecked(data-ng-hide='allSelected')
             button.btn.btn-default.btn-sm(data-ng-click='toggleSelecting()', title='Toggle list view')
                 span.glyphicon.glyphicon-th-list(data-ng-hide='selecting')
                 span.glyphicon.glyphicon-th(data-ng-show='selecting')
+            button.btn.btn-default.btn-sm.dropdown-toggle(title='Sorting by {{predicate | inflector:"humanize"}} {{reverse ? "DESC" : "ASC"}}', data-toggle='dropdown')
+                span.glyphicon.glyphicon-sort-by-alphabet(data-ng-hide='reverse')
+                span.glyphicon.glyphicon-sort-by-alphabet-alt(data-ng-show='reverse')
+            ul.dropdown-menu(role='menu')
+                li(data-ng-if='type == "author"')
+                    a(data-ng-click='setSort("name")') Name
+                li(data-ng-if='type == "book"')
+                    a(data-ng-click='setSort("title")') Title
+                li(data-ng-if='type == "book"')
+                    a(data-ng-click='setSort("authorName")') Author Name
+                li
+                    a(data-ng-click='setSort("status")') Status
+                li(data-ng-if='type == "book"')
+                    a(data-ng-click='setSort("published")') Published Date
+                li(data-ng-if='type == "book"')
+                    a(data-ng-click='setSort("averageRating")') Average Rating
+                li
+                    a(data-ng-click='setSort("updated")') Updated Date
             button.btn.btn-sm(title='Filter', data-ng-click='openFilter()', data-ng-class='{"btn-default": !filtering, "btn-primary": filtering}')
                 span.glyphicon.glyphicon-filter
             button.btn.btn-default.btn-sm(title='Show/Hide {{ignoreStatus}}', data-ng-click='toggleIgnoreStatus()')

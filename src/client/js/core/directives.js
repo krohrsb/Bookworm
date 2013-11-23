@@ -36,9 +36,13 @@
                 onSetSelected: '&',
                 selecting: '=',
                 onOpenFilter: '&',
-                filtering: '='
+                filtering: '=',
+                predicate: '=',
+                reverse: '=',
+                type: '='
             },
             link: function(scope) {
+
                 /**
                  * Denotes if all are selected or not
                  * @type {boolean}
@@ -95,6 +99,19 @@
                  */
                 scope.openFilter = function () {
                     scope.onOpenFilter();
+                };
+
+                /**
+                 * Set Sorting
+                 * @param {string} field - The field to sort on
+                 */
+                scope.setSort = function (field) {
+                    if (scope.predicate === field) {
+                        scope.reverse = !scope.reverse;
+                    } else {
+                        scope.predicate = field;
+                        scope.reverse = false;
+                    }
                 };
             }
         };

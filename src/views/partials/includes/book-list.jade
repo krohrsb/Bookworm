@@ -6,10 +6,10 @@ div(data-ng-controller='BookListCtrl')
             span.animate(data-ng-hide='selecting') {{ prePagedBooks.length }} {{(filtering) ? 'filtered' : 'total'}} books
             span.animate(data-ng-show='selecting') {{ totalSelected }} / {{ prePagedBooks.length }} selected {{(filtering) ? 'filtered' : 'total'}} books
         div.col-sm-5
-            div(data-bw-list-toolbar, data-filtering='filtering', data-on-open-filter='openFilter()', data-selecting='selecting', data-ignore-status='ignoreStatus', data-statuses='statuses', data-on-toggle-select-all='toggleSelectAll(allSelected)', data-show-ignore-status='showIgnoreStatus', data-on-set-selected='setSelected(status)')
+            div(data-bw-list-toolbar, data-predicate='predicate', data-reverse='reverse', data-filtering='filtering', data-type='"book"', data-on-open-filter='openFilter()', data-selecting='selecting', data-ignore-status='ignoreStatus', data-statuses='statuses', data-on-toggle-select-all='toggleSelectAll(allSelected)', data-show-ignore-status='showIgnoreStatus', data-on-set-selected='setSelected(status)')
 
     div.row
-        div.col-sm-12.animate(data-ng-repeat='book in filteredBooks = ((prePagedBooks = (books | orderBy:"published":true | filter:filterObject | filter:bookFilter)) | page:currentPage:limit)')
+        div.col-sm-12.animate(data-ng-repeat='book in filteredBooks = ((prePagedBooks = (books | orderBy:predicate:reverse | filter:filterObject | filter:bookFilter)) | page:currentPage:limit)')
             div(data-bw-book, data-book='book', data-expanded='false', data-selecting='selecting')
         div.col-sm-12(data-ng-hide='books && books.length')
             p(data-ng-if='author') {{author.name}} doesn't have any books yet...

@@ -9,9 +9,9 @@ div(data-ng-controller='AuthorListCtrl')
             span.animate(data-ng-hide='selecting') {{ prePagedAuthors.length }} {{(filtering) ? 'filtered' : 'total'}} authors
             span.animate(data-ng-show='selecting') {{ totalSelected }} / {{ prePagedAuthors.length }} selected {{(filtering) ? 'filtered' : 'total'}} authors
         div.col-sm-5
-            div(data-bw-list-toolbar, data-filtering='filtering', data-on-open-filter='openFilter()', data-selecting='selecting', data-ignore-status='ignoreStatus', data-statuses='statuses', data-on-toggle-select-all='toggleSelectAll(allSelected)', data-show-ignore-status='showIgnoreStatus', data-on-set-selected='setSelected(status)')
+            div(data-bw-list-toolbar, data-predicate='predicate', data-reverse='reverse', data-type='"author"', data-filtering='filtering', data-on-open-filter='openFilter()', data-selecting='selecting', data-ignore-status='ignoreStatus', data-statuses='statuses', data-on-toggle-select-all='toggleSelectAll(allSelected)', data-show-ignore-status='showIgnoreStatus', data-on-set-selected='setSelected(status)')
     div.row
-        div.col-sm-12.animate(data-ng-repeat='author in filteredAuthors = (prePagedAuthors = (authors | orderBy:"updated":true | filter:filterObject | filter:authorFilter) | page:currentPage:limit)')
+        div.col-sm-12.animate(data-ng-repeat='author in filteredAuthors = (prePagedAuthors = (authors | orderBy:predicate:reverse | filter:filterObject | filter:authorFilter) | page:currentPage:limit)')
             div(data-bw-author, data-author='author', data-expanded='false', data-selecting='selecting')
         div.col-sm-12(data-ng-hide='authors && authors.length')
             p You have no authors! Go
