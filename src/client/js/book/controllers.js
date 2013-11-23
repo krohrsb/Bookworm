@@ -44,16 +44,15 @@
      */
     module.controller('BookListCtrl', ['$scope', 'Restangular', 'toaster', '$localStorage', '$modal', function ($scope, Restangular, toaster, $localStorage, $modal) {
 
-
-        // if show ignore status wasn't defined by a parent controller, default to false.
-        if (typeof $scope.showIgnoreStatus === 'undefined') {
-            $scope.showIgnoreStatus = false;
-        }
-
         $scope.$storage = $localStorage.$default({
-            showIgnoreStatus: $scope.showIgnoreStatus,
+            showIgnoreStatus: false,
             selecting: false
         });
+
+        // if show ignore status wasn't defined by a parent controller, default to false.
+        if (typeof $scope.showIgnoreStatus !== 'undefined') {
+            $scope.$storage.showIgnoreStatus = $scope.showIgnoreStatus;
+        }
 
         /**
          * Sort predicate

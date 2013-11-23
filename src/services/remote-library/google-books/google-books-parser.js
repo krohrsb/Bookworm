@@ -121,7 +121,12 @@ GoogleBooksParserService.prototype.parseAuthor = function (volume, query) {
                     }
                 }
                 author = _.find(volume.authors, function (possibleAuthor) {
-                    return possibleAuthor.toLowerCase().indexOf(authorText.toLowerCase()) !== -1;
+                    if (authorText) {
+                        return possibleAuthor.toLowerCase().indexOf(authorText.toLowerCase()) !== -1;
+                    } else {
+                        return false;
+                    }
+
                 });
                 return author || _.first(volume.authors);
             } else {

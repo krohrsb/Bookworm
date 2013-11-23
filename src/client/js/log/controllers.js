@@ -65,7 +65,7 @@
          */
         $scope.$on('socket:log', function (ev, log) {
             if (log) {
-                if (($scope.logs.length + 1) > limit) {
+                if (($scope.logs.length + 1) > $scope.limit) {
                     $scope.logs.pop();
                 }
                 $scope.logs.unshift(log);

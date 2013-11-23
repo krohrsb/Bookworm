@@ -252,6 +252,7 @@ LibraryService.prototype.refreshAuthor = function (author, options) {
             });
     }).then(function (books) {
         author.books = books;
+        logger.info('Finished refreshing author %s', author.name);
         return author;
     }.bind(this));
 };
