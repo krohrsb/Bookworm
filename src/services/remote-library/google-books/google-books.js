@@ -63,7 +63,7 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
     if (_.isEmpty(data)) {
         deferred.reject(new Error(errors.NO_BOOK_DATA));
     } else if (_.isEmpty(data.volumeInfo)) {
-        logger.debug('Volume info not found, skipping', {query: options.q});
+        logger.debug('Volume info not found, skipping', {data: {query: options.q}});
         deferred.resolve();
     } else {
         //noinspection JSUnresolvedVariable
@@ -92,22 +92,22 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
         ignoredWord = this._parser.detectIgnoredWords(ignoredWords, volume.title);
 
         if (_.isEmpty(volume.title)) {
-            logger.debug('Title not defined for book, skipping.', {guid: data.id});
+            logger.debug('Title not defined for book, skipping.', {data: {guid: data.id}});
             deferred.resolve();
         } else if (!author) {
-            logger.debug('Author could not be found for book, skipping.', {title: volume.title, author: volume.authors || volume.author});
+            logger.debug('Author could not be found for book, skipping.', {data: {title: volume.title, author: volume.authors || volume.author}});
             deferred.resolve();
         } else if (!_.isEmpty(languages) && !_.contains(languages, volume.language)) {
-            logger.debug('Book language does not match selected language filter, skipping.', {title: volume.title, filter: languages, language: languages});
+            logger.debug('Book language does not match selected language filter, skipping.', {data: {title: volume.title, filter: languages, language: languages}});
             deferred.resolve();
         } else if (settingService.get('searchers:googleBooks:filters:description') && _.isEmpty(description)) {
-            logger.debug('Book does not contain a description, skipping.', {title: volume.title});
+            logger.debug('Book does not contain a description, skipping.', {data: {title: volume.title}});
             deferred.resolve();
         } else if (settingService.get('searchers:googleBooks:filters:isbn') && _.isEmpty(isbn)) {
-            logger.debug('Industry Identifier (ISBN) not available for Book, skipping.', {title: volume.title});
+            logger.debug('Industry Identifier (ISBN) not available for Book, skipping.', {data: {title: volume.title}});
             deferred.resolve();
         } else if (ignoredWord) {
-            logger.info('Book title contains an ignored word, skipping.', {ignoredWord: ignoredWord, title: volume.title});
+            logger.info('Book title contains an ignored word, skipping.', {data: {ignoredWord: ignoredWord, title: volume.title}});
             deferred.resolve();
         } else {
             //noinspection JSUnresolvedVariable,JSUnresolvedFunction

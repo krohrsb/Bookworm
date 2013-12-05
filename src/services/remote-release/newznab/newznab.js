@@ -171,7 +171,7 @@ NewznabService.prototype.constructRelease = function (release) {
         }).value;
 
         if (ignoredWord) {
-            logger.info('Release title contains an ignored word, skipping.', {ignoredWord: ignoredWord, title: release.title});
+            logger.info('Release title contains an ignored word, skipping.', {data: {ignoredWord: ignoredWord, title: release.title}});
             deferred.resolve();
         } else {
             deferred.resolve({

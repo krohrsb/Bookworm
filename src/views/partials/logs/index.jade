@@ -14,6 +14,6 @@ div.table-responsive
             tr.animate(data-ng-repeat='log in logs', data-ng-class='"log-" + log.level')
                 td.time {{log.timestamp | date:'medium'}}
                 td.level {{log.level}}
-                td.message {{log.message}}
-                    //button.btn.btn-small.pull-right(data-ng-show='log.stack', data-ng-click='log.showStack = !log.showStack') {{(!log.showStack && "Show") || (log.showStack && "Hide")}} Stack Trace
-                    //pre(data-ng-show='log.stack && log.showStack') {{log.stack}}
+                td.message(data-ng-mouseover='hoverIndex = $index', data-ng-mouseout='hoverIndex = -1')
+                    span {{log.message}}
+                    span.data(data-ng-class='{"focus": hoverIndex == $index}') {{log.data}}

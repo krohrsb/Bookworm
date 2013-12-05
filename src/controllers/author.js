@@ -80,7 +80,7 @@ function getById (req, res, next) {
  */
 function getByIdBooks (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::getByIdBooks', {authorId: req.params.id});
+    logger.trace('Controller::Author::getByIdBooks', {data: {authorId: req.params.id}});
     bookService.all({
         where: {
             authorId: req.params.id

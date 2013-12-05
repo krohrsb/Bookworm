@@ -60,7 +60,7 @@ var NewznabAPIService = function (options) {
      * @private
      */
     this._apiCache = memoize(function (key, options, next) {
-        logger.trace('not cached, issuing remote request', { key: key});
+        logger.trace('not cached, issuing remote request', {data: {key: key}});
         this._requestQueue.push({
             key: key,
             options: options
@@ -113,7 +113,7 @@ NewznabAPIService.prototype.query = function (url, options) {
 
     // create the key used for caching lookup
     key = requestOptions.uri + '?' + qs.stringify(requestOptions.qs);
-    logger.trace('making request to cache', { key: key});
+    logger.trace('making request to cache', {data:{key: key}});
     // call the cache (will request if not in cache, otherwise will return the cached result)
     return Q.ninvoke(this, '_apiCache', key, requestOptions);
 };

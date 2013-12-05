@@ -53,7 +53,7 @@ module.exports = function (app) {
 
     // log error
     app.use(function (err, req, res, next) {
-        logger.error(err.message, {stack: err.stack, type: err.type});
+        logger.error(err.message, {data: {stack: err.stack, type: err.type}});
         next(err);
     });
 

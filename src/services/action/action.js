@@ -114,7 +114,7 @@ ActionService.prototype.performGeneralAction = function (action) {
             } else if (action === 'forcePostProcess') {
                 return postProcessService.process();
             } else if (action === 'killProcess') {
-                logger.debug('Sending SIGUSR2 to the process', {pid: process.pid});
+                logger.debug('Sending SIGUSR2 to the process', {data: {pid: process.pid}});
                 process.kill(process.pid, 'SIGUSR2');
                 return null;
             } else {

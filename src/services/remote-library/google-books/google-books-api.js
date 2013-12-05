@@ -63,7 +63,7 @@ var GoogleBooksAPIService = function (options) {
      * @private
      */
     this._apiCache = memoize(function (key, options, next) {
-        logger.trace('not cached, issuing remote request', {key: key});
+        logger.trace('not cached, issuing remote request', {data: {key: key}});
         this._requestQueue.push({
             key: key,
             options: options
