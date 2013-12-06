@@ -67,9 +67,6 @@ or whatever method you wish to use to start up a node script. (supervisor, forev
 
 It defaults to listening on port 3000, but you can change this in the settings.
 
-## Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [grunt](https://github.com/gruntjs/grunt).
-
 ## License
 Copyright (c) 2012 Kyle Brown
 Licensed under the MIT license.
