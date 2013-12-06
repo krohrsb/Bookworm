@@ -1,7 +1,7 @@
 {
   "name": "bookworm",
   "description": "Book NZB Searcher and Grabber",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "homepage": "https://github.com/blackbarn/Bookworm",
   "private": true,
   "keywords": "nzb, book, automate",
