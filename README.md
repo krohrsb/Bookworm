@@ -65,6 +65,19 @@ grunt server
 ```
 or whatever method you wish to use to start up a node script. (supervisor, forever, etc)
 
+For a 'production' environment:
+_note, you have a different config json file per environment_
+If using grunt server:
+```
+grunt server:dist
+```
+
+If using other:
+```
+grunt build:prod
+NODE_ENV=production node bin/bookworm.js #or whichever command you are using.
+```
+
 It defaults to listening on port 3000, but you can change this in the settings.
 
 ## License
