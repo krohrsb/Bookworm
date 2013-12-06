@@ -24,9 +24,9 @@
                 templateUrl: 'partials/search/authors',
                 controller: 'SearchCtrl',
                 resolve: {
-                    results: function (Restangular, $stateParams) {
+                    results: ['Restangular', '$stateParams', function (Restangular, $stateParams) {
                         return Restangular.all('library').all('authors').getList({q: $stateParams.query});
-                    }
+                    }]
                 }
             }).
             state('searchBook', {
@@ -34,9 +34,9 @@
                 templateUrl: 'partials/search/books',
                 controller: 'SearchCtrl',
                 resolve: {
-                    results: function (Restangular, $stateParams) {
+                    results: ['Restangular', '$stateParams', function (Restangular, $stateParams) {
                         return Restangular.all('library').all('books').getList({q: $stateParams.query});
-                    }
+                    }]
                 }
             });
     }]);
