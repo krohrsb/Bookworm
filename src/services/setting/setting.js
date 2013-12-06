@@ -53,7 +53,7 @@ SettingsService.prototype.initialize = function () {
 
     base = path.resolve(path.dirname(require.main.filename), '..');
 
-    configFile = path.join(base, 'config', this._fileStore.get('NODE_ENV') || 'development' + '.json');
+    configFile = path.join(base, 'config', (this._fileStore.get('NODE_ENV') || 'development') + '.json');
 
     try {
         if (!fs.existsSync(configFile)) {
