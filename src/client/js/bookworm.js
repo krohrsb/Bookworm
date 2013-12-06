@@ -28,7 +28,7 @@
     angular.module('bookworm.release', ['bookworm.release.directives'], function () {});
 
     // Define Main Module
-    angular.module('bookworm', ['ngStorage', 'btford.socket-io', 'ui', 'angularMoment', 'ngAnimate', 'toaster', 'restangular', 'ngProgressLite', 'truncate', 'bookworm.core',
+    angular.module('bookworm', ['ngResource', 'ngStorage', 'btford.socket-io', 'ui', 'angularMoment', 'ngAnimate', 'toaster', 'restangular', 'ngProgressLite', 'truncate', 'bookworm.core',
             'bookworm.book', 'bookworm.author', 'bookworm.release', 'bookworm.search', 'bookworm.log', 'bookworm.setting', 'bookworm.notify', 'bookworm.manage'],
             ['RestangularProvider', function (RestangularProvider) {
         RestangularProvider.setBaseUrl('/api/v1');

@@ -1,0 +1,25 @@
+extends layout
+
+block view
+    div.login-page
+        if errors.length
+            div.alert.alert-danger
+
+                p
+                    span.glyphicon.glyphicon-warning-sign
+                    |  #{errors}
+
+        form.form-horizontal(role='form', action='/auth/login', method='POST')
+            h1.login-brand Book
+                span.brand-emphasis worm
+            div.form-group
+                label.col-sm-2.control-label(for='username') Username
+                div.col-sm-10
+                    input.form-control(type='text', id='username', name='username', data-ng-model='username')
+            div.form-group
+                label.col-sm-2.control-label(for='password') Password
+                div.col-sm-10
+                    input.form-control(type='password', id='password', name='password', data-ng-model='password')
+            div.form-group
+                div.col-sm-offset-2.col-sm-10
+                    button.btn.btn-default(type='submit') Log In

@@ -96,3 +96,9 @@ block view
 
 
 block footer
+    div.container
+        hr
+        footer
+            form.pull-right.log-out(role='form', action='/auth/logout', method='POST')
+                button.btn.btn-link.btn-sm
+                    small Log Out

@@ -32,7 +32,8 @@
     "json-mask": "https://github.com/nemtsov/json-mask.git#~0.1.1-alpha",
     "ngstorage": "~0.3.0",
     "angular-moment": "~0.5.2",
-    "angular-bootstrap3": "*"
+    "angular-bootstrap3": "*",
+    "angular-resource": "~1.2.3"
   },
   "resolutions": {
     "angular": "~1.2.1"

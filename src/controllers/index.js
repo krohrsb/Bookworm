@@ -3,7 +3,7 @@
  * @since 10/10/13 12:58 PM
  */
 var settingService = require('../services/setting');
-
+var _ = require('lodash');
 var logger = require('../services/log').logger();
 //noinspection JSUnusedLocalSymbols
 /**
@@ -13,7 +13,7 @@ var logger = require('../services/log').logger();
  * @param {function} next - callback to next middleware
  */
 function index (req, res, next) {
-    "use strict";
+    'use strict';
     logger.trace('Controllers::index::index');
     res.render('index', {
         env: settingService.get('environment:env'),
@@ -61,20 +61,77 @@ function unknown (req, res, next) {
  * @param {function} next - callback to next middleware
  */
 function apiUnauthorized (req, res, next) {
-    "use strict";
+    'use strict';
     logger.trace('Controllers::index::apiUnauthorized');
     res.send(401);
+}
+
+//noinspection JSUnusedLocalSymbols
+/**
+ * Login View Route
+ * @param {object} req - The Request object.
+ * @param {object} res - The Response object.
+ * @param {function} next - callback to next middleware
+ */
+function login (req, res, next) {
+    'use strict';
+    res.render('login', {
+        env: settingService.get('environment:env'),
+        apiKey: settingService.get('server:apiKey'),
+        errors: req.flash('error')
+    });
+}
+
+//noinspection JSUnusedLocalSymbols
+/**
+ * Logout
+ * @param {object} req - The Request object.
+ * @param {object} res - The Response object.
+ * @param {function} next - callback to next middleware
+ */
+function logout (req, res, next) {
+    "use strict";
+    req.logout();
+    res.redirect('/');
+}
+
+/**
+ * Check if auth is enabled
+ * @returns {boolean}
+ */
+function isAuthEnabled () {
+    'use strict';
+    return !_.isEmpty(settingService.get('server:username'));
+}
+
+//noinspection JSUnusedLocalSymbols
+/**
+ * Ensure Auth middleware
+ * @param {object} req - The Request object.
+ * @param {object} res - The Response object.
+ * @param {function} next - callback to next middleware
+ */
+function ensureAuthenticated (req, res, next) {
+    'use strict';
+    if (!isAuthEnabled() || req.isAuthenticated()) {
+        next();
+    } else {
+        res.redirect('/login');
+    }
 }
 /**
  * Set up the routes
  * @param {object} app - reference to express application.
  */
 function setup (app) {
-    "use strict";
-    app.get('/', index);
+    'use strict';
+    app.get('/', ensureAuthenticated, index);
     app.get('/partials/:category', partial);
     app.get('/partials/:category/:name', partial);
     app.get('/api/unauthorized', apiUnauthorized);
+    app.get('/login', login);
+    app.post('/auth/logout', logout);
+    app.post('/auth/login', app.passport.authenticate('local', {failureRedirect: '/login', successRedirect: '/', failureFlash: true}));
     app.get('*', unknown);
 }
 

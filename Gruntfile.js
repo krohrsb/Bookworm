@@ -98,6 +98,12 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'bower_components/angular-resource/',
+                        src: ['*.js'],
+                        dest: 'build/client/components/angular-resource/'
+                    },
+                    {
+                        expand: true,
                         cwd: 'bower_components/angular-animate',
                         src: ['*.js'],
                         dest: 'build/client/components/angular-animate/'
