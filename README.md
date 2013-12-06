@@ -66,7 +66,9 @@ grunt server
 or whatever method you wish to use to start up a node script. (supervisor, forever, etc)
 
 For a 'production' environment:
+
 _note, you have a different config json file per environment_
+
 If using grunt server:
 ```
 grunt server:dist
