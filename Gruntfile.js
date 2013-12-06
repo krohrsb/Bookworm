@@ -289,26 +289,32 @@ module.exports = function (grunt) {
 
     grunt.registerTask('server', function (target) {
         if (target === 'dist') {
-            return grunt.task.run(['build', 'express:prod', 'open', 'express-keepalive']);
+            return grunt.task.run(['build:prod', 'express:prod', 'express-keepalive']);
         }
 
         return grunt.task.run([
             'express:dev',
-            'open',
             'watch'
         ]);
     });
 
-    grunt.registerTask('build', [
+    grunt.registerTask('build:dev', [
         'clean',
         'uglify:dev',
         'stylus',
         'copy'
     ]);
 
+    grunt.registerTask('build:prod', [
+        'clean',
+        'uglify:prod',
+        'stylus',
+        'copy'
+    ]);
+
     grunt.registerTask('default', [
         'jshint',
-        'build'
+        'build:dev'
     ]);
 
 };
