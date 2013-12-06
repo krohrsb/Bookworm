@@ -14,9 +14,9 @@
                 templateUrl: 'partials/books/book',
                 controller: 'BookCtrl',
                 resolve: {
-                    book: function (Restangular, $stateParams) {
+                    book: ['Restangular', '$stateParams', function (Restangular, $stateParams) {
                         return Restangular.one('books', $stateParams.id).get({expand: 'releases'});
-                    }
+                    }]
                 }
             })
             .state('books', {
@@ -24,9 +24,9 @@
                 templateUrl: 'partials/books/books',
                 controller: 'BooksCtrl',
                 resolve: {
-                    books: function (Restangular, $stateParams) {
+                    books: ['Restangular', '$stateParams', function (Restangular, $stateParams) {
                         return Restangular.all('books').getList($stateParams);
-                    }
+                    }]
                 }
             });
     }]);

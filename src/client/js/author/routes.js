@@ -14,9 +14,9 @@
                 templateUrl: 'partials/authors/author-list',
                 controller: 'AuthorsCtrl',
                 resolve: {
-                    authors: function (Restangular) {
+                    authors: ['Restangular', function (Restangular) {
                         return Restangular.all('authors').getList({expand: 'latestBook,booksCount'});
-                    }
+                    }]
                 }
             })
             .state('author', {
@@ -24,9 +24,9 @@
                 templateUrl: 'partials/authors/author',
                 controller: 'AuthorCtrl',
                 resolve: {
-                    author: function (Restangular, $stateParams) {
+                    author: ['Restangular', '$stateParams', function (Restangular, $stateParams) {
                         return Restangular.one('authors', $stateParams.id).get({expand: 'books,latestBook,booksCount'});
-                    }
+                    }]
                 }
             });
     }]);
