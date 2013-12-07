@@ -15,7 +15,7 @@ module.exports = {
         length: 1,
         primitive: true
     },
-    requestQueueDelay: 1500,
+    requestQueueDelay: 3000,
     requestQueueParallelCount: 1,
     userAgent: ''
 };
