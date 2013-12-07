@@ -39,6 +39,7 @@ var NewznabAPIService = function (options) {
      * @private
      */
     this._requestQueue = async.queue(function (data, next) {
+        logger.trace('issuing remote request', {data: {key: data.key}});
         request.get(data.options, function (err, response, body) {
             setTimeout(function (data, response, body) {
                 if (err || (body && body.error && !_.isEmpty(body.error.errors))) {
@@ -60,7 +61,7 @@ var NewznabAPIService = function (options) {
      * @private
      */
     this._apiCache = memoize(function (key, options, next) {
-        logger.trace('not cached, issuing remote request', {data: {key: key}});
+        logger.trace('not cached, queuing request', {data: {key: key}});
         this._requestQueue.push({
             key: key,
             options: options
