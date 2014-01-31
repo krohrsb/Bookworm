@@ -1,13 +1,13 @@
 div.list-toolbar
     div.pull-right
         div.btn-group.pull-right
-            button.btn.btn-default.btn-sm.animate(data-ng-if='selecting', data-ng-click='toggleSelectAll()', title='Toggle Select All')
+            button.btn.btn-default.btn-sm.animate(data-ng-if='selecting', data-ng-click='toggleSelectAll()', data-tooltip-append-to-body="true", data-tooltip='Toggle Select All')
                 span.glyphicon.glyphicon-check(data-ng-show='allSelected')
                 span.glyphicon.glyphicon-unchecked(data-ng-hide='allSelected')
-            button.btn.btn-default.btn-sm(data-ng-click='toggleSelecting()', title='Toggle list view')
+            button.btn.btn-default.btn-sm(data-ng-click='toggleSelecting()', data-tooltip='Toggle list view', data-tooltip-append-to-body="true")
                 span.glyphicon.glyphicon-th-list(data-ng-hide='selecting')
                 span.glyphicon.glyphicon-th(data-ng-show='selecting')
-            button.btn.btn-default.btn-sm.dropdown-toggle(title='Sorting by {{predicate | inflector:"humanize"}} {{reverse ? "DESC" : "ASC"}}', data-toggle='dropdown')
+            button.btn.btn-default.btn-sm.dropdown-toggle(data-tooltip-append-to-body="true", data-tooltip='Sorting by {{predicate | inflector:"humanize"}} {{reverse ? "DESC" : "ASC"}}', data-toggle='dropdown')
                 span.glyphicon.glyphicon-sort-by-alphabet(data-ng-hide='reverse')
                 span.glyphicon.glyphicon-sort-by-alphabet-alt(data-ng-show='reverse')
             ul.dropdown-menu(role='menu')
@@ -25,9 +25,9 @@ div.list-toolbar
                     a(data-ng-click='setSort("averageRating")') Average Rating
                 li
                     a(data-ng-click='setSort("updated")') Updated Date
-            button.btn.btn-sm(title='Filter', data-ng-click='openFilter()', data-ng-class='{"btn-default": !filtering, "btn-primary": filtering}')
+            button.btn.btn-sm(data-tooltip-append-to-body="true",data-tooltip='Filter', data-ng-click='openFilter()', data-ng-class='{"btn-default": !filtering, "btn-primary": filtering}')
                 span.glyphicon.glyphicon-filter
-            button.btn.btn-default.btn-sm(title='Show/Hide {{ignoreStatus}}', data-ng-click='toggleIgnoreStatus()')
+            button.btn.btn-default.btn-sm(data-tooltip-append-to-body="true",data-tooltip='Show/Hide {{ignoreStatus}}', data-ng-click='toggleIgnoreStatus()')
                 span.glyphicon.glyphicon-eye-close(data-ng-show='showIgnoreStatus')
                 span.glyphicon.glyphicon-eye-open(data-ng-hide='showIgnoreStatus')
         div.input-group.animate.col-sm-7.pull-right(data-ng-show='selecting')

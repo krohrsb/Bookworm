@@ -64,7 +64,7 @@
          * Sort direction
          * @type {boolean}
          */
-        $scope.reverse = false;
+        $scope.reverse = true;
 
         /**
          * Indicates if we are to show the ignored status or not.
