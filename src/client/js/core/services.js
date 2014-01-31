@@ -33,7 +33,7 @@
         this.generate = guid;
     });
 
-    module.factory('socket', function (socketFactory) {
+    module.factory('socket', ['socketFactory', function (socketFactory) {
         return socketFactory();
-    });
+    }]);
 }(angular));
