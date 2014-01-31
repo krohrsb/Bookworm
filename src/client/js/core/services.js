@@ -32,4 +32,8 @@
 
         this.generate = guid;
     });
+
+    module.factory('socket', function (socketFactory) {
+        return socketFactory();
+    });
 }(angular));

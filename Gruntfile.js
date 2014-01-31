@@ -34,7 +34,7 @@ module.exports = function (grunt) {
         jshint: {
             app: {
                 options: {
-                    jshintrc: '.jshintrc'
+                    jshintrc: true
                 },
                 src: ['bin/*.js', 'src/**/*.js', '!src/client/**']
             },
@@ -74,20 +74,14 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'bower_components/angular-bootstrap3',
-                        src: ['**', '!bower.json'],
-                        dest: 'build/client/components/angular-bootstrap3'
-                    },
-                    {
-                        expand: true,
                         cwd: 'bower_components/moment',
                         src: ['*.js'],
                         dest: 'build/client/components/moment'
                     },
                     {
                         expand: true,
-                        cwd: 'bower_components/angular-ui-utils/modules',
-                        src: ['**'],
+                        cwd: 'bower_components/angular-ui-utils/',
+                        src: ['*.js'],
                         dest: 'build/client/components/angular-ui-utils/'
                     },
                     {
@@ -110,7 +104,7 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'bower_components/AngularJS-Toaster',
+                        cwd: 'bower_components/angular-notify-toaster',
                         src: ['*.{css,js}'],
                         dest: 'build/client/components/angular-toaster'
                     },
