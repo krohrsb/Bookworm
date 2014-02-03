@@ -42,10 +42,6 @@
         // Define Request Interceptor
         Restangular.setRequestInterceptor(function (element, operation, model) {
             ngProgressLite.start();
-            if (_.isObject(element) && element['0']) {
-                console.warn('Restangular not fixed yet, turning array back into array');
-                element = _.toArray(element);
-            }
 
             if (operation.toLowerCase() === 'put' && (model === 'books' || model === 'authors')) {
                 if (_.isArray(element)) {
