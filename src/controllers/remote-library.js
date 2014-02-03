@@ -16,7 +16,6 @@ var logger = require('../services/log').logger();
  */
 function queryBooks (req, res, next) {
     'use strict';
-    logger.trace('Controllers::remote-library::queryBooks');
     remoteLibraryService.pagingQuery(_.merge({}, {
         pagingQueryLimit: settingService.get('searchers:googleBooks:pagingLimits:searchBooks')
     }, req.query || {})).then(res.json.bind(res), next);
@@ -32,7 +31,6 @@ function queryBooks (req, res, next) {
  */
 function bookById (req, res, next) {
     'use strict';
-    logger.trace('Controllers::remote-library::bookById(%s)', req.params.id);
     remoteLibraryService.findById(req.params.id, {}).then(function (book) {
         if (book) {
             res.json(book);
@@ -51,7 +49,6 @@ function bookById (req, res, next) {
  */
 function queryAuthors (req, res, next) {
     "use strict";
-    logger.trace('Controllers::remote-library::queryAuthors');
     remoteLibraryService.queryAuthors(_.merge({}, {
         pagingQueryLimit: settingService.get('searchers:googleBooks:pagingLimits:searchAuthors')
     }, req.query || {})).then(res.json.bind(res), next);

@@ -1,7 +1,7 @@
 div.page-header.hidden-xs
     h1 Logs
         small whats going on?
-pager(data-total-items='totalItems', data-page='currentPage', on-select-page='onSelectPage(page)')
+pagination.pagination-sm(data-on-select-page='onSelectPage(page)', data-max-size='5', data-boundary-links='true', data-total-items='totalItems', data-page='currentPage', data-items-per-page='limit')
 div.table-responsive
     table.table.table-condensed.table-hover.logs
         thead
@@ -12,8 +12,8 @@ div.table-responsive
         tfoot
         tbody
             tr.animate(data-ng-repeat='log in logs', data-ng-class='"log-" + log.level')
-                td.time {{log.timestamp | date:'medium'}}
-                td.level {{log.level}}
+                td.time {{log.date | date:'medium'}}
+                td.level {{log.levelName}}
                 td.message(data-ng-mouseover='hoverIndex = $index', data-ng-mouseout='hoverIndex = -1')
-                    span {{log.message}}
+                    span {{log.args | joinWithObjects:" "}}
                     span.data(data-ng-class='{"focus": hoverIndex == $index}') {{log.data}}

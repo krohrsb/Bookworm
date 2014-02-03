@@ -13,11 +13,11 @@ module.exports = {
             enabled: true,
             maxFiles: 6,
             maxSize: 102400,
-            level: 'info'
+            debug: false
         },
         console: {
             enabled: true,
-            level: 'trace'
+            debug: true
         }
     },
     server: {

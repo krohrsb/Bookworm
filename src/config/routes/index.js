@@ -6,7 +6,6 @@ var Q = require('q');
 var fs = require('fs-extra');
 var path = require('path');
 var logger = require('../../services/log').logger();
-
 /**
  * Initialize a controller given its file name and a reference to the application.
  * @param {string} fileName - The controller file name. e.g., author.js
@@ -17,10 +16,10 @@ function initializeController (fileName, app) {
     var controller;
     controller = require('../../controllers/' + fileName);
     if (typeof controller.setup === 'function') {
-        logger.trace('Setting up controller[%s]', fileName.replace('.js', ''));
+        logger.log('debug', 'Setting up controller', { name: fileName.replace('.js', '') });
         controller.setup(app);
     } else {
-        logger.error('Controller [%s] does not have a setup method, not initializing!', fileName);
+        logger.log('error', 'Controller does not have a setup method, not initializing!', { name: fileName.replace('.js', '') });
     }
 }
 
@@ -54,9 +53,9 @@ function initializeControllers (app) {
             }
         });
         initializeController('index', app);
-        logger.info('Application Started');
+        logger.log('notice', 'Application Started');
     }).catch(function (err) {
-        logger.err(err);
+        logger.log('error', err.message, err.stack);
     });
 }
 module.exports = initializeControllers;

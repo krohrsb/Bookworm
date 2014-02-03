@@ -40,7 +40,7 @@ util.inherits(PostProcessService, events.EventEmitter);
  */
 PostProcessService.prototype.updateSettings = function (options) {
     "use strict";
-    logger.debug('PostProcessService::updateSettings - updating settings');
+    logger.log('debug', 'updating settings');
     this._settings = _.merge({}, this._defaults, options || {});
 };
 
@@ -156,20 +156,20 @@ PostProcessService.prototype.moveRelease = function (release, book) {
 
     destinationDirectory = path.join(this._settings.destinationDirectory, folderName);
 
-    logger.info('Moving release %s to destination directory %s', release.title, destinationDirectory);
+    logger.log('info', 'Moving release to destination directory', {release: release.title, directory: destinationDirectory});
 
     fs.exists(sourceDirectory, existsDeferred.resolve);
 
     return existsDeferred.promise.then(function (exists) {
         if (exists) {
-            logger.debug('Creating destination directory %s', destinationDirectory);
+            logger.log('debug', 'Creating destination directory', {directory: destinationDirectory});
             return Q.ninvoke(fs, 'mkdirs', destinationDirectory, this._settings.directoryPermissions).then(function () {
-                logger.debug('Copying directory from %s to %s', sourceDirectory, destinationDirectory);
+                logger.log('debug', 'Copying directory', {from: sourceDirectory, to: destinationDirectory});
                 return Q.ninvoke(fs, 'copy', sourceDirectory, destinationDirectory).then(function () {
                     if (this._settings.keepOriginalFiles) {
                         return null;
                     } else {
-                        logger.debug('Removing original release directory %s', sourceDirectory);
+                        logger.log('debug', 'Removing original release directory', {directory: sourceDirectory});
                         return Q.ninvoke(fs, 'remove', sourceDirectory);
                     }
                 }.bind(this)).then(function () {
@@ -178,7 +178,7 @@ PostProcessService.prototype.moveRelease = function (release, book) {
                 });
             }.bind(this));
         } else {
-            throw new Error('Directory %s for release no longer exists', sourceDirectory);
+            throw new Error('Directory ' + sourceDirectory + ' for release no longer exists');
         }
     }.bind(this));
 };
@@ -210,7 +210,7 @@ PostProcessService.prototype.writeOpf = function (book, destinationDirectory) {
 PostProcessService.prototype.processRelease = function (release) {
     "use strict";
     if (release) {
-        logger.info('Processing release %s', release.title);
+        logger.log('info', 'Processing release', {release: release.title});
         return Q.ninvoke(release, 'getBook').then(function (book) {
             if (book && book.status === 'snatched') {
                 return this.moveRelease(release, book).then(function (release) {
@@ -219,7 +219,7 @@ PostProcessService.prototype.processRelease = function (release) {
                     book.updated = Date.now();
                     release.updated = Date.now();
                     return Q.all([Q.ninvoke(book, 'save'), Q.ninvoke(release, 'save')]).spread(function (book, release) {
-                        logger.info('Finished processing %s', book.title);
+                        logger.log('info', 'Finished processing book', {title: book.title});
                         this.emit('processed', book, release);
                         return this.writeOpf(book, release.directory).then(function () {
                             return release;
@@ -243,7 +243,6 @@ PostProcessService.prototype.processRelease = function (release) {
  */
 PostProcessService.prototype.process = function () {
     "use strict";
-    logger.info('Initiating Post Processor');
     return this.getDirectories().then(function (directories) {
         return Q.all(directories.map(this.getDirectoryRelease)).then(function (releases) {
             return _.compact(releases);
@@ -251,10 +250,10 @@ PostProcessService.prototype.process = function () {
             return Q.all(releases.map(this.processRelease.bind(this)));
         }.bind(this));
     }.bind(this)).then(function (releases) {
-        logger.info('Post Processor finished. Processed %s releases', releases.length);
+        logger.log('info', 'Post Processor finished. Processed releases', {count: releases.length});
         return releases;
     }).fail(function (err) {
-        logger.err(err);
+        logger.log('error', err.message, err.stack);
         throw err;
     });
 };

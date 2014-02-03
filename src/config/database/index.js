@@ -22,7 +22,7 @@ try {
         fs.createFileSync(dbPath);
     }
 } catch (e) {
-    logger.err(e);
+    logger.log('error', e.message, e.stack);
 }
 
 

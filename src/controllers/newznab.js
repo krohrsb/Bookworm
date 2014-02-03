@@ -14,7 +14,6 @@ var logger = require('../services/log').logger();
  */
 function releases (req, res, next) {
     'use strict';
-    logger.trace('Controllers::newznab::releases');
     remoteRelease.query({
         title: req.query.title,
         author: req.query.author,

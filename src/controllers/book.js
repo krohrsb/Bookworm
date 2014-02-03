@@ -27,7 +27,6 @@ var modelValidationService = new ModelValidationService();
  */
 function getAll (req, res, next) {
     'use strict';
-    logger.trace('Controller::Book::getAll');
     var options = {
         limit: req.query.limit,
         skip: req.query.offset,
@@ -55,7 +54,6 @@ function getAll (req, res, next) {
  */
 function getById (req, res, next) {
     'use strict';
-    logger.trace('Controller::Book::getById(%s)', req.params.id);
     bookService.find(req.params.id, {
         expand: req.query.expand
     }).then(function (book) {
@@ -76,7 +74,6 @@ function getById (req, res, next) {
  */
 function getByIdAuthor (req, res, next) {
     "use strict";
-    logger.trace('Controller::Book::getByIdAuthor(%s)', req.params.id);
     bookService.findAuthor(req.params.id).then(function (author) {
         if (author) {
             return authorService.expandAuthor(req.query.expand, author);
@@ -101,7 +98,6 @@ function getByIdAuthor (req, res, next) {
  */
 function getByIdReleases (req, res, next) {
     "use strict";
-    logger.trace('Controller::Book::getByIdReleases(%s)', req.params.id);
     bookService.findReleases(req.params.id).then(function (releases) {
         if (releases) {
             res.json(releases);
@@ -121,7 +117,6 @@ function getByIdReleases (req, res, next) {
  */
 function create (req, res, next) {
     "use strict";
-    logger.trace('Controller::Book::create');
     Q.fcall(function () {
         if (_.isArray(req.body)) {
             return libraryService.createBooks(req.body);
@@ -150,7 +145,6 @@ function create (req, res, next) {
  */
 function updateById (req, res, next) {
     "use strict";
-    logger.trace('Controller::Book::updateById(%s)', req.params.id);
     bookService.updateById(req.params.id, req.body, {
         expand: req.query.expand
     }).then(function (book) {
@@ -173,7 +167,6 @@ function updateById (req, res, next) {
  */
 function update (req, res, next) {
     "use strict";
-    logger.trace('Controller::Book::update');
     bookService.updateAll(req.body, {
         expand: req.query.expand
     }).then(function (books) {
@@ -196,7 +189,6 @@ function update (req, res, next) {
  */
 function removeById (req, res, next) {
     "use strict";
-    logger.trace('Controller::Book::removeById(%s)', req.params.id);
     bookService.removeById(req.params.id).then(function () {
         res.send(204);
     }, function (err) {
@@ -213,7 +205,6 @@ function removeById (req, res, next) {
  */
 function remove (req, res, next) {
     "use strict";
-    logger.trace('Controller::Book::remove');
     bookService.remove(req.body).then(function () {
         res.send(204);
     }, function (err) {

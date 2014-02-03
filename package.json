@@ -36,7 +36,6 @@
     "async": "~0.2.10",
     "q": "~1.0.0",
     "findit": "~1.1.0",
-    "winston-request-logger": "~1.0.4",
     "json-mask": "~0.2.0",
     "passport-local": "~0.1.6",
     "passport": "~0.2.0",
@@ -50,14 +49,17 @@
     "xml2js": "~0.4.1",
     "connect-thumbs": "~0.1.7",
     "memoizee": "~0.2.6",
-    "winston": "~0.7.2",
     "request": "~2.33.0",
     "jade": "~1.1.5",
     "moment": "~2.5.1",
     "express": "~3.4.8",
     "socket.io": "~0.9.16",
     "jugglingdb-sqlite3": "0.0.3",
-    "libxmljs": "~0.8.1"
+    "libxmljs": "~0.8.1",
+    "caterpillar-filter": "~2.0.3",
+    "caterpillar-human": "~2.1.2",
+    "caterpillar": "~2.0.7",
+    "event-stream": "~3.1.0"
   },
   "devDependencies": {
     "grunt-contrib-copy": "~0.5.0",

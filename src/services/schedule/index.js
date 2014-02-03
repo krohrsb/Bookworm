@@ -17,13 +17,18 @@ Q.all(jobConfigs.map(function (jobConfig) {
     "use strict";
     var job;
     job = new ScheduleJob(jobConfig);
-    return scheduleService.scheduleJob(job);
+    return scheduleService.scheduleJob(job).then(function (job) {
+        job.getNextOccurrence().then(function (nextOccurrence) {
+            logger.log('info', 'Scheduled Job', {job: job.name, nextOccurrence: nextOccurrence.toString()});
+        });
+        return job;
+    });
 })).then(function (jobs) {
     "use strict";
-    logger.debug('Scheduled %s jobs', jobs.length);
+    logger.log('debug', 'Scheduled Jobs', {count: jobs.length});
 }, function (err) {
     "use strict";
-    logger.err(err);
+    logger.log('error', err.message, err.stack);
     throw err;
 });
 

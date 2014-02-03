@@ -6,7 +6,7 @@ div.page-header.hidden-xs
 form.form-horizontal(role='form', name='generalForm')
     fieldset
         div.col-sm-6
-            legend Server
+            legend Server*
             div.form-group
                 label.col-sm-3.control-label Host
                 div.col-sm-9
@@ -34,7 +34,13 @@ form.form-horizontal(role='form', name='generalForm')
                     span.help-block API Key for restricting API access.
                     button.btn.btn-defualt.btn-sm(data-ng-click='generateApiKey()') Generate Key
         div.col-sm-6
-            legend Logging
+            legend Logging - Console*
+            div.form-group
+                label.col-sm-3.control-label Debug Logging
+                div.checkbox.col-sm-9
+                    input(type='checkbox', value='', data-ng-model='settings.loggers.console.debug', data-bw-setting)
+                    span.text-muted {{ (settings.loggers.console.debug) ? 'Debug logging is enabled' : 'Enable debug logging?'}}
+            legend Logging - File*
             div.form-group
                 label.col-sm-3.control-label File Logging
                 div.checkbox.col-sm-9
@@ -42,23 +48,29 @@ form.form-horizontal(role='form', name='generalForm')
                     span.text-muted {{ (settings.loggers.file.enabled) ? 'File logging is enabled' : 'Enable file logging?'}}
             div(data-ng-show='settings.loggers.file.enabled')
                 div.form-group
+                    label.col-sm-3.control-label Debug Logging
+                    div.checkbox.col-sm-9
+                        input(type='checkbox', value='', data-ng-model='settings.loggers.file.debug', data-bw-setting)
+                        span.text-muted {{ (settings.loggers.file.debug) ? 'Debug logging is enabled' : 'Enable debug logging?'}}
+                div.form-group
                     label.col-sm-3.control-label File Path
                     div.col-sm-9
                         input.form-control(type='text', placeholder='logs/bookworm.log', data-ng-model='settings.loggers.file.path', data-bw-setting)
                         span.help-block The relative path to the log file.
-                div.form-group
+                //div.form-group
                     label.col-sm-3.control-label Max Files
                     div.col-sm-9
                         input.form-control(type='number', placeholder='6', data-ng-model='settings.loggers.file.maxFiles', data-bw-setting)
                         span.help-block The maximum number of log files to keep.
-                div.form-group
+                //div.form-group
                     label.col-sm-3.control-label Max File Size
                     div.col-sm-9
                         input.form-control(type='number', placeholder='102400', data-ng-model='settings.loggers.file.maxSize', data-bw-setting)
                         span.label.label-default.pull-right Bytes
                         span.help-block The maximum file size for each log file.
-                div.form-group
+                //div.form-group
                     label.col-sm-3.control-label Log Level
                     div.col-sm-9
                         select.form-control(data-ng-model='settings.loggers.file.level', data-ng-options='(level | inflector:"humanize") for level in logLevels', data-bw-setting)
                         span.help-block Logs of this level or higher will be written to file. e.g., "debug" &gt; "info" &gt; "warn" &gt; "error"
+p.pull-right * Restart Required

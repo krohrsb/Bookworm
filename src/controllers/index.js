@@ -14,7 +14,6 @@ var logger = require('../services/log').logger();
  */
 function index (req, res, next) {
     'use strict';
-    logger.trace('Controllers::index::index');
     res.render('index', {
         env: settingService.get('environment:env'),
         apiKey: settingService.get('server:apiKey')
@@ -33,7 +32,7 @@ function partial (req, res, next) {
     var name, category;
     name = req.params.name;
     category = req.params.category;
-    logger.trace('Controllers::index::partial(%s, %s)', category, name);
+    logger.log('debug', 'Rendering partial view', {path: category + ((name) ? '/' + name : '')});
     res.render('partials/' + category + ((name) ? '/' + name : ''), {
         env: settingService.get('environment:env'),
         apiKey: settingService.get('server:apiKey')
@@ -49,7 +48,6 @@ function partial (req, res, next) {
  */
 function unknown (req, res, next) {
     'use strict';
-    logger.trace('Controllers::index::unknown');
     res.send(404);
 }
 
@@ -62,7 +60,6 @@ function unknown (req, res, next) {
  */
 function apiUnauthorized (req, res, next) {
     'use strict';
-    logger.trace('Controllers::index::apiUnauthorized');
     res.send(401);
 }
 

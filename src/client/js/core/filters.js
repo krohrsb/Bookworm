@@ -87,4 +87,22 @@
 
         };
     });
+    module.filter('joinWithObjects', function () {
+        return function (arr, delim) {
+            var output;
+            if (!angular.isUndefined(arr) && angular.isArray(arr)) {
+                output = arr.map(function (value) {
+                    if (angular.isObject(value)) {
+                        return JSON.stringify(value);
+                    } else {
+                        return value;
+                    }
+                });
+            } else {
+                output = arr;
+            }
+            return output.join(delim || ', ');
+
+        };
+    });
 }(angular));

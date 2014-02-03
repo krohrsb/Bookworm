@@ -62,7 +62,7 @@ module.exports = function (app) {
 
     //generate api key if one does not exist.
     if (!settingService.get('server:apiKey')) {
-        logger.warn('API Key not set, generating a new one');
+        logger.log('warn', 'API Key not set, generating a new one');
         settingService.set('server:apiKey', uuid.v4().replace(/-+/g, ''));
         settingService.save();
     }
@@ -91,7 +91,7 @@ module.exports = function (app) {
 
     // log error
     app.use(function (err, req, res, next) {
-        logger.error(err.message, {data: {stack: err.stack, type: err.type}});
+        logger.log('error', err.message, err.stack);
         next(err);
     });
 

@@ -18,7 +18,6 @@ var logger = require('../services/log').logger();
 function verify (req, res, next) {
     'use strict';
     var notifier;
-    logger.trace('Controllers::notify::verify(%s)', req.params.name);
     notifier = notificationService.getNotifier(req.params.name);
 
     if (notifier) {
@@ -44,7 +43,6 @@ function notify (req, res, next) {
     "use strict";
     var notifier;
 
-    logger.trace('Controllers::notify::notify(%s)', req.params.name);
     notifier = notificationService.getNotifier(req.params.name);
 
     if (notifier) {
@@ -69,7 +67,6 @@ function notify (req, res, next) {
 function getNotifiers (req, res, next) {
     "use strict";
     var notifiers, json;
-    logger.trace('Controllers::notify::getNotifiers');
     notifiers = notificationService.getNotifiers();
 
     if (_.isArray(notifiers)) {

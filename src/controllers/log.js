@@ -13,11 +13,9 @@ var logger = logService.logger();
  */
 function logs (req, res, next) {
     'use strict';
-    logger.trace('Controllers::log::logs');
     logService.query({
         offset: req.query.offset,
-        limit: req.query.limit,
-        minLevel: req.query.minLevel
+        limit: req.query.limit
     }).then(function (results) {
         req.setPaging(results.total);
         res.json({

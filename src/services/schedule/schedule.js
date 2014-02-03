@@ -44,7 +44,7 @@ var ScheduleJob = function (config) {
                 this.scheduleSpec = this.config.schedule;
             }
             this.schedule().then(function () {
-                logger.info('Job %s rescheduled', this.name);
+                logger.log('info', 'Job rescheduled', {name: this.name});
             }.bind(this));
         }
     }.bind(this));
@@ -62,12 +62,18 @@ util.inherits(ScheduleJob, events.EventEmitter);
 ScheduleJob.prototype.schedule = function () {
     "use strict";
     return this.clear().then(function () {
-        this.timer = later.setInterval(this._getAction(this.action), this.scheduleSpec);
-        this.getNextOccurrence().then(function (occurence) {
-            this.emit('schedule', this, occurence);
-        }.bind(this));
+        if (this.scheduleSpec) {
+            this.timer = later.setInterval(this._getAction(this.action), this.scheduleSpec);
+            this.getNextOccurrence().then(function (occurence) {
+                this.emit('schedule', this, occurence);
+            }.bind(this));
 
-        return this.timer;
+            return this.timer;
+        } else {
+            logger.log('warn', 'Job not scheduled as specified duration is invalid', {job: this.name});
+            return null;
+        }
+
     }.bind(this));
 };
 
@@ -93,16 +99,16 @@ ScheduleJob.prototype.clear = function () {
 ScheduleJob.prototype._getAction = function (action) {
     "use strict";
     return function () {
-        logger.info('Initiating %s job', this.name);
+        logger.log('info', 'Executing Job', {name: this.name});
         return action().then(function () {
-            logger.info('Job %s finished', this.name);
+
             this.getNextOccurrence().then(function (occurrence) {
                 this.emit('occurrence', this, occurrence);
-                logger.info('Job %s next occurrence at %s', this.name, occurrence.toString());
+                logger.log('info', 'Job finished', {name: this.name, nextOccurrence: occurrence.toString()});
             }.bind(this));
         }.bind(this), function (err) {
-            logger.warn('Job %s finished with error', this.name);
-            logger.err(err);
+            logger.log('warn', 'Job finished with error', {name: this.name});
+            logger.log('error', err.message, err.stack);
         }.bind(this));
     }.bind(this);
 };
@@ -114,9 +120,15 @@ ScheduleJob.prototype._getAction = function (action) {
 ScheduleJob.prototype.getNextOccurrence = function () {
     "use strict";
     var next;
-    next = later.schedule(this.scheduleSpec).next(2)[1];
-    this.emit('next', next);
-    return Q(next);
+    if (this.scheduleSpec) {
+        next = later.schedule(this.scheduleSpec).next();
+        this.emit('next', next);
+        return Q(next);
+    } else {
+        logger.log('warn', 'Could not calculate next occurrence for job, schedule specification invalid', {job: this.name});
+        return Q(null);
+    }
+
 };
 
 

@@ -392,7 +392,8 @@ BookService.prototype.merge = function (author, destination, source, mergeData) 
         }).then(function (newBooks) {
             return Q.all(newBooks.map(this.create.bind(this)));
         }.bind(this)).then(function (savedBooks) {
-            logger.debug('Finished merging books for author %s. Did %s merge book data. %s new books.', author.name, ((mergeData) ? '': 'not'), savedBooks.length);
+            logger.log('debug', 'Finished merging books for author', {author: author.name, mergedBookData: mergeData});
+            logger.log('debug', 'New books saved', {count: savedBooks.length});
             return savedBooks.concat(destination);
         });
     } else {

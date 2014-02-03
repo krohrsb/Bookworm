@@ -22,7 +22,6 @@ var modelValidationService = new ModelValidationService();
  */
 function getAll (req, res, next) {
     'use strict';
-    logger.trace('Controller::Release::getAll');
     releaseService.all({
         limit: req.query.limit,
         skip: req.query.offset,
@@ -41,7 +40,6 @@ function getAll (req, res, next) {
  */
 function getById (req, res, next) {
     'use strict';
-    logger.trace('Controller::Release::getById(%s)', req.params.id);
     releaseService.find(req.params.id, {
         expand: req.query.expand
     }).then(function (release) {
@@ -62,7 +60,6 @@ function getById (req, res, next) {
  */
 function getByIdBook (req, res, next) {
     "use strict";
-    logger.trace('Controller::Book::getByIdBook(%s)', req.params.id);
     releaseService.findBook(req.params.id).then(function (book) {
         if (book) {
             return bookService.expandBook(req.query.expand, book);
@@ -87,7 +84,6 @@ function getByIdBook (req, res, next) {
  */
 function create (req, res, next) {
     "use strict";
-    logger.trace('Controller::Release::create');
     releaseService.create(req.body).then(function (release) {
         res.json(201, release);
     }, function (err) {
@@ -104,7 +100,6 @@ function create (req, res, next) {
  */
 function updateById (req, res, next) {
     "use strict";
-    logger.trace('Controller::Release::updateById(%s, {..data..})', req.params.id);
     releaseService.updateById(req.params.id, req.body, {
         expand: req.query.expand
     }).then(function (release) {
@@ -127,7 +122,6 @@ function updateById (req, res, next) {
  */
 function update (req, res, next) {
     "use strict";
-    logger.trace('Controller::Release::update({..data..})');
     releaseService.updateAll(req.body, {
         expand: req.query.expand
     }).then(function (releases) {
@@ -150,7 +144,6 @@ function update (req, res, next) {
  */
 function removeById (req, res, next) {
     "use strict";
-    logger.trace('Controller::Release::removeById(%s)', req.params.id);
     releaseService.removeById(req.params.id).then(function () {
         res.send(204);
     }, function (err) {
@@ -167,7 +160,6 @@ function removeById (req, res, next) {
  */
 function remove (req, res, next) {
     "use strict";
-    logger.trace('Controller::Release::remove({..data..})');
     releaseService.remove(req.body).then(function () {
         res.send(204);
     }, function (err) {

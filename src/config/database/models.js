@@ -32,9 +32,9 @@ module.exports = function (db, exists) {
 
     db.isActual(function(err, actual) {
         if (err) {
-            logger.err(err.message);
+            logger.log('error', err.message, e.stack);
         } else if (!actual || !exists) {
-            logger.info('Database is not up-to-date, updating schema...');
+            logger.log('info', 'Database is not up-to-date, updating schema...');
             db.autoupdate();
         }
     });

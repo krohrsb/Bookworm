@@ -60,7 +60,7 @@ SettingsService.prototype.initialize = function () {
             fs.outputFileSync(configFile, '{}');
         }
     } catch (e) {
-        logger.err(e);
+        logger.log('error', e.message, e.stack);
     }
 
 
@@ -74,7 +74,7 @@ SettingsService.prototype.initialize = function () {
     try {
         this._memoryStore.set('environment:package', fs.readJSONSync(path.join(base, 'package.json')));
     } catch (e) {
-        logger.err(e);
+        logger.log('error', e.message, e.stack);
     }
 
     this._memoryStore.set('environment:userAgent', 'Bookworm/' + this._memoryStore.get('environment:package').version.replace(' ', '-') + ' (' + os.platform() + ' ' + os.release() + ')');

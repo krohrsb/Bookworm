@@ -104,7 +104,7 @@ ActionService.prototype.performGeneralAction = function (action) {
     return this.hasAction(action).then(function (hasAction) {
         var err;
         if (hasAction) {
-            logger.debug('Attempting action %s', action);
+            logger.log('debug', 'Attempting action: ', action);
             if (action === 'refreshActiveAuthors') {
                 return libraryService.refreshActiveAuthors(false);
             } else if (action === 'refreshActiveAuthorsNewBooks') {
@@ -114,7 +114,7 @@ ActionService.prototype.performGeneralAction = function (action) {
             } else if (action === 'forcePostProcess') {
                 return postProcessService.process();
             } else if (action === 'killProcess') {
-                logger.debug('Sending SIGUSR2 to the process', {data: {pid: process.pid}});
+                logger.log('debug', 'Sending SIGUSR2 to the process', {data: {pid: process.pid}});
                 process.kill(process.pid, 'SIGUSR2');
                 return null;
             } else {
@@ -128,7 +128,7 @@ ActionService.prototype.performGeneralAction = function (action) {
     }.bind(this)).then(function () {
         this._emitAction(action, true);
     }.bind(this), function (err) {
-        logger.err(err);
+        logger.log('error', err.message, err.stack);
         this._emitAction(action, false);
     }.bind(this));
 };

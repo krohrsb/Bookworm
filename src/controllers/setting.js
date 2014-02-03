@@ -15,7 +15,6 @@ var logger = require('../services/log').logger();
  */
 function settings (req, res, next) {
     'use strict';
-    logger.trace('Controllers::setting::settings');
     var data = settingService.get();
 
     if (data === null) {
@@ -37,7 +36,6 @@ function settings (req, res, next) {
 function byId (req, res, next) {
     'use strict';
     var data;
-    logger.trace('Controllers::setting::byId(%s)', req.params.id);
     if (req.params.id) {
         data = settingService.get(req.params.id);
     } else {
@@ -62,7 +60,6 @@ function byId (req, res, next) {
 function set (req, res, next) {
     "use strict";
     var result;
-    logger.trace('Controllers::setting::set');
     if (req.body) {
 
         result = settingService.setJSON(req.body);

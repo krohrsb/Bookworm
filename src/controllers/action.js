@@ -14,10 +14,8 @@ var logger = require('../services/log').logger();
  */
 function performAuthorAction (req, res, next) {
     "use strict";
-    logger.trace('Controller::Action::performAuthorAction');
-
     actionService.performAuthorAction(req.body.action, req.params.id).fail(function (err) {
-        logger.err(err);
+        logger.log('error', err.message, err.stack);
     });
     res.send(204);
 }
@@ -31,10 +29,9 @@ function performAuthorAction (req, res, next) {
  */
 function performAuthorsAction (req, res, next) {
     "use strict";
-    logger.trace('Controller::Action::performAuthorsAction');
 
     actionService.performGeneralAction(req.body.action).fail(function (err) {
-        logger.err(err);
+        logger.log('error', err.message, err.stack);
     });
     res.send(204);
 }
@@ -48,10 +45,9 @@ function performAuthorsAction (req, res, next) {
  */
 function performGeneralAction (req, res, next) {
     "use strict";
-    logger.trace('Controller::Action::performGeneralAction');
 
     actionService.performGeneralAction(req.body.action).fail(function (err) {
-        logger.err(err);
+        logger.log('error', err.message, err.stack);
     });
     res.send(204);
 }
@@ -65,7 +61,6 @@ function performGeneralAction (req, res, next) {
  */
 function getActions (req, res, next) {
     "use strict";
-    logger.trace('Controller::Action::getActions');
 
     actionService.getActions().then(function (actions) {
         res.json(actions);

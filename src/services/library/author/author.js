@@ -286,7 +286,6 @@ AuthorService.prototype.removeById = function (id) {
     return this.find(id, {}).then(function (author) {
         var error;
         if (author) {
-            logger.trace('AuthorService::removeById(%s)', id);
             return Q.ninvoke(author, 'getBooks').then(function (books) {
                 return Q.all(books.map(function (book) {
                     return Q.ninvoke(book, 'getReleases').then(function (releases) {

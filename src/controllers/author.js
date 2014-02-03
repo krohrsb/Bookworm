@@ -23,7 +23,6 @@ var modelValidationService = new ModelValidationService();
  */
 function getAll (req, res, next) {
     'use strict';
-    logger.trace('Controller::Author::getAll');
     authorService.all({
         limit: req.query.limit,
         skip: req.query.offset,
@@ -42,8 +41,6 @@ function getAll (req, res, next) {
  */
 function getById (req, res, next) {
     'use strict';
-    logger.trace('Controller::Author::getById(%s)', req.params.id);
-
     authorService.find(req.params.id, {
         expand: req.query.expand
     }).then(function (author) {
@@ -80,7 +77,6 @@ function getById (req, res, next) {
  */
 function getByIdBooks (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::getByIdBooks', {data: {authorId: req.params.id}});
     bookService.all({
         where: {
             authorId: req.params.id
@@ -106,7 +102,6 @@ function getByIdBooks (req, res, next) {
  */
 function create (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::create');
     authorService.create(req.body).then(function (author) {
         res.json(201, author);
     }, function (err) {
@@ -123,7 +118,6 @@ function create (req, res, next) {
  */
 function updateById (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::updateById(%s, {..data..})', req.params.id);
     authorService.updateById(req.params.id, req.body, {
         expand: req.query.expand
     }).then(function (author) {
@@ -146,7 +140,6 @@ function updateById (req, res, next) {
  */
 function update (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::update({..data..})');
     authorService.updateAll(req.body, {
         expand: req.query.expand,
         sort: req.query.sort
@@ -170,7 +163,6 @@ function update (req, res, next) {
  */
 function removeById (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::removeById(%s)', req.params.id);
     authorService.removeById(req.params.id).then(function () {
         res.send(204);
     }, function (err) {
@@ -187,7 +179,6 @@ function removeById (req, res, next) {
  */
 function remove (req, res, next) {
     "use strict";
-    logger.trace('Controller::Author::remove({..data..})');
     authorService.remove(req.body).then(function () {
         res.send(204);
     }, function (err) {

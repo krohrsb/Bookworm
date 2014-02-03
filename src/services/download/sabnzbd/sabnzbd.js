@@ -42,7 +42,7 @@ SabnzbdService.prototype._initializeApi = function () {
     if (this._settings.host && this._settings.apiKey) {
         this._api = new SABnzbdAPI((this._settings.host.indexOf('http') === 0) ? this._settings.host : 'http://' + this._settings.host, this._settings.apiKey);
     } else {
-        logger.warn('SABnzbd host and/or apiKey not specified');
+        logger.log('warn', 'SABnzbd host and/or apiKey not specified');
     }
 
 };

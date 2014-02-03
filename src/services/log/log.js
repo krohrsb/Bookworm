@@ -7,7 +7,10 @@
 var events = require('events');
 var util = require('util');
 var fs = require('fs-extra');
-var winston = require('winston');
+var es = require('event-stream');
+var Logger = require('caterpillar').Logger;
+var filter = require('caterpillar-filter');
+var human = require('caterpillar-human');
 var revalidator = require('revalidator');
 var _ = require('lodash');
 var lineReader = require('line-reader');
@@ -15,19 +18,21 @@ var path = require('path');
 var find = require('findit');
 var Q = require('q');
 
+// Local Dependencies
+var defaultConfig = require('./config');
+
 /**
  * Log Service
  * Provides access to the logger, log querying and detecting current log file.
- * @param {object} settingService - instance of a settings service for #get
+ * @param {object} options - options
  * @constructor
  * @alias module:log
  */
-var LogService = function (settingService) {
+var LogService = function (options) {
     "use strict";
-    this._settingService = settingService;
-    this._logLevelsArray = [];
+    this._defaults = defaultConfig || {};
+    this._settings = _.merge({}, this._defaults, options || {});
     this._logger = null;
-
 
     this.initialize();
 
@@ -42,80 +47,32 @@ util.inherits(LogService, events.EventEmitter);
  */
 LogService.prototype.initialize = function () {
     "use strict";
-    var defaults;
+    var logFilter, logHuman;
 
-    defaults = this._getDefaults();
-    // create log file if it doesn't already exist
-    try {
-        fs.createFileSync(path.join(this._settingService.get('loggers:file:path')));
-    } catch (e) {
-        logger.err(e);
+    logHuman = human.createHuman();
+    //create the logger
+    this._logger = new Logger(this._settings.config);
+
+    if (this._settings.loggers.console.enabled) {
+        logFilter = filter.createFilter({level: (this._settings.loggers.console.debug ? 7 : 6)});
+        this._logger.pipe(logFilter).pipe(logHuman).pipe(process.stdout);
     }
 
-
-    //add colors
-    winston.addColors(defaults.colors);
-
-    //create the logger
-    this._logger = new winston.Logger({
-        transports: [
-            new winston.transports.Console(defaults.transports.console),
-            new winston.transports.File(defaults.transports.file)
-        ]
-    });
-
-    this._logger.setLevels(defaults.levels);
-    this._logLevelsArray = [];
-    Object.keys(defaults.levels).forEach(function (key) {
-        this._logLevelsArray.push(key);
-    }.bind(this));
-
-    this._logger.err = function (err) {
-        this.error(err.message + '\n' + err.stack);
-    }.bind(this._logger);
+    if (this._settings.loggers.file.enabled) {
+        logFilter = filter.createFilter({level: (this._settings.loggers.file.debug ? 7 : 6)});
+        this._logger.pipe(logFilter).pipe(es.join('\n')).pipe(fs.createWriteStream(this._settings.loggers.file.filename, {flags: 'a'}));
+    }
 };
 
 /**
- * Retrieve log defaults
- * @returns {object}
- * @private
+ * Update the instance settings
+ * @param {object} options - Updated options object
  */
-LogService.prototype._getDefaults = function () {
+LogService.prototype.updateSettings = function (options) {
     "use strict";
-    return {
-        levels: {
-            trace: 0,
-            debug: 1,
-            info: 2,
-            warn: 3,
-            error: 4
-        },
-        colors: {
-            trace: 'grey',
-            debug: 'green',
-            info: 'cyan',
-            warn: 'yellow',
-            error: 'red'
-        },
-        transports: {
-            console: {
-                colorize: true,
-                timestamp: true,
-                level: this._settingService.get('loggers:console:level'),
-                silent: !this._settingService.get('loggers:console:enabled'),
-                prettyPrint: true
-            },
-            file: {
-                filename: this._settingService.get('loggers:file:path'),
-                timestamp: true,
-                level: this._settingService.get('loggers:file:level'),
-                silent: !this._settingService.get('loggers:file:enabled'),
-                maxsize: this._settingService.get('loggers:file:maxSize'),
-                maxFiles: this._settingService.get('loggers:file:maxFiles')
-            }
-        }
-
-    };
+    this._logger.log('debug', 'updating settings');
+    this._settings = _.merge({}, this._defaults, options || {});
+    this.initialize();
 };
 
 /**
@@ -128,67 +85,20 @@ LogService.prototype.logger = function () {
 };
 
 /**
- * Retrieve the current log file by detecting which one was modified most recently.
- * @returns {Promise} A promise of type Promise<String, Error>
- */
-LogService.prototype.getLogFile = function () {
-    "use strict";
-    var logDirectory, finder, logFiles, deferred;
-
-    deferred = Q.defer();
-
-    /** @type {object[]}**/
-    logFiles = [];
-    /** @type {string} **/
-    logDirectory = path.dirname(path.join(this._settingService.get('environment:baseDirectory'), this._settingService.get('loggers:file:path')));
-
-    finder = find(logDirectory);
-
-    // process each file
-    finder.on('file', function (file, stat) {
-        // if it is a logfile, add details
-        if (path.extname(file) === '.log') {
-            logFiles.push({
-                file: file,
-                modifiedTime: stat.mtime.getTime()
-            });
-        }
-    });
-    // on read end
-    finder.on('end', function () {
-        var recentSort;
-        // if we have any log files
-        if (logFiles.length) {
-            // sort log files by timestamp to get most recent
-            recentSort = _.sortBy(logFiles, function (result) {
-                return result.modifiedTime;
-            });
-            deferred.resolve(_.last(recentSort).file);
-        } else {
-            deferred.reject(new Error('Unable to locate log file. ' + logDirectory));
-        }
-    });
-
-    return deferred.promise;
-};
-
-/**
  * Query the log service for logs on the filesystem.
  * @param {object} options - query options object, pass in
  * @returns {Promise} A promise of type Promise<Object, Error>
  */
 LogService.prototype.query = function (options) {
     "use strict";
-    var defaults, settings, validateResult, unparsedLogs, parsedLogs, logs, levels;
+    var defaults, settings, validateResult, unparsedLogs, parsedLogs, logs;
     logs = [];
     unparsedLogs = 0;
     parsedLogs = 0;
-    levels = this._logger.levels;
     // set up defaults
     defaults = {
         offset: 0,
-        limit: 10,
-        minLevel: this._logLevelsArray[1]
+        limit: 10
     };
     // extend defaults and options
     settings = _.merge({}, defaults, options || {});
@@ -208,12 +118,6 @@ LogService.prototype.query = function (options) {
                 type: 'integer',
                 minimum: 1,
                 required: true
-            },
-            minLevel: {
-                description: 'The log query minimum log level',
-                type: 'string',
-                required: true,
-                enum: this._logLevelsArray
             }
         }
     });
@@ -221,31 +125,27 @@ LogService.prototype.query = function (options) {
     if (validateResult.valid) {
 
         // get the current log file, use it to read the log
-        return this.getLogFile().then(function (logFile) {
-            var totalLines, log, deferred;
-            deferred = Q.defer();
-            totalLines = 0;
-            lineReader.eachLine(logFile, function (line) {
-                totalLines = totalLines + 1;
-                try {
-                    log = JSON.parse(line);
-                    parsedLogs = parsedLogs + 1;
-                    //if line parsed correctly and level matches
-                    if (levels[log.level] >= levels[settings.minLevel]) {
-                        logs.push(log);
-                    }
-                } catch (e) {
-                    unparsedLogs = unparsedLogs + 1;
-                }
-            }).then(function () {
+        var totalLines, log, deferred, logFile;
+        logFile = this._settings.loggers.file.filename;
+        deferred = Q.defer();
+        totalLines = 0;
+        lineReader.eachLine(logFile, function (line) {
+            totalLines = totalLines + 1;
+            try {
+                log = JSON.parse(line);
+                parsedLogs = parsedLogs + 1;
+                logs.push(log);
+            } catch (e) {
+                unparsedLogs = unparsedLogs + 1;
+            }
+        }).then(function () {
                 var response = {
                     data: logs.reverse().slice(settings.offset, settings.limit + settings.offset),
                     total: totalLines - unparsedLogs
                 };
                 deferred.resolve(response);
             });
-            return deferred.promise;
-        });
+        return deferred.promise;
     } else {
         return Q.fcall(function () {
             throw new Error(JSON.stringify(validateResult.errors[0]));

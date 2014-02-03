@@ -40,7 +40,7 @@ util.inherits(LibraryService, events.EventEmitter);
  */
 LibraryService.prototype.findAndWantRelease = function (book) {
     "use strict";
-    logger.info('Retrieving release for book %s', book.title);
+    logger.log('info', 'Retrieving release for book', {title: book.title});
     /**
      * Steps:
      * 1. Get local book releases
@@ -75,13 +75,13 @@ LibraryService.prototype.findAndWantRelease = function (book) {
         });
 
         if (retryRelease) {
-            logger.info('Retrying previous release %s', retryRelease.title);
+            logger.log('info', 'Retrying previous release', {release: retryRelease.title});
             return retryRelease;
         } else if (availableRelease) {
-            logger.info('Trying stored available release %s', availableRelease.title);
+            logger.log('info', 'Trying stored available release', {release: availableRelease.title});
             return availableRelease;
         } else {
-            logger.info('Searching for new release in cloud');
+            logger.log('info', 'Searching for new release in cloud for book', {title: book.title});
             return remoteReleaseService.query({
                 title: book.title,
                 author: book.authorName
@@ -109,7 +109,14 @@ LibraryService.prototype.findAndWantRelease = function (book) {
                     });
                 }));
             }).then(function (releases) {
-                return _.first(releases);
+                var release;
+                release = _.first(releases);
+                if (releases && releases.length) {
+                    logger.log('info', 'Found multiple releases for book, trying first', {releases: releases.length, book: book.title, release: release.title});
+                } else {
+                    logger.log('info', 'No releases found for book', {title: book.title});
+                }
+                return release;
             });
         }
     }).then(function (release) {
@@ -223,7 +230,7 @@ LibraryService.prototype.refreshAuthor = function (author, options) {
     } else {
         limit = (options.onlyNewBooks) ? settingService.get('searchers:googleBooks:pagingLimits:searchNewBooks') : settingService.get('searchers:googleBooks:pagingLimits:refreshAuthor');
     }
-    logger.info('Refreshing author %s', author.name);
+    logger.log('info', 'Refreshing author', {author: author.name});
     return remoteLibraryService.pagingQuery({
         q: 'inauthor:' + author.name,
         pagingQueryLimit: limit,
@@ -252,7 +259,7 @@ LibraryService.prototype.refreshAuthor = function (author, options) {
             });
     }).then(function (books) {
         author.books = books;
-        logger.info('Finished refreshing author %s', author.name);
+        logger.log('info', 'Finished refreshing author', {author: author.name});
         return author;
     }.bind(this));
 };
@@ -264,7 +271,7 @@ LibraryService.prototype.refreshAuthor = function (author, options) {
  */
 LibraryService.prototype.refreshActiveAuthors = function (onlyNewBooks) {
     "use strict";
-    logger.info('Refreshing all active authors and %s only new books', (onlyNewBooks) ? '': 'not');
+    logger.log('info', 'Refreshing all active authors', {onlyNewBooks: onlyNewBooks});
     return authorService.all({
         where: {
             status: 'active'
@@ -288,7 +295,7 @@ LibraryService.prototype.refreshActiveAuthors = function (onlyNewBooks) {
  */
 LibraryService.prototype.findAndDownloadWantedBooks = function () {
     "use strict";
-    logger.info('Searching for all wanted books for active authors');
+    logger.log('info', 'Searching for all wanted books for active authors');
     return authorService.all({
         where: {
             status: 'active'
