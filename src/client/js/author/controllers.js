@@ -240,4 +240,16 @@
         };
 
     }]);
+
+    module.controller('ModalConfirmInstanceCtrl', ['$scope', '$modalInstance', 'options', function ($scope, $modalInstance, options) {
+        $scope.message = options.message;
+
+        $scope.ok = function () {
+            $modalInstance.close();
+        };
+
+        $scope.cancel = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }]);
 }(angular));

@@ -7,7 +7,7 @@
     'use strict';
     var module;
     module = angular.module('bookworm.author.directives', [], function () {});
-    module.directive('bwAuthor', ['$q', 'socket', 'Restangular', 'toaster', '$timeout', function ($q, socket, Restangular, toaster, $timeout) {
+    module.directive('bwAuthor', ['$q', 'socket', 'Restangular', 'toaster', '$timeout', '$modal', function ($q, socket, Restangular, toaster, $timeout, $modal) {
         return {
             restrict: 'A',
             replace: true,
@@ -81,6 +81,29 @@
                             toaster.pop('success', 'Finished', 'Refreshed author\'s information.');
                         }, 0);
 
+                    });
+                };
+
+                scope.deleteAuthor = function () {
+                    var modalInstance = $modal.open({
+                        templateUrl: 'partials/templates/confirm-modal',
+                        controller: 'ModalConfirmInstanceCtrl',
+                        resolve: {
+                            options: function () {
+                                return {
+                                    message: 'Are you sure you wish to delete the author ' + scope.author.name + '?'
+                                };
+                            }
+                        }
+
+                    });
+
+                    modalInstance.result.then(function () {
+                        scope.author.remove().then(function () {
+                            console.log('deleted', arguments);
+                        });
+                    }, function () {
+                        console.log('cancel');
                     });
                 };
             }

@@ -10,7 +10,6 @@ var _ = require('lodash');
 var Q = require('q');
 var mask = require('json-mask');
 var uuid = require('node-uuid');
-
 // Local Dependencies
 var Author = require('../../../models/author');
 
@@ -287,17 +286,12 @@ AuthorService.prototype.removeById = function (id) {
         var error;
         if (author) {
             return Q.ninvoke(author, 'getBooks').then(function (books) {
-                return Q.all(books.map(function (book) {
-                    return Q.ninvoke(book, 'getReleases').then(function (releases) {
-                        return Q.all(releases.map(function (release) {
-                            return Q.ninvoke(release, 'destroy');
-                        }));
-                    });
-                }));
+                return Q();
             }).then(function () {
-                return Q.ninvoke(author, 'destroy').then(function () {
-                    this.emit('remove', id);
-                }.bind(this));
+                    author.destroy(function (err) {
+                        console.log(arguments);
+                    });
+                return Q();
             }.bind(this));
         } else {
             error = new Error('Author does not exist');

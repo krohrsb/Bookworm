@@ -40,28 +40,28 @@ Once you have those dependencies set up, clone the repo and initialize.
 
 Clone Repo
 ```
-git clone https://github.com/blackbarn/Bookworm.git
+git clone https://github.com/blackbarn/Bookworm.git;
 ```
 Navigate into Bookworm directory
 ```
-cd Bookworm
+cd Bookworm;
 ```
 Install NPM and Bower dependencies
 ```
-npm install && bower install
+npm install && bower install;
 ```
 Build the project
 ```
-grunt
+grunt;
 ```
 
 Now that it is initialized, you can start it up!
 ```
-node bin/bookworm.js
+node bin/bookworm.js;
 ```
 or
 ```
-grunt server
+grunt server;
 ```
 or whatever method you wish to use to start up a node script. (supervisor, forever, etc)
 
@@ -71,13 +71,13 @@ _note, you have a different config json file per environment_
 
 If using grunt server:
 ```
-grunt server:dist
+grunt server:dist;
 ```
 
 If using other:
 ```
-grunt build:prod
-NODE_ENV=production node bin/bookworm.js #or whichever command you are using.
+grunt build:prod;
+NODE_ENV=production node bin/bookworm.js; #or whichever command you are using.
 ```
 
 It defaults to listening on port 3000, but you can change this in the settings.

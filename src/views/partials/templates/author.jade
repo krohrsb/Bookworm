@@ -36,6 +36,10 @@ div
                     button.btn.btn-default.btn-sm(data-ng-click='checkNewBooks()')
                         span.glyphicon.glyphicon-bookmark
                         |  Check for new Books
+                div.btn-group
+                    button.btn.btn-default.btn-sm(data-ng-click='deleteAuthor()')
+                        span.glyphicon.glyphicon-trash
+                        |  Delete
     div.panel.author(data-ng-if='selecting', data-ng-class='{"panel-success": author.status == "active", "panel-danger": author.status == "paused"}')
         div.panel-heading
             h3.panel-title
