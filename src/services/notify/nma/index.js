@@ -37,7 +37,7 @@ util.inherits(NotifyMyAndroid, Notifier);
 NotifyMyAndroid.prototype.shouldNotify = function (trigger) {
     "use strict";
     if (trigger === 'snatched') {
-        return settingService.get('notifiers:nma:onSnatched');
+        return settingService.get('notifiers:nma:onSnatch');
     } else if (trigger === 'download') {
         return settingService.get('notifiers:nma:onDownload');
     } else {
@@ -84,7 +84,7 @@ NotifyMyAndroid.prototype.notify = function (options) {
     "use strict";
     var defaults, settings;
 
-    if (this.shouldNotify(options.trigger)) {
+    if (this.shouldNotify(options.trigger) && settingService.get('notifiers:nma:enabled')) {
         defaults = {
             apikey: settingService.get('notifiers:nma:apiKey'),
             priority: settingService.get('notifiers:nma:priority'),

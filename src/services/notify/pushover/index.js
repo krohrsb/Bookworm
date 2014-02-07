@@ -37,7 +37,7 @@ util.inherits(Pushover, Notifier);
 Pushover.prototype.shouldNotify = function (trigger) {
     "use strict";
     if (trigger === 'snatched') {
-        return settingService.get('notifiers:pushover:onSnatched');
+        return settingService.get('notifiers:pushover:onSnatch');
     } else if (trigger === 'download') {
         return settingService.get('notifiers:pushover:onDownload');
     } else {
@@ -84,18 +84,21 @@ Pushover.prototype.notify = function (options) {
     "use strict";
     var defaults, settings;
 
-    if (this.shouldNotify(options.trigger)) {
+    if (this.shouldNotify(options.trigger) && settingService.get('notifiers:pushover:enabled')) {
         defaults = {
-            token: 'aTCRvqTWvwkeAihuRQHVXyboVKbLef',
-            user: settingService.get('notifiers:pushover:apiKey'),
+            token: settingService.get('notifiers:pushover:apiKey'),
+            user: settingService.get('notifiers:pushover:userKey'),
             priority: settingService.get('notifiers:pushover:priority'),
-            message: this._settings.event + '. ' + this._settings.description,
-            title: this._settings.application,
-            url: this._settings.url,
-            url_title: this._settings.urlTitle
+            description: this._settings.description,
+            event: this._settings.event,
+            application: this._settings.application
         };
 
         settings = _.merge({}, defaults, options || {});
+
+        settings.message = settings.event + '. ' + settings.description;
+        settings.title = settings.application;
+        settings.url_title = settings.urlTitle;
 
         return Q.nfcall(request, {
             uri: this._url,

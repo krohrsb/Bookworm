@@ -68,7 +68,8 @@ module.exports = {
             onSnatch: false,
             onDownload: false,
             priority: 0,
-            apiKey: ''
+            apiKey: '',
+            userKey: ''
         }
     },
     downloaders: {

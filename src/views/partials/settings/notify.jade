@@ -46,7 +46,12 @@ form.form-horizontal(role='form', data-ng-controller='NotificationCtrl')
                     label.col-sm-3.control-label(for='notifiers-pushover-apiKey') API Key
                     div.col-sm-9
                         input.form-control(type='text', placeholder='123xyz', data-ng-model='settings.notifiers.pushover.apiKey', id='notifiers-pushover-apiKey', data-bw-setting)
-                        span.help-block Your Pushover API Key
+                        span.help-block Your Pushover API Key for Bookworm. Create your own Pushover application.
+                div.form-group
+                    label.col-sm-3.control-label(for='notifiers-pushover-userKey') User Key
+                    div.col-sm-9
+                        input.form-control(type='text', placeholder='123xyz', data-ng-model='settings.notifiers.pushover.userKey', id='notifiers-pushover-userKey', data-bw-setting)
+                        span.help-block Your Pushover User Key
                 div.form-group
                     label.col-sm-3.control-label(for='notifiers-pushover-onSnatch') Snatch
                     div.checkbox.col-sm-9
