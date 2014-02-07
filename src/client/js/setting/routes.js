@@ -44,6 +44,10 @@
                 url: '/settings/manage',
                 templateUrl: 'partials/settings/manage',
                 controller: 'SettingsCtrl'
+            }).state('settings-about', {
+                url: '/settings/about',
+                templateUrl: 'partials/settings/about',
+                controller: 'SettingsCtrl'
             });
     }]);
 }(angular));

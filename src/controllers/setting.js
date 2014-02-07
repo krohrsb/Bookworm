@@ -76,9 +76,30 @@ function set (req, res, next) {
 
 }
 
+//noinspection JSUnusedLocalSymbols
+/**
+ * Retrieve environment info
+ * @param {object} req - The Request object.
+ * @param {object} res - The Response object.
+ * @param {function} next - callback to next middleware
+ */
+function getEnvironment (req, res, next) {
+    "use strict";
+    res.send({
+        env: settingService.get('environment:env'),
+        configFile: settingService.get('environment:configFile'),
+        baseDirectory: settingService.get('environment:baseDirectory'),
+        package: settingService.get('environment:package'),
+        userAgent: settingService.get('environment:userAgent'),
+        databaseFile: settingService.get('database:path'),
+        logFile: settingService.get('loggers:file:path')
+    });
+}
+
 
 function setup (app) {
     "use strict";
+    app.get('/api/v1/environment', app.passport.authenticate('localapikey'), getEnvironment);
     app.get('/api/v1/settings', app.passport.authenticate('localapikey'), settings);
     app.get('/api/v1/settings/:id', app.passport.authenticate('localapikey'), byId);
     app.put('/api/v1/settings', app.passport.authenticate('localapikey'), set);

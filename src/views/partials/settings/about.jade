@@ -1,0 +1,40 @@
+include includes/nav
+div.page-header.hidden-xs
+    h1 Settings
+        small about
+form.form-horizontal(role='form')
+    fieldset
+    div.col-sm-6
+        legend Configuration
+        div.form-group
+            dl.dl-horizontal
+                dt Environment
+                dd
+                    code {{environment.env}}
+                dt App Version
+                dd
+                    code {{environment.package.version}}
+                dt User-Agent
+                dd
+                    code {{environment.userAgent}}
+                dt Configuration File
+                dd
+                    code {{environment.configFile}}
+                dt Database File
+                dd
+                    code {{environment.databaseFile}}
+                dt Log File
+                dd
+                    code {{environment.logFile}}
+        legend Info
+        div.form-group
+            dl.dl-horizontal
+                dt Author
+                dd {{environment.package.author.name}} &lt;{{environment.package.author.email}}&gt;
+                dt Source
+                dd
+                    a(href='{{"https://github.com/blackbarn/Bookworm" | dereferrer}}', target='_blank') https://github.com/blackbarn/Bookworm
+    legend Made Possible By
+    p
+        small jetbrains webstorm, google chrome, node, git, github, {{environment.package.dependenciesList}}, {{environment.package.devDependenciesList}}
+

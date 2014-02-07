@@ -10,6 +10,12 @@
     module.controller('SettingsCtrl', ['$scope', '$filter', 'Restangular', 'toaster', 'guid', function ($scope, $filter, Restangular, toaster, guid) {
 
         /**
+         * Application environment info
+         * @type {object}
+         */
+        $scope.environment = null;
+
+        /**
          * Settings object that contains all settings.
          * @type {object}
          */
@@ -56,6 +62,12 @@
         // grab the initial settings data;
         Restangular.one('settings').get().then(function (settings) {
             $scope.settings = settings.data;
+        });
+
+        Restangular.one('environment').get().then(function (environment) {
+            $scope.environment = environment;
+            $scope.environment.package.dependenciesList = Object.keys($scope.environment.package.dependencies).join(', ');
+            $scope.environment.package.devDependenciesList = Object.keys($scope.environment.package.devDependencies).join(', ');
         });
 
     }]);
