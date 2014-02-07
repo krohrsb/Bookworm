@@ -7,7 +7,7 @@
     'use strict';
     var module;
     module = angular.module('bookworm.author.directives', [], function () {});
-    module.directive('bwAuthor', ['$q', 'socket', 'Restangular', 'toaster', '$timeout', '$modal', function ($q, socket, Restangular, toaster, $timeout, $modal) {
+    module.directive('bwAuthor', ['$q', '$state', 'socket', 'Restangular', 'toaster', '$timeout', '$modal', function ($q, $state, socket, Restangular, toaster, $timeout, $modal) {
         return {
             restrict: 'A',
             replace: true,
@@ -100,10 +100,9 @@
 
                     modalInstance.result.then(function () {
                         scope.author.remove().then(function () {
-                            console.log('deleted', arguments);
+                            toaster.pop('success', 'Author removed!');
+                            $state.go('authors');
                         });
-                    }, function () {
-                        console.log('cancel');
                     });
                 };
             }

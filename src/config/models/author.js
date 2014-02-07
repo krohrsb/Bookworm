@@ -14,8 +14,7 @@ module.exports = function(sequelize, DataTypes) {
         guid: {
             type: DataTypes.TEXT,
             allowNull: false,
-            unique: true,
-            onDelete: 'cascade'
+            unique: true
         },
         description: {
             type: DataTypes.TEXT,
@@ -65,7 +64,7 @@ module.exports = function(sequelize, DataTypes) {
              */
             associate: function(models) {
                 'use strict';
-                Author.hasMany(models.Book);
+                Author.hasMany(models.Book, {onDelete: 'cascade'});
             },
             /**
              * Initialize hooks for this model
