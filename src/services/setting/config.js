@@ -62,6 +62,13 @@ module.exports = {
             onDownload: false,
             priority: 0,
             apiKey: ''
+        },
+        pushover: {
+            enabled: false,
+            onSnatch: false,
+            onDownload: false,
+            priority: 0,
+            apiKey: ''
         }
     },
     downloaders: {

@@ -10,30 +10,6 @@ var logger = require('../services/log').logger();
 
 //noinspection JSUnusedLocalSymbols
 /**
- * Verify a notifier
- * @param {object} req - The Request object.
- * @param {object} res - The Response object.
- * @param {function} next - callback to next middleware
- */
-function verify (req, res, next) {
-    'use strict';
-    var notifier;
-    notifier = notificationService.getNotifier(req.params.name);
-
-    if (notifier) {
-        notifier.verify({}).then(function (response) {
-            if (response.statusCode) {
-                res.status(parseInt(response.statusCode, 10));
-            }
-            res.json(response);
-        }, next);
-    } else {
-        res.send(404);
-    }
-}
-
-//noinspection JSUnusedLocalSymbols
-/**
  * Notify a notifier
  * @param {object} req - The Request object.
  * @param {object} res - The Response object.
@@ -46,7 +22,7 @@ function notify (req, res, next) {
     notifier = notificationService.getNotifier(req.params.name);
 
     if (notifier) {
-        notifier.notify(req.body || {}).then(function (response) {
+        notifier.notify({}).then(function (response) {
             if (response.statusCode) {
                 res.status(parseInt(response.statusCode, 10));
             }
@@ -84,7 +60,6 @@ function getNotifiers (req, res, next) {
 function setup (app) {
     "use strict";
     app.get('/api/v1/notifiers', app.passport.authenticate('localapikey'), getNotifiers);
-    app.get('/api/v1/notifiers/:name/verify', app.passport.authenticate('localapikey'), verify);
     app.put('/api/v1/notifiers/:name/notify', app.passport.authenticate('localapikey'), notify);
 }
 module.exports.setup = setup;

@@ -6,7 +6,7 @@ var db = require('../../config/models');
 var logger = require('../log').logger();
 var NotificationService = require('./notify-manager');
 var NotifyMyAndroid = require('./nma');
-
+var Pushover = require('./pushover');
 // Initialize the service
 var notificationService = new NotificationService();
 
@@ -15,16 +15,14 @@ notificationService.addNotifier(new NotifyMyAndroid({
     name: 'nma'
 }));
 
+notificationService.addNotifier(new Pushover({
+    name: 'pushover'
+}));
+
 // Listen to notify events and log them for posterity.
 notificationService.on('notify', function (data) {
     "use strict";
     logger.log('info', 'Sent notification', data);
-});
-
-// Listen to verify events and log them for posterity.
-notificationService.on('verify', function (data) {
-    "use strict";
-    logger.log('info', 'Verified notifier', data);
 });
 
 // Listen to book snatched events and attempt to notify.
@@ -33,7 +31,9 @@ db.emitter.on('book/snatched', function (book) {
     notificationService.notify({
         event: 'Book Snatched',
         trigger: 'snatched',
-        description: book.title
+        description: book.title,
+        url: book.apiLink,
+        urlTitle: book.title + '@' + book.provider
     });
 });
 

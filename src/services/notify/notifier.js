@@ -62,15 +62,6 @@ Notifier.prototype.notify = function () {
 };
 
 /**
- * Verify, meant to be overridden, abstract.
- * @returns {Promise} A promise of type Promise<>
- */
-Notifier.prototype.verify = function () {
-    'use strict';
-    return Q.defer().promise;
-};
-
-/**
  * Determine if notifier should notify given an trigger. Should be overridden.
  * @returns {boolean}
  */
@@ -96,7 +87,8 @@ Notifier.prototype.toString = function () {
 Notifier.prototype.toJSON = function () {
     "use strict";
     return _.merge({}, {
-        isEnabled: this._isEnabled
+        isEnabled: this._isEnabled,
+        url: this._url,
     }, this._settings);
 };
 

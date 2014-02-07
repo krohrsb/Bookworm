@@ -8,38 +8,38 @@ var util = require('util');
 var request = require('request');
 var _ = require('lodash');
 var Q = require('q');
-var xml2js = require('xml2js');
 
 // Local Dependencies
 var Notifier = require('../notifier');
 var settingService = require('../../setting');
 
 /**
- * Notify My Android Notifier
+ * Pushover Notifier
  * @param options
  * @constructor
  */
-var NotifyMyAndroid = function (options) {
+var Pushover = function (options) {
     "use strict";
 
-    this._url = 'https://www.notifymyandroid.com/publicapi/notify';
+    this._url = 'https://api.pushover.net/1/messages.json';
 
     Notifier.call(this, options);
 };
 
-util.inherits(NotifyMyAndroid, Notifier);
+
+util.inherits(Pushover, Notifier);
 
 /**
  * Determine if this notifier should notify based on a given trigger.
  * @param {string} trigger - The name of an arbitrary trigger
  * @returns {boolean}
  */
-NotifyMyAndroid.prototype.shouldNotify = function (trigger) {
+Pushover.prototype.shouldNotify = function (trigger) {
     "use strict";
     if (trigger === 'snatched') {
-        return settingService.get('notifiers:nma:onSnatched');
+        return settingService.get('notifiers:pushover:onSnatched');
     } else if (trigger === 'download') {
-        return settingService.get('notifiers:nma:onDownload');
+        return settingService.get('notifiers:pushover:onDownload');
     } else {
         return true;
     }
@@ -51,46 +51,48 @@ NotifyMyAndroid.prototype.shouldNotify = function (trigger) {
  * @returns {Promise} A promise of type Promise<Object, Error>
  * @private
  */
-NotifyMyAndroid.prototype._parseResponse = function (response) {
+Pushover.prototype._parseResponse = function (response) {
     "use strict";
     var deferred = Q.defer();
 
-    if (response.nma && response.nma.error) {
+    if (response && response.errors) {
         deferred.resolve({
             success: false,
-            message: response.nma.error[0]._,
+            message: response.errors[0],
             enabled: this._isEnabled,
-            statusCode: response.nma.error[0].$.code
+            statusCode: 400
         });
-    } else if (response.nma && response.nma.success) {
+    } else if (response && !response.errors) {
         deferred.resolve({
             success: true,
             message: 'success',
             enabled: this._isEnabled,
-            statusCode: response.nma.success[0].$.code
+            statusCode: 200
         });
     } else {
-        deferred.reject(new Error('could not parse nma response'));
+        deferred.reject(new Error('could not parse pushover response'));
     }
     return deferred.promise;
 };
 
 /**
- * Notify using NMA. Check if it should notify first, using the given event.
+ * Notify using Pushover. Check if it should notify first, using the given event.
  * @param {object} options - Notification options
  * @returns {Promise} A promise of type Promise<Object, Error>
  */
-NotifyMyAndroid.prototype.notify = function (options) {
+Pushover.prototype.notify = function (options) {
     "use strict";
     var defaults, settings;
 
     if (this.shouldNotify(options.trigger)) {
         defaults = {
-            apikey: settingService.get('notifiers:nma:apiKey'),
-            priority: settingService.get('notifiers:nma:priority'),
-            description: this._settings.description,
-            event: this._settings.event,
-            application: this._settings.application
+            token: 'aTCRvqTWvwkeAihuRQHVXyboVKbLef',
+            user: settingService.get('notifiers:pushover:apiKey'),
+            priority: settingService.get('notifiers:pushover:priority'),
+            message: this._settings.event + '. ' + this._settings.description,
+            title: this._settings.application,
+            url: this._settings.url,
+            url_title: this._settings.urlTitle
         };
 
         settings = _.merge({}, defaults, options || {});
@@ -98,15 +100,14 @@ NotifyMyAndroid.prototype.notify = function (options) {
         return Q.nfcall(request, {
             uri: this._url,
             method: 'POST',
+            json: true,
             form: settings
         }).spread(function (http, response) {
             if (response) {
-                return Q.ninvoke(xml2js, 'parseString', response).then(function (response) {
-                    this.emit('notify', response);
-                    return response;
-                }.bind(this));
+                this.emit('notify', response);
+                return response;
             } else {
-                throw new Error('empty response from NMA');
+                throw new Error('empty response from pushover');
             }
         }.bind(this)).then(this._parseResponse.bind(this));
     } else {
@@ -124,4 +125,4 @@ NotifyMyAndroid.prototype.notify = function (options) {
 
 };
 
-module.exports = NotifyMyAndroid;
+module.exports = Pushover;
