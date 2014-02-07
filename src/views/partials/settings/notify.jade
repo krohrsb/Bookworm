@@ -7,36 +7,36 @@ form.form-horizontal(role='form', data-ng-controller='NotificationCtrl')
         div.col-sm-6
             legend Notify My Android
             div.form-group
-                label.col-sm-3.control-label NMA
+                label.col-sm-3.control-label(for='notifiers-nma-enabled') NMA
                 div.checkbox.col-sm-9
-                    input(type='checkbox', value='', data-ng-model='settings.notifiers.nma.enabled', data-bw-setting)
+                    input(type='checkbox', value='', data-ng-model='settings.notifiers.nma.enabled', id='notifiers-nma-enabled', data-bw-setting)
                     span.text-muted Enable notifying with Notify My Android?
             div(data-ng-show='settings.notifiers.nma.enabled')
                 div.form-group
-                    label.col-sm-3.control-label API Key
+                    label.col-sm-3.control-label(for='notifiers-nma-apiKey') API Key
                     div.col-sm-9
-                        input.form-control(type='text', placeholder='123xyz', data-ng-model='settings.notifiers.nma.apiKey', data-bw-setting)
+                        input.form-control(type='text', placeholder='123xyz', data-ng-model='settings.notifiers.nma.apiKey', id='notifiers-nma-apiKey', data-bw-setting)
                         span.help-block Your NMA API Key
                 div.form-group
-                    label.col-sm-3.control-label Snatch
+                    label.col-sm-3.control-label(for='notifiers-nma-onSnatch') Snatch
                     div.checkbox.col-sm-9
-                        input(type='checkbox', value='', data-ng-model='settings.notifiers.nma.onSnatch', data-bw-setting)
+                        input(type='checkbox', value='', data-ng-model='settings.notifiers.nma.onSnatch', id='notifiers-nma-onSnatch', data-bw-setting)
                         span Notify on snatch?
                 div.form-group
-                    label.col-sm-3.control-label Download
+                    label.col-sm-3.control-label(for='notifiers-nma-onDownload') Download
                     div.checkbox.col-sm-9
-                        input(type='checkbox', value='', data-ng-model='settings.notifiers.nma.onDownload', data-bw-setting)
+                        input(type='checkbox', value='', data-ng-model='settings.notifiers.nma.onDownload', id='notifiers-nma-onDownload', data-bw-setting)
                         span Notify on download?
                 div.form-group
-                    label.col-sm-3.control-label Priority
+                    label.col-sm-3.control-label(for='notifiers-nma-priority') Priority
                     div.col-sm-9
-                        select.form-control(data-ng-model='settings.notifiers.nma.priority', data-ng-options='priority.value as priority.name for priority in nmaPriorities', data-bw-setting)
+                        select.form-control(data-ng-model='settings.notifiers.nma.priority', data-ng-options='priority.value as priority.name for priority in nmaPriorities', id='notifiers-nma-priority', data-bw-setting)
                         span.help-block Notify My Android Priority
                 div.form-group
-                    label.col-sm-3.control-label Test
+                    label.col-sm-3.control-label(for='notifiers-nma-test') Test
                     div.col-sm-9
                         div.input-group
-                            input.form-control(type='text', placeholder='some message', data-ng-model='nmaMessage')
+                            input.form-control(type='text', placeholder='some message', data-ng-model='nmaMessage', id='notifiers-nma-test')
                             span.input-group-btn
                                 button.btn.btn-default(data-ng-click='nmaNotify(nmaMessage)') Notify
                                 button.btn.btn-default(data-ng-click='nmaVerify()') Verify

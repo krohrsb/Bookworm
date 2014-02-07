@@ -14,6 +14,9 @@ form.form-horizontal(role='form')
                 dt App Version
                 dd
                     code {{environment.package.version}}
+                dt Base Directory
+                dd
+                    code {{environment.baseDirectory}}
                 dt User-Agent
                 dd
                     code {{environment.userAgent}}
@@ -33,7 +36,7 @@ form.form-horizontal(role='form')
                 dd {{environment.package.author.name}} &lt;{{environment.package.author.email}}&gt;
                 dt Source
                 dd
-                    a(href='{{"https://github.com/blackbarn/Bookworm" | dereferrer}}', target='_blank') https://github.com/blackbarn/Bookworm
+                    a(href='{{environment.package.repository.url | dereferrer}}', target='_blank') {{environment.package.repository.url}}
     legend Made Possible By
     p
         small jetbrains webstorm, google chrome, node, git, github, {{environment.package.dependenciesList}}, {{environment.package.devDependenciesList}}

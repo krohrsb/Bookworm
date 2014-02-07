@@ -7,33 +7,33 @@ form.form-horizontal(role='form')
         div.col-sm-6
             legend SABnzbd
             div.form-group
-                label.col-sm-3.control-label SABnzbd
+                label.col-sm-3.control-label(for='downloaders-sabnzbd-enabled') SABnzbd
                 div.checkbox.col-sm-9
-                    input(type='checkbox', value='', data-ng-model='settings.downloaders.sabnzbd.enabled', data-bw-setting)
+                    input(type='checkbox', value='', data-ng-model='settings.downloaders.sabnzbd.enabled', id='downloaders-sabnzbd-enabled', data-bw-setting)
                     span.text-muted Enable downloading with SABnzbd.
             div(data-ng-show='settings.downloaders.sabnzbd.enabled')
                 div.form-group
-                    label.col-sm-3.control-label Host
+                    label.col-sm-3.control-label(for='downloaders-sabnzbd-host') Host
                     div.col-sm-9
-                        input.form-control(type='text', placeholder='http://localhost:8080/', data-ng-model='settings.downloaders.sabnzbd.host', data-bw-setting)
+                        input.form-control(type='text', placeholder='http://localhost:8080/', data-ng-model='settings.downloaders.sabnzbd.host', id='downloaders-sabnzbd-host', data-bw-setting)
                         span.help-block The SABnzbd host.
                 div.form-group
-                    label.col-sm-3.control-label Username
+                    label.col-sm-3.control-label(for='downloaders-sabnzbd-username') Username
                     div.col-sm-9
-                        input.form-control(type='text', placeholder='', data-ng-model='settings.downloaders.sabnzbd.username', data-bw-setting)
+                        input.form-control(type='text', placeholder='', data-ng-model='settings.downloaders.sabnzbd.username', id='downloaders-sabnzbd-username', data-bw-setting)
                         span.help-block Your SABnzbd user name.
                 div.form-group
-                    label.col-sm-3.control-label Password
+                    label.col-sm-3.control-label(for='downloaders-sabnzbd-password') Password
                     div.col-sm-9
-                        input.form-control(type='password', placeholder='', data-ng-model='settings.downloaders.sabnzbd.password', data-bw-setting)
+                        input.form-control(type='password', placeholder='', data-ng-model='settings.downloaders.sabnzbd.password', id='downloaders-sabnzbd-password', data-bw-setting)
                         span.help-block Your SABnzbd password.
                 div.form-group
-                    label.col-sm-3.control-label API Key
+                    label.col-sm-3.control-label(for='downloaders-sabnzbd-apiKey') API Key
                     div.col-sm-9
-                        input.form-control(type='text', placeholder='123xyz', data-ng-model='settings.downloaders.sabnzbd.apiKey', data-bw-setting)
+                        input.form-control(type='text', placeholder='123xyz', data-ng-model='settings.downloaders.sabnzbd.apiKey', id='downloaders-sabnzbd-apiKey', data-bw-setting)
                         span.help-block Your SABnzbd API Key.
                 div.form-group
-                    label.col-sm-3.control-label Category
+                    label.col-sm-3.control-label(for='downloaders-sabnzbd-category') Category
                     div.col-sm-9
-                        input.form-control(type='text', placeholder='ebooks', data-ng-model='settings.downloaders.sabnzbd.category', data-bw-setting)
+                        input.form-control(type='text', placeholder='ebooks', data-ng-model='settings.downloaders.sabnzbd.category', id='downloaders-sabnzbd-category', data-bw-setting)
                         span.help-block The category downloads should be place under.

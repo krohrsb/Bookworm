@@ -8,33 +8,33 @@ form.form-horizontal(role='form')
         div.col-sm-6
             legend General
             div.form-group
-                label.col-sm-3.control-label Newznab
+                label.col-sm-3.control-label(for='searchers-newznab-enabled') Newznab
                 div.checkbox.col-sm-9
-                    input(type='checkbox', value='', data-ng-model='settings.searchers.newznab.enabled', data-bw-setting)
+                    input(type='checkbox', value='', data-ng-model='settings.searchers.newznab.enabled', id='searchers-newznab-enabled', data-bw-setting)
                     span.text-muted Enable newznab searching.
             div(data-ng-show='settings.searchers.newznab.enabled')
                 div.form-group
-                    label.col-sm-3.control-label Retention
+                    label.col-sm-3.control-label(for='searchers-newznab-retention') Retention
                     div.col-sm-9
-                        input.form-control(type='number', placeholder='1500', data-ng-model='settings.searchers.newznab.retention', data-bw-setting)
+                        input.form-control(type='number', placeholder='1500', data-ng-model='settings.searchers.newznab.retention', id='searchers-newznab-retention', data-bw-setting)
                         span.label.label-default.pull-right Days
                         span.help-block The server retention.
                 div.form-group
-                    label.col-sm-3.control-label Frequency
+                    label.col-sm-3.control-label(for='searchers-newznab-frequency') Frequency
                     div.col-sm-9
-                        input.form-control(type='number', placeholder='500', data-ng-model='settings.searchers.newznab.frequency', data-bw-setting)
+                        input.form-control(type='number', placeholder='500', data-ng-model='settings.searchers.newznab.frequency', id='searchers-newznab-frequency', data-bw-setting)
                         span.label.label-default.pull-right Minutes
                         span.help-block How often Bookworm should search for nzb's.
                 div.form-group
-                    label.col-sm-3.control-label Cache TTL
+                    label.col-sm-3.control-label(for='searchers-newznab-cache') Cache TTL
                     div.col-sm-9
-                        input.form-control(type='number', placeholder='60000', data-ng-model='settings.searchers.newznab.cache', data-bw-setting)
+                        input.form-control(type='number', placeholder='60000', data-ng-model='settings.searchers.newznab.cache', id='searchers-newznab-cache', data-bw-setting)
                         span.label.label-default.pull-right Milliseconds
                         span.help-block How long should Bookworm cache unique requests to newznab providers?
                 div.form-group
-                    label.col-sm-3.control-label Ignored Words
+                    label.col-sm-3.control-label(for='searchers-newznab-ignoredWords') Ignored Words
                     div.col-sm-9
-                        input.form-control(type='text', placeholder='mobi, preview, sample', data-ng-model='settings.searchers.newznab.ignoredWords', data-bw-setting)
+                        input.form-control(type='text', placeholder='mobi, preview, sample', data-ng-model='settings.searchers.newznab.ignoredWords', id='searchers-newznab-ignoredWords', data-bw-setting)
                         span.help-block Comma separated list of words to ignore in releases.
 
         div.col-sm-6(data-ng-show='settings.searchers.newznab.enabled')
@@ -46,14 +46,14 @@ form.form-horizontal(role='form')
             div.col-sm-offset-2.well(data-ng-repeat='host in settings.searchers.newznab.hosts')
                 button.close(aria-hidden='true', type='button', data-ng-click='removeHost(settings.searchers.newznab.hosts, $index, "searchers/newznab/hosts")') &times;
                 div.form-group
-                    label.col-sm-3.control-label Enabled
-                    div.checkbox.col-sm-9
-                        input(type='checkbox', value='', data-ng-model='settings.searchers.newznab.hosts[$index].enabled', data-bw-setting)
+                    label.col-sm-3.control-label(for='searchers-newznab-hosts-{{$index}}-enabled') Enabled
+                    div.checkbox.col-sm-4
+                        input(type='checkbox', value='', data-ng-model='settings.searchers.newznab.hosts[$index].enabled', id='searchers-newznab-hosts-{{$index}}-enabled', data-bw-setting)
                 div.form-group
-                    label.col-sm-3.control-label Host
+                    label.col-sm-3.control-label(for='searchers-newznab-hosts-{{$index}}-host') Host
                     div.col-sm-9
-                        input.form-control(type='text', placeholder='http://nzb.su', data-ng-model='settings.searchers.newznab.hosts[$index].host', data-bw-setting)
+                        input.form-control(type='text', placeholder='http://nzb.su', data-ng-model='settings.searchers.newznab.hosts[$index].host', id='searchers-newznab-hosts-{{$index}}-host', data-bw-setting)
                 div.form-group
-                    label.col-sm-3.control-label API Key
+                    label.col-sm-3.control-label(for='searchers-newznab-hosts-{{$index}}-apiKey') API Key
                     div.col-sm-9
-                        input.form-control(type='text', placeholder='xyz123', data-ng-model='settings.searchers.newznab.hosts[$index].apiKey', data-bw-setting)
+                        input.form-control(type='text', placeholder='xyz123', data-ng-model='settings.searchers.newznab.hosts[$index].apiKey', id='searchers-newznab-hosts-{{$index}}-apiKey', data-bw-setting)
