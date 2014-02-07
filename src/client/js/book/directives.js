@@ -22,24 +22,24 @@
                 var updateVisibilityChecks;
 
                 //forward book:update event
-                socket.forward('book:update', scope);
+                socket.forward('book/afterUpdate', scope);
                 //forward releases:create event
-                socket.forward('release:create', scope);
+                socket.forward('release/afterCreate', scope);
 
                 /**
                  * On book update, check to see if we are the book and if so update our status and updated properties.
                  */
-                scope.$on('socket:book:update', function (ev, updatedBook) {
+                scope.$on('socket:book/afterUpdate', function (ev, updatedBook) {
                     if (ev.targetScope.book.id.toString() === updatedBook.id.toString()) {
                         ev.targetScope.book.status = updatedBook.status;
-                        ev.targetScope.book.updated = updatedBook.updated;
+                        ev.targetScope.book.updatedAt = updatedBook.updatedAt;
                     }
                 });
 
                 /**
                  * On Release creation, add it to the book's collection
                  */
-                scope.$on('socket:release:create', function (ev, createdRelease) {
+                scope.$on('socket:release/afterCreate', function (ev, createdRelease) {
                     if (ev.targetScope.book.id.toString() === createdRelease.bookId.toString()) {
                         ev.targetScope.book.releases.push(createdRelease);
                     }

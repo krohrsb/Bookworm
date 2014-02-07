@@ -53,6 +53,12 @@ NotificationService.prototype.addNotifier = function (notifier) {
 
     if (notifier) {
         this._notifiers.push(notifier);
+        notifier.on('notify', function (data) {
+            this.emit('notify', data);
+        }.bind(this));
+        notifier.on('verify', function (data) {
+            this.emit('verify', data);
+        }.bind(this));
         return notifier;
     } else {
         return notifier;

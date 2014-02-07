@@ -5,13 +5,9 @@
 
 var logger = require('../services/log').logger();
 
-var releaseService = require('../services/library/release');
-
-var bookService = require('../services/library/book');
-
-var ModelValidationService = require('../services/model-validation');
-var modelValidationService = new ModelValidationService();
-
+var Q = require('q');
+var _ = require('lodash');
+var db = require('../config/models');
 //noinspection JSUnusedLocalSymbols
 /**
  * Retrieve all releases
@@ -22,13 +18,13 @@ var modelValidationService = new ModelValidationService();
  */
 function getAll (req, res, next) {
     'use strict';
-    releaseService.all({
+    var options = {
+        include: [db.Book],
         limit: req.query.limit,
-        skip: req.query.offset,
-        order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : '')) : ''
-    }, {
-        expand: req.query.expand
-    }).then(res.json.bind(res), next);
+        offset: req.query.offset,
+        order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : ' DESC')) : ''
+    };
+    db.Release.all(options).then(res.json.bind(res), next);
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -40,8 +36,11 @@ function getAll (req, res, next) {
  */
 function getById (req, res, next) {
     'use strict';
-    releaseService.find(req.params.id, {
-        expand: req.query.expand
+    db.Release.find({
+        where: {
+            id: req.params.id
+        },
+        include: [db.Book]
     }).then(function (release) {
         if (release) {
             res.json(release);
@@ -60,15 +59,14 @@ function getById (req, res, next) {
  */
 function getByIdBook (req, res, next) {
     "use strict";
-    releaseService.findBook(req.params.id).then(function (book) {
-        if (book) {
-            return bookService.expandBook(req.query.expand, book);
-        } else {
-            return null;
-        }
-    }).then(function (book) {
-        if (book) {
-            res.json(book);
+    db.Release.find({
+        where: {
+            id: req.params.id
+        },
+        include: [db.Book]
+    }).then(function (release) {
+        if (release) {
+            res.json(release.book);
         } else {
             res.send(404);
         }
@@ -84,11 +82,15 @@ function getByIdBook (req, res, next) {
  */
 function create (req, res, next) {
     "use strict";
-    releaseService.create(req.body).then(function (release) {
-        res.json(201, release);
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    db.Release.findOrCreate({
+        guid: req.body.guid
+    }, req.body).spread(function (release) {
+        if (release) {
+            res.json(201, release);
+        } else {
+            res.send(409);
+        }
+    }, next);
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -100,17 +102,24 @@ function create (req, res, next) {
  */
 function updateById (req, res, next) {
     "use strict";
-    releaseService.updateById(req.params.id, req.body, {
-        expand: req.query.expand
+    db.Release.find({
+        where: {
+            id: req.params.id
+        },
+        include: [db.Book]
+    }).then(function (release) {
+        if (release) {
+            return release.updateAttributes(req.body, ['status']);
+        } else {
+            return null;
+        }
     }).then(function (release) {
         if (release) {
             res.json(200, release);
         } else {
             res.send(404);
         }
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    }, next);
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -122,17 +131,31 @@ function updateById (req, res, next) {
  */
 function update (req, res, next) {
     "use strict";
-    releaseService.updateAll(req.body, {
-        expand: req.query.expand
-    }).then(function (releases) {
-            if (releases) {
-                res.json(200, releases);
-            } else {
-                res.send(409);
-            }
-        }, function (err) {
-            modelValidationService.formatError(err).then(next, next);
-        });
+
+    if (_.isArray(req.body)) {
+        Q.all(req.body.map(function (release) {
+                return db.Release.find({
+                    where: {
+                        id: release.id
+                    },
+                    include: [db.Book]
+                }).then(function (foundRelease) {
+                        if (foundRelease) {
+                            return foundRelease.updateAttributes(release, ['status']);
+                        } else {
+                            return release;
+                        }
+                    });
+            })).then(function (releases) {
+                if (releases) {
+                    res.json(200, releases);
+                } else {
+                    res.send(409);
+                }
+            });
+    } else {
+        next(new Error('Expecting an array for update'));
+    }
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -144,11 +167,16 @@ function update (req, res, next) {
  */
 function removeById (req, res, next) {
     "use strict";
-    releaseService.removeById(req.params.id).then(function () {
-        res.send(204);
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+
+    db.Release.find(req.params.id).then(function (release) {
+        if (release) {
+            release.destroy().then(function () {
+                res.send(204);
+            }, next);
+        } else {
+            res.send(404);
+        }
+    }, next);
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -160,11 +188,9 @@ function removeById (req, res, next) {
  */
 function remove (req, res, next) {
     "use strict";
-    releaseService.remove(req.body).then(function () {
+    db.Release.destroy(req.body).then(function () {
         res.send(204);
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    }, next);
 }
 
 function setup (app) {

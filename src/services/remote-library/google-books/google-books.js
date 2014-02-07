@@ -63,7 +63,7 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
     if (_.isEmpty(data)) {
         deferred.reject(new Error(errors.NO_BOOK_DATA));
     } else if (_.isEmpty(data.volumeInfo)) {
-        logger.log('debug', 'Volume info not found, skipping', {data: {query: options.q}});
+        logger.log('debug', 'Volume info not found, skipping', {query: options.q});
         deferred.resolve();
     } else {
         //noinspection JSUnresolvedVariable
@@ -92,22 +92,22 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
         ignoredWord = this._parser.detectIgnoredWords(ignoredWords, volume.title);
 
         if (_.isEmpty(volume.title)) {
-            logger.log('debug', 'Title not defined for book, skipping', {data: {guid: data.id}});
+            logger.log('debug', 'Title not defined for book, skipping', {guid: data.id});
             deferred.resolve();
         } else if (!author) {
-            logger.log('debug', 'Author could not be found for book, skipping', {data: {title: volume.title, author: volume.authors || volume.author}});
+            logger.log('debug', 'Author could not be found for book, skipping', {title: volume.title, author: volume.authors || volume.author});
             deferred.resolve();
         } else if (!_.isEmpty(languages) && !_.contains(languages, volume.language)) {
-            logger.log('debug', 'Book language does not match selected language filter, skipping', {data: {title: volume.title, filter: languages, language: languages}});
+            logger.log('debug', 'Book language does not match selected language filter, skipping', {title: volume.title, filter: languages, language: languages});
             deferred.resolve();
         } else if (settingService.get('searchers:googleBooks:filters:description') && _.isEmpty(description)) {
-            logger.log('debug', 'Book does not contain a description, skipping', {data: {title: volume.title}});
+            logger.log('debug', 'Book does not contain a description, skipping', {title: volume.title});
             deferred.resolve();
         } else if (settingService.get('searchers:googleBooks:filters:isbn') && _.isEmpty(isbn)) {
-            logger.log('debug', 'Industry Identifier (ISBN) not available for Book, skipping', {data: {title: volume.title}});
+            logger.log('debug', 'Industry Identifier (ISBN) not available for Book, skipping', {title: volume.title});
             deferred.resolve();
         } else if (ignoredWord) {
-            logger.log('info', 'Book title contains an ignored word, skipping', {data: {ignoredWord: ignoredWord, title: volume.title}});
+            logger.log('info', 'Book title contains an ignored word, skipping', {ignoredWord: ignoredWord, title: volume.title});
             deferred.resolve();
         } else {
             //noinspection JSUnresolvedVariable,JSUnresolvedFunction
@@ -127,8 +127,7 @@ GoogleBooksService.prototype.constructBook = function(options, data) {
                 status: 'skipped',
                 link: volume.canonicalVolumeLink,
                 apiLink: data.selfLink,
-                provider: this._providerName,
-                updated: Date.now()
+                provider: this._providerName
             };
             deferred.resolve(book);
         }

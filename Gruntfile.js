@@ -232,6 +232,11 @@ module.exports = function (grunt) {
             },
             dev: {
                 options: {
+                    script: 'bin/bookworm.js'
+                }
+            },
+            debug: {
+                options: {
                     script: 'bin/bookworm.js',
                     debug: true
                 }
@@ -283,13 +288,26 @@ module.exports = function (grunt) {
 
     grunt.registerTask('server', function (target) {
         if (target === 'dist') {
-            return grunt.task.run(['build:prod', 'express:prod', 'express-keepalive']);
+            return grunt.task.run([
+                'build:prod',
+                'express:prod',
+                'express-keepalive'
+            ]);
+        } else if (target === 'debug') {
+            return grunt.task.run([
+                'build:dev',
+                'express:debug',
+                'watch'
+            ]);
+        } else {
+            return grunt.task.run([
+                'build:dev',
+                'express:dev',
+                'watch'
+            ]);
         }
 
-        return grunt.task.run([
-            'express:dev',
-            'watch'
-        ]);
+
     });
 
     grunt.registerTask('build:dev', [

@@ -71,7 +71,6 @@
         // Define error interceptor
         Restangular.setErrorInterceptor(function (response) {
             ngProgressLite.done();
-            console.log(response);
             toaster.pop('error', 'Error', response.data.message || (response.status + ' ' + response.data));
             return response;
         });

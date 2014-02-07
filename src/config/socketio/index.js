@@ -5,13 +5,13 @@
 
 var socketIO = require('socket.io');
 var logger = require('../../services/log').logger();
-var authorService = require('../../services/library/author');
-var bookService = require('../../services/library/book');
-var releaseService = require('../../services/library/release');
+var db = require('../models');
 
 module.exports.initialize = function (server) {
     "use strict";
-    var io = socketIO.listen(server);
+    var io = socketIO.listen(server, {
+        log: false
+    });
 
     io.sockets.on('connection', function (socket) {
         //set up socket for logs
@@ -19,20 +19,20 @@ module.exports.initialize = function (server) {
             socket.emit('log', log);
         });
 
-        bookService.on('update', function (book, changedAttributes) {
-            socket.emit('book:update', book, changedAttributes);
+        db.emitter.on('author/afterUpdate', function (author) {
+            socket.emit('author/afterUpdate', author);
         });
 
-        releaseService.on('update', function (release, changedAttributes) {
-            socket.emit('release:update', release, changedAttributes);
+        db.emitter.on('book/afterUpdate', function (book) {
+            socket.emit('book/afterUpdate', book);
         });
 
-        releaseService.on('create', function (release) {
-            socket.emit('release:create', release);
+        db.emitter.on('release/afterUpdate', function (release) {
+            socket.emit('release/afterUpdate', release);
         });
 
-        authorService.on('update', function (author, changedAttributes) {
-            socket.emit('author:update', author, changedAttributes);
+        db.emitter.on('release/afterCreate', function (release) {
+            socket.emit('release/afterCreate', release);
         });
 
     });

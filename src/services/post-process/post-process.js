@@ -10,11 +10,10 @@ var Q = require('q');
 var moment = require('moment');
 var fs = require('fs-extra');
 var path = require('path');
+var db = require('../../config/models');
 
 // Local Dependencies
 var logger = require('../log').logger();
-var releaseService = require('../library/release');
-var bookService = require('../library/book');
 
 /**
  * Post Process Service
@@ -88,7 +87,8 @@ PostProcessService.prototype.getDirectoryRelease = function (directory) {
         return guid;
     }).then(function (guid) {
         if (guid) {
-            return releaseService.findOne({
+
+            return db.Release.find({
                 where: {
                     guid: guid
                 }
@@ -192,7 +192,7 @@ PostProcessService.prototype.moveRelease = function (release, book) {
 PostProcessService.prototype.writeOpf = function (book, destinationDirectory) {
     "use strict";
     if (book) {
-        return bookService.getOpf(book).then(function (opf) {
+        return book.getOpf().then(function (opf) {
             return Q.ninvoke(fs, 'outputFile', path.join(destinationDirectory, this._settings.opfName), opf);
         }.bind(this));
     } else {
@@ -211,14 +211,12 @@ PostProcessService.prototype.processRelease = function (release) {
     "use strict";
     if (release) {
         logger.log('info', 'Processing release', {release: release.title});
-        return Q.ninvoke(release, 'getBook').then(function (book) {
+        return release.getBook().then(function (book) {
             if (book && book.status === 'snatched') {
                 return this.moveRelease(release, book).then(function (release) {
                     book.status = 'downloaded';
                     release.status = 'downloaded';
-                    book.updated = Date.now();
-                    release.updated = Date.now();
-                    return Q.all([Q.ninvoke(book, 'save'), Q.ninvoke(release, 'save')]).spread(function (book, release) {
+                    return Q.all([book.save(), release.save()]).spread(function (book, release) {
                         logger.log('info', 'Finished processing book', {title: book.title});
                         this.emit('processed', book, release);
                         return this.writeOpf(book, release.directory).then(function () {

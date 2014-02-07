@@ -3,15 +3,10 @@
  * @since 10/16/13 4:20 PM
  */
 var logger = require('../services/log').logger();
-
-var authorService = require('../services/library/author');
-
-var bookService = require('../services/library/book');
-
+var uuid = require('node-uuid');
+var _ = require('lodash');
+var db = require('../config/models');
 var libraryService = require('../services/library');
-
-var ModelValidationService = require('../services/model-validation');
-var modelValidationService = new ModelValidationService();
 
 //noinspection JSUnusedLocalSymbols
 /**
@@ -23,12 +18,11 @@ var modelValidationService = new ModelValidationService();
  */
 function getAll (req, res, next) {
     'use strict';
-    authorService.all({
+    db.Author.all({
+        include: [db.Book],
+        offset: req.query.offset,
         limit: req.query.limit,
-        skip: req.query.offset,
         order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : ' DESC')) : ''
-    }, {
-        expand: req.query.expand
     }).then(res.json.bind(res), next);
 }
 
@@ -41,17 +35,17 @@ function getAll (req, res, next) {
  */
 function getById (req, res, next) {
     'use strict';
-    authorService.find(req.params.id, {
-        expand: req.query.expand
+
+    db.Author.find({
+        where: {
+            id: req.params.id
+        },
+        include: [db.Book]
     }).then(function (author) {
         if (author) {
             if (req.query.refresh) {
                 return libraryService.refreshAuthor(author, {
                     onlyNewBooks: (req.query.newBooks === 'true')
-                }).then(function (author) {
-                    return authorService.find(author.id, {
-                        expand: req.query.expand
-                    });
                 });
             } else {
                 return author;
@@ -77,16 +71,14 @@ function getById (req, res, next) {
  */
 function getByIdBooks (req, res, next) {
     "use strict";
-    bookService.all({
+    db.Author.find({
         where: {
-            authorId: req.params.id
+            id: req.params.id
         },
-        order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : ' DESC')) : ''
-    }, {
-        expand: req.query.expand
-    }).then(function (books) {
-        if (books) {
-            res.json(books);
+        include: [db.Book]
+    }).then(function (author) {
+        if (author) {
+            res.json(author.books);
         } else {
             res.send(404);
         }
@@ -102,11 +94,9 @@ function getByIdBooks (req, res, next) {
  */
 function create (req, res, next) {
     "use strict";
-    authorService.create(req.body).then(function (author) {
+    db.Author.create(_.extend(req.body, { guid: uuid.v4()})).then(function (author) {
         res.json(201, author);
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    }, next);
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -118,17 +108,24 @@ function create (req, res, next) {
  */
 function updateById (req, res, next) {
     "use strict";
-    authorService.updateById(req.params.id, req.body, {
-        expand: req.query.expand
+    db.Author.find({
+        where: {
+            id: req.params.id
+        },
+        include: [db.Book]
+    }).then(function (author) {
+        if (author) {
+            return author.updateAttributes(req.body, ['status']);
+        } else {
+            return null;
+        }
     }).then(function (author) {
         if (author) {
             res.json(200, author);
         } else {
             res.send(404);
         }
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    }, next);
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -140,18 +137,30 @@ function updateById (req, res, next) {
  */
 function update (req, res, next) {
     "use strict";
-    authorService.updateAll(req.body, {
-        expand: req.query.expand,
-        sort: req.query.sort
-    }).then(function (authors) {
-        if (authors) {
-            res.json(200, authors);
-        } else {
-            res.send(409);
-        }
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    if (_.isArray(req.body)) {
+        Q.all(req.body.map(function (author) {
+            return db.Author.find({
+                where: {
+                    id: author.id
+                },
+                include: [db.Book]
+            }).then(function (foundAuthor) {
+                if (foundAuthor) {
+                    return foundAuthor.updateAttributes(author, ['status']);
+                } else {
+                    return author;
+                }
+            });
+        })).then(function (authors) {
+            if (authors) {
+                res.json(200, authors);
+            } else {
+                res.send(409);
+            }
+        });
+    } else {
+        next(new Error('Expecting an array for update'));
+    }
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -163,11 +172,19 @@ function update (req, res, next) {
  */
 function removeById (req, res, next) {
     "use strict";
-    authorService.removeById(req.params.id).then(function () {
-        res.send(204);
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    db.Author.find({
+        where: {
+            id: req.params.id
+        }
+    }).then(function (author) {
+        if (author) {
+            author.destroy().then(function () {
+                res.send(204);
+            }, next);
+        } else {
+            res.send(404);
+        }
+    }, next);
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -179,11 +196,9 @@ function removeById (req, res, next) {
  */
 function remove (req, res, next) {
     "use strict";
-    authorService.remove(req.body).then(function () {
+    db.Author.destroy(req.body).then(function () {
         res.send(204);
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    }, next);
 }
 
 

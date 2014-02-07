@@ -25,7 +25,7 @@ div.panel(data-ng-class='{"panel-success": release.status == "downloaded", "pane
             |  {{release.directory || 'Not processed'}}
         li.list-group-item
             strong Updated:
-            |  {{release.updated | date:'medium'}}
+            |  {{release.updatedAt | date:'medium'}}
     div.panel-footer
         div.btn-group
             button.btn.btn-default.btn-sm(data-ng-click='updateStatus("wanted", release)') Download

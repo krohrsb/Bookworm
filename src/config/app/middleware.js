@@ -91,7 +91,7 @@ module.exports = function (app) {
 
     // log error
     app.use(function (err, req, res, next) {
-        logger.log('error', err.message, err.stack);
+        logger.log('error', err.message || err, err.stack);
         next(err);
     });
 
@@ -100,12 +100,7 @@ module.exports = function (app) {
         var error = {};
         res.status(err.statusCode || 500);
         if (req.xhr) {
-            error.message = err.message;
-
-            if (err.violations) {
-                error.violations = err.violations;
-            }
-
+            error.message = err.message || err;
             res.json(error);
         } else {
             next(err);

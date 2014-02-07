@@ -7,17 +7,14 @@
 var events = require('events');
 var util = require('util');
 var Q = require('q');
-var uuid = require('node-uuid');
 var _ = require('lodash');
 
 // Local Dependencies
-var authorService = require('./author');
-var bookService = require('./book');
-var releaseService = require('./release');
+var db = require('../../config/models');
 var sabnzbd = require('../download/sabnzbd');
-var remoteReleaseService = require('../remote-release');
-var remoteLibraryService = require('../remote-library');
 var settingService = require('../setting');
+var remoteLibraryService = require('../remote-library');
+var remoteReleaseService = require('../remote-release');
 var logger = require('../log').logger();
 
 /**
@@ -27,7 +24,6 @@ var logger = require('../log').logger();
 var LibraryService = function () {
     "use strict";
     events.EventEmitter.call(this);
-
 };
 
 util.inherits(LibraryService, events.EventEmitter);
@@ -56,10 +52,10 @@ LibraryService.prototype.findAndWantRelease = function (book) {
             throw new Error('Attempted to retrieve a release for a non wanted book');
         }
     }).then(function () {
-        return Q.ninvoke(book, 'getReleases');
+        return book.getReleases();
     }).then(function (releases) {
         return _.sortBy(releases,function (release) {
-            return release.updated;
+            return release.updatedAt;
         }).reverse();
     }).then(function (releases) {
         var retryRelease = null, availableRelease;
@@ -69,7 +65,6 @@ LibraryService.prototype.findAndWantRelease = function (book) {
                 return ['snatched', 'wanted', 'downloaded'].indexOf(release.status) !== -1;
             });
         }
-
         availableRelease = _.find(releases, function (release) {
             return release.status === 'available';
         });
@@ -94,18 +89,10 @@ LibraryService.prototype.findAndWantRelease = function (book) {
             }).then(function (remoteReleases) {
                 remoteReleases = remoteReleases || [];
                 return Q.all(remoteReleases.map(function (release) {
-                    release.bookId = book.id;
-                    release.updated = Date.now();
-                    return releaseService.findOne({
-                        where: {
-                            guid: release.guid
-                        }
-                    }).then(function (existingRelease) {
-                        if (existingRelease) {
-                            return existingRelease;
-                        } else {
-                            return releaseService.create(release);
-                        }
+                    return db.Release.findOrCreate({
+                        guid: release.guid
+                    }, release).then(function (release) {
+                        return release.setBook(book);
                     });
                 }));
             }).then(function (releases) {
@@ -121,11 +108,12 @@ LibraryService.prototype.findAndWantRelease = function (book) {
         }
     }).then(function (release) {
         if (release) {
-            return releaseService.update(release, {status: 'wanted'});
+            return release.updateAttributes({status: 'wanted'});
         } else {
             return null;
         }
     });
+
 };
 
 
@@ -137,9 +125,10 @@ LibraryService.prototype.findAndWantRelease = function (book) {
  */
 LibraryService.prototype.downloadRelease = function (book, release) {
     "use strict";
+
     if (release) {
         return sabnzbd.add(release.link, null, release.nzbTitle).then(function () {
-            return Q.all([bookService.update(book, {status: 'snatched', updated: Date.now()}), releaseService.update(release, {status: 'snatched', updated: Date.now(), bookId: book.id})]).spread(function (release) {
+            return Q.all([book.updateAttributes({status: 'snatched'}), release.updateAttributes({status: 'snatched'}), release.setBook(book)]).spread(function (book, release) {
                 return release;
             });
         });
@@ -147,71 +136,6 @@ LibraryService.prototype.downloadRelease = function (book, release) {
         return null;
     }
 
-};
-
-/**
- * Create multiple books given an array of book data
- * @param {object[]} data - array of book data
- * @returns {Promise} A promise of type Promise<Book[], Error>
- */
-LibraryService.prototype.createBooks = function (data) {
-    "use strict";
-    var promises = [];
-    if (_.isUndefined(data)) {
-        data = [];
-    }
-    if (!_.isArray(data)) {
-        data = [data];
-    }
-    return data.reduce(function (promise, bookData) {
-            var prom;
-            prom = promise.then(_.partial(this.createBook, bookData).bind(this));
-            promises.push(prom);
-            return prom;
-        }.bind(this), Q()).then(function () {
-            return Q.all(promises);
-        });
-};
-/**
- * Create a book, looking up the author to attach it to (or creating an author if needed).
- * @param {object} data - Book data
- * @returns {Promise} A promise of type Promise<Book, Error>
- */
-LibraryService.prototype.createBook = function (data) {
-    "use strict";
-    // initial value
-    return Q.fcall(function () {
-        return data;
-    })
-        .then(function (data) {
-            // if book doesn't have an author id, attempt to find author
-            if (!data.authorId) {
-                return authorService.findOne({
-                    where: {
-                        name: data.authorName
-                    }
-                })
-                    .then(function (author) {
-                        // if author not found, create it given the author name.
-                        if (!author) {
-                            return authorService.create({
-                                name: data.authorName,
-                                guid: uuid.v4()
-                            });
-                        } else {
-                            return author;
-                        }
-                    }).then(function (author) {
-                        // set the book's author id
-                        data.authorId = author.id;
-                        return data;
-                    });
-            } else {
-                return data;
-            }
-        }).then(function (data) {
-            return bookService.create(data);
-        });
 };
 
 /**
@@ -223,6 +147,7 @@ LibraryService.prototype.createBook = function (data) {
 LibraryService.prototype.refreshAuthor = function (author, options) {
     "use strict";
     var limit;
+
     options = options || {};
     options.onlyNewBooks = (typeof options.onlyNewBooks === 'string' && options.onlyNewBooks === 'true') || (typeof options.onlyNewBooks === 'boolean' && options.onlyNewBooks);
     if (options.pagingQueryLimit) {
@@ -247,10 +172,10 @@ LibraryService.prototype.refreshAuthor = function (author, options) {
                     return [];
                 }
             }).then(function (newBooks) {
-                return Q.ninvoke(author, 'getBooks').then(function (books) {
-                    return bookService.merge(author, books, remoteBooks, !options.onlyNewBooks).then(function (books) {
+                return author.getBooks().then(function (books) {
+                    return db.Book.merge(author, books, remoteBooks, !options.onlyNewBooks).then(function (books) {
                         if (newBooks.length) {
-                            return bookService.merge(author, books, newBooks, !options.onlyNewBooks);
+                            return db.Book.merge(author, books, newBooks, !options.onlyNewBooks);
                         } else {
                             return Q(books);
                         }
@@ -272,21 +197,17 @@ LibraryService.prototype.refreshAuthor = function (author, options) {
 LibraryService.prototype.refreshActiveAuthors = function (onlyNewBooks) {
     "use strict";
     logger.log('info', 'Refreshing all active authors', {onlyNewBooks: onlyNewBooks});
-    return authorService.all({
+    return db.Author.all({
         where: {
             status: 'active'
         }
     }).then(function (authors) {
-            if (_.isArray(authors)) {
-                return Q.all(authors.map(function (author) {
-                    return this.refreshAuthor(author, {
-                        onlyNewBooks: onlyNewBooks
-                    });
-                }.bind(this)));
-            } else {
-                return [];
-            }
-        }.bind(this));
+        return Q.all(authors.map(function (author) {
+            return this.refreshAuthor(author, {
+                onlyNewBooks: onlyNewBooks
+            });
+        }.bind(this)));
+    }.bind(this));
 };
 
 /**
@@ -296,22 +217,23 @@ LibraryService.prototype.refreshActiveAuthors = function (onlyNewBooks) {
 LibraryService.prototype.findAndDownloadWantedBooks = function () {
     "use strict";
     logger.log('info', 'Searching for all wanted books for active authors');
-    return authorService.all({
+
+    return db.Author.all({
         where: {
             status: 'active'
-        }
+        },
+        include: [db.Book]
     }).then(function (authors) {
         if (_.isArray(authors)) {
             return Q.all(authors.map(function (author) {
-                return Q.ninvoke(author, 'getBooks').then(function (books) {
-                    return Q.all(books.map(function (book) {
-                        if (book.isWanted()) {
-                            return this.findAndWantRelease(book);
-                        } else {
-                            return null;
-                        }
-                    }.bind(this)));
-                }.bind(this));
+                var wantedBooks;
+                wantedBooks = _.filter(author.books, function (book) {
+                    return book.isWanted();
+                });
+                logger.log('info', 'Found', wantedBooks.length, 'wanted books');
+                return Q.all(wantedBooks.map(function (book) {
+                    return this.findAndWantRelease(book);
+                }.bind(this)));
             }.bind(this)));
         } else {
             return [];

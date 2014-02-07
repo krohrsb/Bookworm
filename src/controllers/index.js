@@ -32,7 +32,6 @@ function partial (req, res, next) {
     var name, category;
     name = req.params.name;
     category = req.params.category;
-    logger.log('debug', 'Rendering partial view', {path: category + ((name) ? '/' + name : '')});
     res.render('partials/' + category + ((name) ? '/' + name : ''), {
         env: settingService.get('environment:env'),
         apiKey: settingService.get('server:apiKey')

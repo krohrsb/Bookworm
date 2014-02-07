@@ -21,8 +21,12 @@ var NewznabParserService = function () {
 util.inherits(NewznabParserService, events.EventEmitter);
 
 /**
+ * @name NewznabResponse
+ * @property {object} channel
+ */
+/**
  * Parse a newznab response
- * @param {object} response - response data
+ * @param {NewznabResponse} response - response data
  * @returns {Promise} A promise of type Promise<Object, Error>
  */
 NewznabParserService.prototype.parseResponse = function (response) {

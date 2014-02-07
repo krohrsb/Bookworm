@@ -11,7 +11,6 @@ var _ = require('lodash');
 
 // Local Dependencies
 var logger = require('../../log').logger();
-var Release = require('../../../models/release');
 var NewznabAPIService = require('./newznab-api');
 var NewznabParser = require('./newznab-parser');
 var settingService = require('../../setting');
@@ -171,7 +170,7 @@ NewznabService.prototype.constructRelease = function (release) {
         }).value;
 
         if (ignoredWord) {
-            logger.log('info', 'Release title contains an ignored word, skipping', {data: {ignoredWord: ignoredWord, title: release.title}});
+            logger.log('notice', 'Release title contains an ignored word, skipping', {ignoredWord: ignoredWord, title: release.title});
             deferred.resolve();
         } else {
             deferred.resolve({

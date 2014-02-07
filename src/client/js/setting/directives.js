@@ -28,6 +28,7 @@
                 /**
                  * Flash a class for a period of time.
                  * @param {string} klass - the class to add to the form-group
+                 * @param {number} duration - the duration of the timeout
                  */
                 flashClass = function (klass, duration) {
                     var elem = element.parents('.form-group');

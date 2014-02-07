@@ -20,15 +20,15 @@
             },
             link: function(scope) {
                 //forward event for socket.io
-                socket.forward('author:update', scope);
+                socket.forward('author/afterUpdate', scope);
 
                 /**
                  * On author update, check to see if we are the author and if so update our details.
                  */
-                scope.$on('socket:author:update', function (ev, updatedAuthor) {
+                scope.$on('socket:author/afterUpdate', function (ev, updatedAuthor) {
                     if (ev.targetScope.author.id.toString() === updatedAuthor.id.toString()) {
                         ev.targetScope.author.status = updatedAuthor.status;
-                        ev.targetScope.author.updated = updatedAuthor.updated;
+                        ev.targetScope.author.updatedAt = updatedAuthor.updatedAt;
                     }
                 });
 

@@ -7,8 +7,8 @@
 var express = require('express');
 var appConfig = require('./config/app');
 var routesConfig = require('./config/routes');
-var databaseConfig = require('./config/database');
-var modelsConfig = require('./config/database/models');
+var db = require('./config/models');
+var logger = require('./services/log').logger();
 exports.createApp = function () {
     var app;
 
@@ -18,7 +18,11 @@ exports.createApp = function () {
 
     routesConfig(app);
 
-    modelsConfig(databaseConfig.db, databaseConfig.exists);
+    db.sequelize.sync().then(function () {
+        logger.log('info', 'Database synced.');
+    }, function (err) {
+        logger.log('error', err.message, err.stack);
+    });
 
 
     return app;

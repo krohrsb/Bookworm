@@ -7,15 +7,12 @@ var logger = require('../services/log').logger();
 
 var Q = require('q');
 var _ = require('lodash');
+var uuid = require('node-uuid');
+var db = require('../config/models');
 
-var libraryService = require('../services/library');
+//var libraryService = require('../services/library');
 
-var authorService = require('../services/library/author');
-
-var bookService = require('../services/library/book');
-
-var ModelValidationService = require('../services/model-validation');
-var modelValidationService = new ModelValidationService();
+//published,imageSmall,image,apiLink,isbn,provider,language,publisher,pageCount,description,link,title
 
 //noinspection JSUnusedLocalSymbols
 /**
@@ -28,21 +25,18 @@ var modelValidationService = new ModelValidationService();
 function getAll (req, res, next) {
     'use strict';
     var options = {
+        include: [db.Release, db.Author],
         limit: req.query.limit,
-        skip: req.query.offset,
+        offset: req.query.offset,
         order: (req.query.sort) ? (req.query.sort + ((req.query.direction) ? ' ' + req.query.direction : ' DESC')) : ''
     };
 
     if (req.query.status) {
         options.where = {
-            status: {
-                inq: req.query.status.split(',')
-            }
+            status: req.query.status.split(',')
         };
     }
-    bookService.all(options, {
-        expand: req.query.expand
-    }).then(res.json.bind(res), next);
+    db.Book.all(options).then(res.json.bind(res), next);
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -54,8 +48,11 @@ function getAll (req, res, next) {
  */
 function getById (req, res, next) {
     'use strict';
-    bookService.find(req.params.id, {
-        expand: req.query.expand
+    db.Book.find({
+        where: {
+            id: req.params.id
+        },
+        include: [db.Author, db.Release]
     }).then(function (book) {
         if (book) {
             res.json(book);
@@ -74,15 +71,14 @@ function getById (req, res, next) {
  */
 function getByIdAuthor (req, res, next) {
     "use strict";
-    bookService.findAuthor(req.params.id).then(function (author) {
-        if (author) {
-            return authorService.expandAuthor(req.query.expand, author);
-        } else {
-            return null;
-        }
-    }).then(function (author) {
-        if (author) {
-            res.json(author);
+    db.Book.find({
+        where: {
+            id: req.params.id
+        },
+        include: [db.Author]
+    }).then(function (book) {
+        if (book) {
+            res.json(book.author);
         } else {
             res.send(404);
         }
@@ -98,9 +94,14 @@ function getByIdAuthor (req, res, next) {
  */
 function getByIdReleases (req, res, next) {
     "use strict";
-    bookService.findReleases(req.params.id).then(function (releases) {
-        if (releases) {
-            res.json(releases);
+    db.Book.find({
+        where: {
+            id: req.params.id
+        },
+        include: [db.Release]
+    }).then(function (book) {
+        if (book) {
+            res.json(book.releases);
         } else {
             res.send(404);
         }
@@ -117,11 +118,19 @@ function getByIdReleases (req, res, next) {
  */
 function create (req, res, next) {
     "use strict";
-    Q.fcall(function () {
-        if (_.isArray(req.body)) {
-            return libraryService.createBooks(req.body);
+    db.Book.findOrCreate({
+        guid: req.body.guid
+    }, req.body).spread(function (book, created) {
+        if (created) {
+            return db.Author.findOrCreate({
+                name: book.authorName
+            }, {
+                guid: uuid.v4()
+            }).spread(function (author) {
+                    return book.setAuthor(author);
+                });
         } else {
-            return libraryService.createBook(req.body);
+            return book;
         }
     }).then(function (book) {
         if (book) {
@@ -129,9 +138,7 @@ function create (req, res, next) {
         } else {
             res.send(409);
         }
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    }, next);
 
 
 }
@@ -145,17 +152,24 @@ function create (req, res, next) {
  */
 function updateById (req, res, next) {
     "use strict";
-    bookService.updateById(req.params.id, req.body, {
-        expand: req.query.expand
+    db.Book.find({
+        where: {
+            id: req.params.id
+        },
+        include: [db.Author, db.Release]
+    }).then(function (book) {
+        if (book) {
+            return book.updateAttributes(req.body, ['status']);
+        } else {
+            return null;
+        }
     }).then(function (book) {
         if (book) {
             res.json(200, book);
         } else {
             res.send(404);
         }
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    }, next);
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -167,17 +181,30 @@ function updateById (req, res, next) {
  */
 function update (req, res, next) {
     "use strict";
-    bookService.updateAll(req.body, {
-        expand: req.query.expand
-    }).then(function (books) {
-        if (books) {
-            res.json(200, books);
-        } else {
-            res.send(409);
-        }
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    if (_.isArray(req.body)) {
+        Q.all(req.body.map(function (book) {
+            return db.Book.find({
+                where: {
+                    id: book.id
+                },
+                include: [db.Author, db.Release]
+            }).then(function (foundBook) {
+                if (foundBook) {
+                    return foundBook.updateAttributes(book, ['status']);
+                } else {
+                    return book;
+                }
+            });
+        })).then(function (books) {
+            if (books) {
+                res.json(200, books);
+            } else {
+                res.send(409);
+            }
+        });
+    } else {
+        next(new Error('Expecting an array for update'));
+    }
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -189,11 +216,15 @@ function update (req, res, next) {
  */
 function removeById (req, res, next) {
     "use strict";
-    bookService.removeById(req.params.id).then(function () {
-        res.send(204);
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    db.Book.find(req.params.id).then(function (book) {
+        if (book) {
+            book.destroy().then(function () {
+                res.send(204);
+            }, next);
+        } else {
+            res.send(404);
+        }
+    }, next);
 }
 
 //noinspection JSUnusedLocalSymbols
@@ -205,11 +236,9 @@ function removeById (req, res, next) {
  */
 function remove (req, res, next) {
     "use strict";
-    bookService.remove(req.body).then(function () {
+    db.Book.destroy(req.body).then(function () {
         res.send(204);
-    }, function (err) {
-        modelValidationService.formatError(err).then(next, next);
-    });
+    }, next);
 }
 
 function setup (app) {

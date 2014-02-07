@@ -29,7 +29,7 @@
                 scope.$on('socket:release:update', function (ev, updatedRelease) {
                     if (ev.targetScope.release.id.toString() === updatedRelease.id.toString()) {
                         scope.release.status = updatedRelease.status;
-                        scope.release.updated = updatedRelease.updated;
+                        scope.release.updatedAt = updatedRelease.updatedAt;
                         scope.release.directory = updatedRelease.directory;
                     }
                 });

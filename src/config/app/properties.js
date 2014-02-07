@@ -6,6 +6,7 @@ module.exports = function (app) {
     "use strict";
     app.set('views', __dirname + '/../../views');
     app.set('view engine', 'jade');
+    //noinspection JSValidateTypes
     app.set('view options', {
         layout: false
     });

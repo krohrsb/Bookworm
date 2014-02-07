@@ -14,8 +14,7 @@ var Q = require('q');
 var logger = require('../log').logger();
 var postProcessService = require('../post-process');
 var libraryService = require('../library');
-var authorService = require('../library/author');
-
+var db = require('../../config/models');
 /**
  * Service to manage commands issued to the application on a generic level.
  * Mainly to be used for the API
@@ -75,7 +74,11 @@ ActionService.prototype.performAuthorAction = function (action, id) {
     return this.hasAction(action).then(function (hasAction) {
         var err;
         if (hasAction) {
-            return authorService.find(id).then(function (author) {
+            return db.Author.find({
+                where: {
+                    id: id
+                }
+            }).then(function (author) {
                 if (action === 'refreshAuthor') {
                     return libraryService.refreshAuthor(author);
                 } else if (action === 'refreshAuthorNewBooks') {
@@ -84,6 +87,7 @@ ActionService.prototype.performAuthorAction = function (action, id) {
                     return null;
                 }
             }.bind(this));
+
         } else {
             err = new Error('Action does not exist');
             err.statusCode = 404;
@@ -114,7 +118,7 @@ ActionService.prototype.performGeneralAction = function (action) {
             } else if (action === 'forcePostProcess') {
                 return postProcessService.process();
             } else if (action === 'killProcess') {
-                logger.log('debug', 'Sending SIGUSR2 to the process', {data: {pid: process.pid}});
+                logger.log('debug', 'Sending SIGUSR2 to the process', {pid: process.pid});
                 process.kill(process.pid, 'SIGUSR2');
                 return null;
             } else {
