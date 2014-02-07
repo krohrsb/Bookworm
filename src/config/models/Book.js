@@ -20,7 +20,6 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.TEXT,
             allowNull: false,
             unique: true,
-            onDelete: 'cascade'
         },
         title: {
             type: DataTypes.TEXT,
@@ -97,7 +96,7 @@ module.exports = function(sequelize, DataTypes) {
              */
             associate: function(models) {
                 Book.belongsTo(models.Author);
-                Book.hasMany(models.Release);
+                Book.hasMany(models.Release, {onDelete: 'cascade'});
             },
             /**
              * Initialize hooks for this model
