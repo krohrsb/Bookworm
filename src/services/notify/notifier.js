@@ -11,14 +11,16 @@ var Q = require('q');
 
 // Local Dependencies
 var notifierDefaults = require('./notifier-defaults');
+var logger = require('../log').logger();
+var settingService = require('../setting');
 
 var Notifier = function (options) {
     "use strict";
     this._settings = _.merge({}, notifierDefaults, options || {});
+
     if (_.isEmpty(this._settings.name)) {
-        this._settings.name = _.uniqueId('notifier_');
+        throw new Error('Notifier created without a name!');
     }
-    this._isEnabled = true;
 
     events.EventEmitter.call(this);
 };
@@ -35,23 +37,29 @@ Notifier.prototype.getName = function () {
 };
 
 /**
- * Disable the notifier
+ * Determine if notifier should notify given an trigger. Should be overridden.
+ * @returns {boolean}
  */
-Notifier.prototype.disable = function () {
-    'use strict';
+Notifier.prototype.shouldNotify = function (trigger) {
+    "use strict";
+    if (settingService.get('notifiers:' + this._settings.name + ':enabled')) {
+        if (trigger === 'snatched') {
+            return settingService.get('notifiers:' + this._settings.name + ':onSnatch');
+        } else if (trigger === 'downloaded') {
+            return settingService.get('notifiers:' + this._settings.name + ':onDownload');
+        } else {
+            return true;
+        }
+    } else {
+        return false;
+    }
 
-    this._isEnabled = false;
 };
 
-/**
- * Enable the notifier
- */
-Notifier.prototype.enable = function () {
-    'use strict';
-
-    this._isEnabled = true;
+Notifier.prototype.getMessage = function (trigger, book) {
+    "use strict";
+    return 'Book ' + book.title + ' was ' + trigger;
 };
-
 /**
  * Notify, meant to be overridden, abstract.
  * @returns {Promise} A promise of type Promise<>
@@ -59,15 +67,6 @@ Notifier.prototype.enable = function () {
 Notifier.prototype.notify = function () {
     'use strict';
     return Q.defer().promise;
-};
-
-/**
- * Determine if notifier should notify given an trigger. Should be overridden.
- * @returns {boolean}
- */
-Notifier.prototype.shouldNotify = function () {
-    "use strict";
-    return false;
 };
 
 /**
@@ -87,8 +86,7 @@ Notifier.prototype.toString = function () {
 Notifier.prototype.toJSON = function () {
     "use strict";
     return _.merge({}, {
-        isEnabled: this._isEnabled,
-        url: this._url,
+        url: this._url
     }, this._settings);
 };
 

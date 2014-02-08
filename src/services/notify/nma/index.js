@@ -30,22 +30,6 @@ var NotifyMyAndroid = function (options) {
 util.inherits(NotifyMyAndroid, Notifier);
 
 /**
- * Determine if this notifier should notify based on a given trigger.
- * @param {string} trigger - The name of an arbitrary trigger
- * @returns {boolean}
- */
-NotifyMyAndroid.prototype.shouldNotify = function (trigger) {
-    "use strict";
-    if (trigger === 'snatched') {
-        return settingService.get('notifiers:nma:onSnatch');
-    } else if (trigger === 'download') {
-        return settingService.get('notifiers:nma:onDownload');
-    } else {
-        return true;
-    }
-};
-
-/**
  * Parse the NMA response and return a formatted object
  * @param {object} response
  * @returns {Promise} A promise of type Promise<Object, Error>
@@ -59,14 +43,12 @@ NotifyMyAndroid.prototype._parseResponse = function (response) {
         deferred.resolve({
             success: false,
             message: response.nma.error[0]._,
-            enabled: this._isEnabled,
             statusCode: response.nma.error[0].$.code
         });
     } else if (response.nma && response.nma.success) {
         deferred.resolve({
             success: true,
             message: 'success',
-            enabled: this._isEnabled,
             statusCode: response.nma.success[0].$.code
         });
     } else {
@@ -77,28 +59,27 @@ NotifyMyAndroid.prototype._parseResponse = function (response) {
 
 /**
  * Notify using NMA. Check if it should notify first, using the given event.
- * @param {object} options - Notification options
+ * @param {string} trigger - Notification trigger
+ * @param {object} book - book object
  * @returns {Promise} A promise of type Promise<Object, Error>
  */
-NotifyMyAndroid.prototype.notify = function (options) {
+NotifyMyAndroid.prototype.notify = function (trigger, book) {
     "use strict";
-    var defaults, settings;
+    var params;
 
-    if (this.shouldNotify(options.trigger) && settingService.get('notifiers:nma:enabled')) {
-        defaults = {
+    if (this.shouldNotify(trigger)) {
+        params = {
             apikey: settingService.get('notifiers:nma:apiKey'),
             priority: settingService.get('notifiers:nma:priority'),
-            description: this._settings.description,
-            event: this._settings.event,
+            description: this.getMessage(trigger, book),
+            event: this.getMessage(trigger, book),
             application: this._settings.application
         };
-
-        settings = _.merge({}, defaults, options || {});
 
         return Q.nfcall(request, {
             uri: this._url,
             method: 'POST',
-            form: settings
+            form: params
         }).spread(function (http, response) {
             if (response) {
                 return Q.ninvoke(xml2js, 'parseString', response).then(function (response) {
@@ -113,8 +94,7 @@ NotifyMyAndroid.prototype.notify = function (options) {
         return Q.fcall(function () {
             return {
                 success: false,
-                enabled: this._isEnabled,
-                message: 'trigger not set to notify'
+                message: 'notifier not enabled or trigger not set to notify'
             };
         }.bind(this)).then(function (response) {
             this.emit('notify', response);

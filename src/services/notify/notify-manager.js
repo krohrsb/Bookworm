@@ -64,12 +64,11 @@ NotificationService.prototype.addNotifier = function (notifier) {
 
 /**
  * Notify all notifiers, let them decide if they should notify or not.
- * @param {object} [options] Notification options, can manually specify triggers to notify on.
  */
-NotificationService.prototype.notify = function (options) {
+NotificationService.prototype.notify = function (trigger, book) {
     'use strict';
 
-    _.invoke(this._notifiers, 'notify', options);
+    _.invoke(this._notifiers, 'notify', trigger, book);
 };
 
 module.exports = NotificationService;

@@ -28,23 +28,18 @@ notificationService.on('notify', function (data) {
 // Listen to book snatched events and attempt to notify.
 db.emitter.on('book/snatched', function (book) {
     "use strict";
-    notificationService.notify({
-        event: 'Book Snatched',
-        trigger: 'snatched',
-        description: book.title,
-        url: book.apiLink,
-        urlTitle: book.title + '@' + book.provider
-    });
+    notificationService.notify('snatched', book);
 });
 
 // Listen to book downloaded events and attempt to notify.
 db.emitter.on('book/downloaded', function (book) {
     "use strict";
-    notificationService.notify({
-        event: 'Book Downloaded',
-        trigger: 'download',
-        description: book.title
-    });
+    notificationService.notify('downloaded', book);
 });
 
+/*
+ description: book.title,
+ url: book.apiLink,
+ urlTitle: book.title + '@' + book.provider
+ */
 module.exports = notificationService;

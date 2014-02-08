@@ -30,22 +30,6 @@ var Pushover = function (options) {
 util.inherits(Pushover, Notifier);
 
 /**
- * Determine if this notifier should notify based on a given trigger.
- * @param {string} trigger - The name of an arbitrary trigger
- * @returns {boolean}
- */
-Pushover.prototype.shouldNotify = function (trigger) {
-    "use strict";
-    if (trigger === 'snatched') {
-        return settingService.get('notifiers:pushover:onSnatch');
-    } else if (trigger === 'download') {
-        return settingService.get('notifiers:pushover:onDownload');
-    } else {
-        return true;
-    }
-};
-
-/**
  * Parse the NMA response and return a formatted object
  * @param {object} response
  * @returns {Promise} A promise of type Promise<Object, Error>
@@ -59,14 +43,12 @@ Pushover.prototype._parseResponse = function (response) {
         deferred.resolve({
             success: false,
             message: response.errors[0],
-            enabled: this._isEnabled,
             statusCode: 400
         });
     } else if (response && !response.errors) {
         deferred.resolve({
             success: true,
             message: 'success',
-            enabled: this._isEnabled,
             statusCode: 200
         });
     } else {
@@ -77,34 +59,29 @@ Pushover.prototype._parseResponse = function (response) {
 
 /**
  * Notify using Pushover. Check if it should notify first, using the given event.
- * @param {object} options - Notification options
+ * @param {string} trigger - Notification trigger
+ * @param {object} book - book object
  * @returns {Promise} A promise of type Promise<Object, Error>
  */
-Pushover.prototype.notify = function (options) {
+Pushover.prototype.notify = function (trigger, book) {
     "use strict";
-    var defaults, settings;
-
-    if (this.shouldNotify(options.trigger) && settingService.get('notifiers:pushover:enabled')) {
-        defaults = {
+    var params;
+    if (this.shouldNotify(trigger)) {
+        params = {
             token: settingService.get('notifiers:pushover:apiKey'),
             user: settingService.get('notifiers:pushover:userKey'),
             priority: settingService.get('notifiers:pushover:priority'),
-            description: this._settings.description,
-            event: this._settings.event,
-            application: this._settings.application
+            message: this.getMessage(trigger, book),
+            title: this._settings.application,
+            url: book.apiLink,
+            url_title: book.title + '@' + book.provider
         };
-
-        settings = _.merge({}, defaults, options || {});
-
-        settings.message = settings.event + '. ' + settings.description;
-        settings.title = settings.application;
-        settings.url_title = settings.urlTitle;
 
         return Q.nfcall(request, {
             uri: this._url,
             method: 'POST',
             json: true,
-            form: settings
+            form: params
         }).spread(function (http, response) {
             if (response) {
                 this.emit('notify', response);
@@ -117,8 +94,7 @@ Pushover.prototype.notify = function (options) {
         return Q.fcall(function () {
             return {
                 success: false,
-                enabled: this._isEnabled,
-                message: 'trigger not set to notify'
+                message: 'notifier not enabled or trigger not set to notify'
             };
         }.bind(this)).then(function (response) {
             this.emit('notify', response);

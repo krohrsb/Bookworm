@@ -4,6 +4,6 @@
  */
 module.exports = {
     application: 'Bookworm',
-    event: 'Notification',
-    description: ''
+    title: 'Notification',
+    message: ''
 };
