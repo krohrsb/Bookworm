@@ -22,7 +22,7 @@ function notify (req, res, next) {
     notifier = notificationService.getNotifier(req.params.name);
 
     if (notifier) {
-        notifier.notify({}).then(function (response) {
+        notifier.notify(null, {title: 'Test Notification'}).then(function (response) {
             if (response.statusCode) {
                 res.status(parseInt(response.statusCode, 10));
             }
