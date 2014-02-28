@@ -59,6 +59,11 @@ LogService.prototype.initialize = function () {
     }
 
     if (this._settings.loggers.file.enabled) {
+
+        if (!fs.existsSync(path.dirname(this._settings.loggers.file.filename))) {
+            fs.mkdirSync(path.dirname(this._settings.loggers.file.filename));
+        }
+
         logFilter = filter.createFilter({level: (this._settings.loggers.file.debug ? 7 : 6)});
         this._logger.pipe(logFilter).pipe(es.join('\n')).pipe(fs.createWriteStream(this._settings.loggers.file.filename, {flags: 'a'}));
     }

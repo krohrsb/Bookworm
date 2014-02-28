@@ -5,9 +5,15 @@ var _ = require('lodash');
 var events = require('events');
 var settingService = require('../../services/setting');
 
+var databaseFilePath = path.join(settingService.get('environment:baseDirectory'), settingService.get('database:path'));
+
+if (!fs.existsSync(path.dirname(databaseFilePath))) {
+    fs.mkdirSync(path.dirname(databaseFilePath));
+}
+
 var sequelize = new Sequelize('bookworm', 'bookworm', 'test', {
     dialect: 'sqlite',
-    storage: path.join(settingService.get('environment:baseDirectory'), settingService.get('database:path'))
+    storage: databaseFilePath
 });
 /**
  * Database instance
