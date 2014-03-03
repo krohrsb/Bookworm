@@ -92,6 +92,9 @@ NewznabService.prototype.query = function (options) {
     "use strict";
     var settings = _.clone(this._settings, true);
 
+    if (!settings.providers.length) {
+        logger.log('warn', 'No providers defined in settings.');
+    }
     return Q.all(settings.providers.map(function (provider) {
         var localOptions;
         if (provider.enabled) {
@@ -99,6 +102,7 @@ NewznabService.prototype.query = function (options) {
             localOptions.apikey = provider.apiKey;
             return this._query(provider.host, localOptions);
         } else {
+            logger.log('notice', 'Provider ' + provider.host + ' disabled, not using.');
             return [];
         }
     }.bind(this))).then(function (resultSets) {
