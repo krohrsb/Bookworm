@@ -3,7 +3,7 @@
  * @since 10/11/13 4:13 PM
  */
 var settingService = require('../services/setting');
-var logger = require('../services/log').logger();
+var logger = require('../services/log');
 //noinspection JSUnusedLocalSymbols
 /**
  * Retrieve settings

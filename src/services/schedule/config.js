@@ -4,7 +4,7 @@
  * @module schedule/config
  */
 var util = require('util');
-var logger = require('../log').logger();
+var logger = require('../log');
 var later = require('later');
 var settingService = require('../setting');
 var postProcessService = require('../post-process');

@@ -16,7 +16,7 @@ var Q = require('q');
 
 // Local Dependencies
 var apiDefaults = require('./google-books-api-defaults');
-var logger = require('../../log').logger();
+var logger = require('../../log');
 
 /**
  * Google Books API Service

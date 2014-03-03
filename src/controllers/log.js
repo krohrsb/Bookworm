@@ -3,7 +3,7 @@
  * @since 10/10/13 2:41 PM
  */
 var logService = require('../services/log');
-var logger = logService.logger();
+var logger = logService;
 //noinspection JSUnusedLocalSymbols
 /**
  * Retrieve logs

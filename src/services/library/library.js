@@ -15,7 +15,7 @@ var sabnzbd = require('../download/sabnzbd');
 var settingService = require('../setting');
 var remoteLibraryService = require('../remote-library');
 var remoteReleaseService = require('../remote-release');
-var logger = require('../log').logger();
+var logger = require('../log');
 
 /**
  * Library Service - handles operations that span multiple library components such as author, book, release, downloading etc.

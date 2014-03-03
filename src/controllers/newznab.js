@@ -4,7 +4,7 @@
  */
 
 var remoteRelease = require('../services/remote-release');
-var logger = require('../services/log').logger();
+var logger = require('../services/log');
 //noinspection JSUnusedLocalSymbols
 /**
  *

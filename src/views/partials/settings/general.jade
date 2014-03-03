@@ -34,13 +34,13 @@ form.form-horizontal(role='form', name='generalForm')
                     span.help-block API Key for restricting API access.
                     button.btn.btn-defualt.btn-sm(data-ng-click='generateApiKey()') Generate Key
         div.col-sm-6
-            legend Logging - Console*
+            legend Logging - Console
             div.form-group
                 label.col-sm-3.control-label(for='loggers-console-debug') Debug Logging
                 div.checkbox.col-sm-9
                     input(type='checkbox', value='', data-ng-model='settings.loggers.console.debug', id='loggers-console-debug', data-bw-setting)
                     span.text-muted {{ (settings.loggers.console.debug) ? 'Debug logging is enabled' : 'Enable debug logging?'}}
-            legend Logging - File*
+            legend Logging - File
             div.form-group
                 label.col-sm-3.control-label(for='loggers-file-enabled') File Logging
                 div.checkbox.col-sm-9
@@ -56,5 +56,5 @@ form.form-horizontal(role='form', name='generalForm')
                     label.col-sm-3.control-label(for='loggers-file-path') File Path
                     div.col-sm-9
                         input.form-control(type='text', placeholder='logs/bookworm.log', data-ng-model='settings.loggers.file.path', id='loggers-file-path', data-bw-setting)
-                        span.help-block The relative path to the log file.
+                        span.help-block Absolute or relative (to the app directory) path for the log file.
 p.pull-right * Restart Required

@@ -3,7 +3,7 @@
  * @since 10/23/13 12:19 PM
  */
 var actionService = require('../services/action');
-var logger = require('../services/log').logger();
+var logger = require('../services/log');
 
 //noinspection JSUnusedLocalSymbols
 /**

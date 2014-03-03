@@ -2,7 +2,7 @@
  * @author Kyle Brown <blackbarn@gmail.com>
  * @since 10/16/13 4:20 PM
  */
-var logger = require('../services/log').logger();
+var logger = require('../services/log');
 var uuid = require('node-uuid');
 var _ = require('lodash');
 var db = require('../config/models');

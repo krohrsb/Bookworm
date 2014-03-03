@@ -14,7 +14,7 @@ var memoize = require('memoizee');
 var request = require('request');
 
 // Local Dependencies
-var logger = require('../../log/').logger();
+var logger = require('../../log/');
 var apiDefaults = require('./newznab-api-defaults');
 
 /**

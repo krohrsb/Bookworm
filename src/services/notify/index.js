@@ -3,7 +3,7 @@
  * @since 10/16/13 9:05 AM
  */
 var db = require('../../config/models');
-var logger = require('../log').logger();
+var logger = require('../log');
 var NotificationService = require('./notify-manager');
 var NotifyMyAndroid = require('./nma');
 var Pushover = require('./pushover');

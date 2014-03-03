@@ -8,7 +8,7 @@ var express = require('express');
 var appConfig = require('./config/app');
 var routesConfig = require('./config/routes');
 var db = require('./config/models');
-var logger = require('./services/log').logger();
+var logger = require('./services/log');
 exports.createApp = function () {
     var app;
 

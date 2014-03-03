@@ -11,7 +11,7 @@ var Q = require('q');
 
 // Local Dependencies
 var notifierDefaults = require('./notifier-defaults');
-var logger = require('../log').logger();
+var logger = require('../log');
 var settingService = require('../setting');
 
 var Notifier = function (options) {

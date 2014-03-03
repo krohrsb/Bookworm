@@ -13,7 +13,7 @@ var path = require('path');
 var db = require('../../config/models');
 
 // Local Dependencies
-var logger = require('../log').logger();
+var logger = require('../log');
 
 /**
  * Post Process Service

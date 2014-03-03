@@ -10,7 +10,7 @@ var _ = require('lodash');
 var Q = require('q');
 
 var SABnzbdAPI = require('sabnzbd');
-var logger = require('../../log').logger();
+var logger = require('../../log');
 /**
  * SABnzbd Service
  * @param {object} options - sab options

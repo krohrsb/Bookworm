@@ -5,7 +5,7 @@
 var Q = require('q');
 var fs = require('fs-extra');
 var path = require('path');
-var logger = require('../../services/log').logger();
+var logger = require('../../services/log');
 /**
  * Initialize a controller given its file name and a reference to the application.
  * @param {string} fileName - The controller file name. e.g., author.js

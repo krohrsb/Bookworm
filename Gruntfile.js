@@ -140,7 +140,7 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'bower_components/jquery',
+                        cwd: 'bower_components/jquery/dist/',
                         src: ['*.js'],
                         dest: 'build/client/components/jquery/'
                     },

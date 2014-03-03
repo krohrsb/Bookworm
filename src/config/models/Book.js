@@ -1,5 +1,5 @@
 var libxmljs = require('libxmljs');
-var logger = require('../../services/log').logger();
+var logger = require('../../services/log');
 var Q = require('q');
 var _ = require('lodash');
 
@@ -19,7 +19,7 @@ module.exports = function(sequelize, DataTypes) {
         guid: {
             type: DataTypes.TEXT,
             allowNull: false,
-            unique: true,
+            unique: true
         },
         title: {
             type: DataTypes.TEXT,

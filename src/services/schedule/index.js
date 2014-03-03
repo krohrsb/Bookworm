@@ -10,7 +10,7 @@ var Q = require('q');
 var ScheduleService = require('./schedule').ScheduleService;
 var ScheduleJob = require('./schedule').ScheduleJob;
 var scheduleService = new ScheduleService();
-var logger = require('../log').logger();
+var logger = require('../log');
 var jobConfigs = require('./config');
 
 Q.all(jobConfigs.map(function (jobConfig) {

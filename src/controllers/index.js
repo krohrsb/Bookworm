@@ -4,7 +4,7 @@
  */
 var settingService = require('../services/setting');
 var _ = require('lodash');
-var logger = require('../services/log').logger();
+var logger = require('../services/log');
 //noinspection JSUnusedLocalSymbols
 /**
  * Render the main index page

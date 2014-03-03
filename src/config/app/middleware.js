@@ -5,7 +5,7 @@
 'use strict';
 var Q = require('q');
 var express = require('express');
-var logger = require('../../services/log').logger();
+var logger = require('../../services/log');
 var partialResponse = require('express-partial-response');
 var metadataLinksBase = require('./middleware/metadata-links-base');
 var metadataLinksPaging = require('./middleware/metadata-links-paging');

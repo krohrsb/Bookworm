@@ -10,7 +10,7 @@ var Q = require('q');
 // Local Dependencies
 var LibraryService = require('./library');
 var libraryService = new LibraryService();
-var logger = require('../log').logger();
+var logger = require('../log');
 var db = require('../../config/models');
 
 

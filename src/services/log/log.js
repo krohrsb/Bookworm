@@ -81,12 +81,11 @@ LogService.prototype.updateSettings = function (options) {
 };
 
 /**
- * Grab the logger instance
- * @return {object} Logger instance (winston)
+ * Try and log something to the stored logger instance.
  */
-LogService.prototype.logger = function () {
+LogService.prototype.log = function () {
     "use strict";
-    return this._logger;
+    this._logger.log.apply(this._logger, arguments);
 };
 
 /**

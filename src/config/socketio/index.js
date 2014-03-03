@@ -4,7 +4,7 @@
  */
 
 var socketIO = require('socket.io');
-var logger = require('../../services/log').logger();
+var logger = require('../../services/log');
 var db = require('../models');
 
 module.exports.initialize = function (server) {

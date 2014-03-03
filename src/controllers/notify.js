@@ -6,7 +6,7 @@ var _ = require('lodash');
 
 var notificationService = require('../services/notify');
 
-var logger = require('../services/log').logger();
+var logger = require('../services/log');
 
 //noinspection JSUnusedLocalSymbols
 /**

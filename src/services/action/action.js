@@ -11,7 +11,7 @@ var _ = require('lodash');
 var Q = require('q');
 
 // Local Dependencies
-var logger = require('../log').logger();
+var logger = require('../log');
 var postProcessService = require('../post-process');
 var libraryService = require('../library');
 var db = require('../../config/models');

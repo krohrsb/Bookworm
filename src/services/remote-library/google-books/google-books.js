@@ -15,7 +15,7 @@ var Q = require('q');
 var GoogleBooksAPIService = require('./google-books-api');
 var GoogleBooksParser = require('./google-books-parser');
 var settingService = require('../../setting');
-var logger = require('../../log').logger();
+var logger = require('../../log');
 
 var errors = {
     NO_BOOK_DATA: 'No book data provided',

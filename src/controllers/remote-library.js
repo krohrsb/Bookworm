@@ -6,7 +6,7 @@ var _ = require('lodash');
 
 var remoteLibraryService = require('../services/remote-library');
 var settingService = require('../services/setting');
-var logger = require('../services/log').logger();
+var logger = require('../services/log');
 //noinspection JSUnusedLocalSymbols
 /**
  * Queries the remote library

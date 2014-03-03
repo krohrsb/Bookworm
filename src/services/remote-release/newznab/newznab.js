@@ -10,7 +10,7 @@ var Q = require('q');
 var _ = require('lodash');
 
 // Local Dependencies
-var logger = require('../../log').logger();
+var logger = require('../../log');
 var NewznabAPIService = require('./newznab-api');
 var NewznabParser = require('./newznab-parser');
 var settingService = require('../../setting');

@@ -3,7 +3,7 @@
  * @since 10/22/13 10:26 AM
  */
 
-var logger = require('../services/log').logger();
+var logger = require('../services/log');
 
 var Q = require('q');
 var _ = require('lodash');

@@ -13,7 +13,7 @@ var Q = require('q');
 
 // Local Dependencies
 var settingService = require('../setting');
-var logger = require('../log').logger();
+var logger = require('../log');
 
 /**
  * Schedule Job, holds data for a scheduled job.
