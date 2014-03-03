@@ -16,4 +16,3 @@ div.table-responsive
                 td.level {{log.levelName}}
                 td.message(data-ng-mouseover='hoverIndex = $index', data-ng-mouseout='hoverIndex = -1')
                     span {{log.args | joinWithObjects:" "}}
-                    span.data(data-ng-class='{"focus": hoverIndex == $index}') {{log.data}}

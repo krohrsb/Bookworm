@@ -3,7 +3,7 @@
  * @since 10/10/13 10:57 AM
  */
 var Q = require('q');
-var fs = require('fs-extra');
+var qfs = require('q-io/fs');
 var path = require('path');
 var logger = require('../../services/log');
 /**
@@ -33,18 +33,15 @@ function initializeControllers (app) {
 
     controllersDirectory = path.join(__dirname, '..', '..', 'controllers');
 
-    Q.fcall(function () {
-        var deferred = Q.defer();
-        fs.exists(controllersDirectory, deferred.resolve);
-        return deferred.promise;
-    })
+    qfs.exists(controllersDirectory)
     .then(function (exists) {
         if (exists) {
-            return Q.nfcall(fs.readdir, controllersDirectory);
+            return controllersDirectory;
         } else {
-            throw new Error('Controllers directory does not exist!');
+            throw new Error('Controllers Directory does not exist');
         }
     })
+    .then(qfs.list)
     .then(function (files) {
         files.forEach(function (file) {
             // skipping index.js for last as it has the default routes

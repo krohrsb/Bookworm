@@ -15,7 +15,7 @@ module.exports.initialize = function (server) {
 
     io.sockets.on('connection', function (socket) {
         //set up socket for logs
-        logger.on('log', function (log) {
+        logger.getInstance().on('log', function (log) {
             socket.emit('log', log);
         });
 

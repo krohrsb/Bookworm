@@ -8,7 +8,7 @@ var util = require('util');
 var _ = require('lodash');
 var Q = require('q');
 var moment = require('moment');
-var fs = require('fs-extra');
+var qfs = require('q-io/fs');
 var path = require('path');
 var db = require('../../config/models');
 
@@ -49,9 +49,10 @@ PostProcessService.prototype.updateSettings = function (options) {
  */
 PostProcessService.prototype.getDirectories = function () {
     "use strict";
-    return Q.ninvoke(fs, 'readdir', this._settings.downloadDirectory).then(function (files) {
+
+    return qfs.listTree(this._settings.downloadDirectory).then(function (files) {
         return Q.all(files.map(function (file) {
-            return Q.ninvoke(fs, 'stat', path.join(this._settings.downloadDirectory, file)).then(function (stat) {
+            return qfs.stat(path.join(this._settings.downloadDirectory, file)).then(function (stat) {
                 return {
                     isDirectory: stat.isDirectory(),
                     file: path.join(this._settings.downloadDirectory, file)
@@ -146,9 +147,7 @@ PostProcessService.prototype.resolvePatternPath = function (pattern, author, tit
  */
 PostProcessService.prototype.moveRelease = function (release, book) {
     "use strict";
-    var folderName, destinationDirectory, sourceDirectory, existsDeferred;
-
-    existsDeferred = Q.defer();
+    var folderName, destinationDirectory, sourceDirectory;
 
     sourceDirectory = release.directory;
 
@@ -158,29 +157,33 @@ PostProcessService.prototype.moveRelease = function (release, book) {
 
     logger.log('info', 'Moving release to destination directory', {release: release.title, directory: destinationDirectory});
 
-    fs.exists(sourceDirectory, existsDeferred.resolve);
-
-    return existsDeferred.promise.then(function (exists) {
+    return qfs.exists(sourceDirectory)
+    .then(function (exists) {
         if (exists) {
-            logger.log('debug', 'Creating destination directory', {directory: destinationDirectory});
-            return Q.ninvoke(fs, 'mkdirs', destinationDirectory, this._settings.directoryPermissions).then(function () {
-                logger.log('debug', 'Copying directory', {from: sourceDirectory, to: destinationDirectory});
-                return Q.ninvoke(fs, 'copy', sourceDirectory, destinationDirectory).then(function () {
-                    if (this._settings.keepOriginalFiles) {
-                        return null;
-                    } else {
-                        logger.log('debug', 'Removing original release directory', {directory: sourceDirectory});
-                        return Q.ninvoke(fs, 'remove', sourceDirectory);
-                    }
-                }.bind(this)).then(function () {
-                    release.directory = destinationDirectory;
-                    return release;
-                });
-            }.bind(this));
+            return sourceDirectory;
         } else {
             throw new Error('Directory ' + sourceDirectory + ' for release no longer exists');
         }
-    }.bind(this));
+    }).then(function () {
+        logger.log('debug', 'Creating destination directory', {directory: destinationDirectory});
+        return qfs.makeTree(destinationDirectory, this._settings.directoryPermissions);
+    }.bind(this))
+    .then(function () {
+        logger.log('debug', 'Copying directory', {from: sourceDirectory, to: destinationDirectory});
+        return qfs.copyTree(sourceDirectory, destinationDirectory);
+    })
+    .then(function () {
+        if (this._settings.keepOriginalFiles) {
+            return null;
+        } else {
+            logger.log('debug', 'Removing original release directory', {directory: sourceDirectory});
+            return qfs.removeTree(sourceDirectory);
+        }
+    }.bind(this))
+    .then(function () {
+        release.directory = destinationDirectory;
+        return release;
+    });
 };
 
 /**
@@ -193,7 +196,7 @@ PostProcessService.prototype.writeOpf = function (book, destinationDirectory) {
     "use strict";
     if (book) {
         return book.getOpf().then(function (opf) {
-            return Q.ninvoke(fs, 'outputFile', path.join(destinationDirectory, this._settings.opfName), opf);
+            return qfs.write(path.join(destinationDirectory, this._settings.opfName), opf);
         }.bind(this));
     } else {
         return Q.fcall(function () {

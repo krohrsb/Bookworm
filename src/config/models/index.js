@@ -13,7 +13,8 @@ if (!fs.existsSync(path.dirname(databaseFilePath))) {
 
 var sequelize = new Sequelize('bookworm', 'bookworm', 'test', {
     dialect: 'sqlite',
-    storage: databaseFilePath
+    storage: databaseFilePath,
+    logging: false
 });
 /**
  * Database instance

@@ -81,11 +81,33 @@ LogService.prototype.updateSettings = function (options) {
 };
 
 /**
+ * Return the logger instance
+ * @returns {object}
+ */
+LogService.prototype.getInstance = function () {
+    return this._logger;
+};
+
+/**
  * Try and log something to the stored logger instance.
  */
 LogService.prototype.log = function () {
     "use strict";
-    this._logger.log.apply(this._logger, arguments);
+    var args, params, mask, sanitize;
+    sanitize = ['apiKey', 'key', 'apikey'];
+    mask = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+    args = Array.prototype.slice.call(arguments, 0);
+    params = _.cloneDeep(args);
+    params.forEach(function (arg) {
+        if (typeof arg === 'object') {
+            sanitize.forEach(function (key) {
+                if (arg[key]) {
+                    arg[key] = mask;
+                }
+            });
+        }
+    });
+    this._logger.log.apply(this._logger, params);
 };
 
 /**
