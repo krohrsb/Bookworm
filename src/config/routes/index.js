@@ -10,14 +10,15 @@ var logger = require('../../services/log');
  * Initialize a controller given its file name and a reference to the application.
  * @param {string} fileName - The controller file name. e.g., author.js
  * @param {object} app - Reference to the express application.
+ * @param {object} swagger - Swagger instance for API docs
  */
-function initializeController (fileName, app) {
+function initializeController (fileName, app, swagger) {
     "use strict";
     var controller;
     controller = require('../../controllers/' + fileName);
     if (typeof controller.setup === 'function') {
         logger.log('debug', 'Setting up controller', { name: fileName.replace('.js', '') });
-        controller.setup(app);
+        controller.setup(app, swagger);
     } else {
         logger.log('error', 'Controller does not have a setup method, not initializing!', { name: fileName.replace('.js', '') });
     }
@@ -26,14 +27,15 @@ function initializeController (fileName, app) {
 /**
  * Initialize all controllers in the controllers directory.
  * @param {object} app - Reference to the express application.
+ * @param {object} swagger - Swagger instance for API docs
  */
-function initializeControllers (app) {
+function initializeControllers (app, swagger) {
     "use strict";
     var controllersDirectory;
 
     controllersDirectory = path.join(__dirname, '..', '..', 'controllers');
 
-    qfs.exists(controllersDirectory)
+    return qfs.exists(controllersDirectory)
     .then(function (exists) {
         if (exists) {
             return controllersDirectory;
@@ -46,10 +48,10 @@ function initializeControllers (app) {
         files.forEach(function (file) {
             // skipping index.js for last as it has the default routes
             if (file !== 'index.js') {
-                initializeController(file, app);
+                initializeController(file, app, swagger);
             }
         });
-        initializeController('index', app);
+        initializeController('index', app, swagger);
         logger.log('notice', 'Application Started');
     }).catch(function (err) {
         logger.log('error', err.message, err.stack);

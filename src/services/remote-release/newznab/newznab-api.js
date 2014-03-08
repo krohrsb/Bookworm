@@ -24,7 +24,8 @@ var apiDefaults = require('./newznab-api-defaults');
  */
 var NewznabAPIService = function (options) {
     "use strict";
-
+    //TODO: Remove or make configurable, only needed right now as api.nzb.su is reporting as nzb.su
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = 0;
     /** @type {object} **/
     this._defaults = apiDefaults;
 
@@ -39,11 +40,11 @@ var NewznabAPIService = function (options) {
      * @private
      */
     this._requestQueue = async.queue(function (data, next) {
-        logger.log('debug', 'Issuing remote request', {key: data.key});
+        logger.log('debug', 'Not cached, issuing remote request', data.options.qs);
         request.get(data.options, function (err, response, body) {
             setTimeout(function (data, response, body) {
                 if (err || (body && body.error && !_.isEmpty(body.error.errors))) {
-                    this._apiCache.clear(data.key, true);
+                    this._apiCache.clear(data.id, true);
                 }
                 if (err) {
                     next(err);
@@ -56,14 +57,13 @@ var NewznabAPIService = function (options) {
     }.bind(this), this._settings.requestQueueParallelCount);
 
     /**
-     * Cache for API calls based off of a key. The key is the full URL with query params.
+     * Cache for API calls based off of a id. The id is the full URL with query params.
      * @type {function}
      * @private
      */
-    this._apiCache = memoize(function (key, options, next) {
-        logger.log('debug', 'Not cached, queuing request', {key: key});
+    this._apiCache = memoize(function (id, options, next) {
         this._requestQueue.push({
-            key: key,
+            id: id,
             options: options
         }, next);
     }.bind(this), this._settings.cacheOptions);
@@ -90,7 +90,7 @@ NewznabAPIService.prototype.updateSettings = function (settings) {
  */
 NewznabAPIService.prototype.query = function (url, options) {
     "use strict";
-    var requestOptions, localOptions, key;
+    var requestOptions, localOptions, id;
 
     // ensure options exists
     localOptions = _.clone(options, true) || {};
@@ -112,11 +112,11 @@ NewznabAPIService.prototype.query = function (url, options) {
         json: true
     };
 
-    // create the key used for caching lookup
-    key = requestOptions.uri + '?' + qs.stringify(requestOptions.qs);
-    logger.log('debug', 'Making request to cache', {key: key});
+    // create the id used for caching lookup
+    id = requestOptions.uri + '?' + qs.stringify(requestOptions.qs);
+    logger.log('debug', 'Making request to cache', requestOptions.qs);
     // call the cache (will request if not in cache, otherwise will return the cached result)
-    return Q.ninvoke(this, '_apiCache', key, requestOptions);
+    return Q.ninvoke(this, '_apiCache', id, requestOptions);
 };
 
 module.exports = NewznabAPIService;

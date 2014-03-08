@@ -4,7 +4,7 @@
  */
 module.exports = {
     config: {
-        lineOffset: 0,
+        lineOffset: 1,
         levels: {
             emergency: 0,
             alert: 1,

@@ -15,7 +15,7 @@
                 controller: 'AuthorsCtrl',
                 resolve: {
                     authors: ['Restangular', function (Restangular) {
-                        return Restangular.all('authors').getList({expand: 'latestBook,booksCount'});
+                        return Restangular.all('authors').getList({expand: ''});
                     }]
                 }
             })
@@ -25,7 +25,7 @@
                 controller: 'AuthorCtrl',
                 resolve: {
                     author: ['Restangular', '$stateParams', function (Restangular, $stateParams) {
-                        return Restangular.one('authors', $stateParams.id).get({expand: 'books,latestBook,booksCount'});
+                        return Restangular.one('authors', $stateParams.id).get({expand: 'book'});
                     }]
                 }
             });

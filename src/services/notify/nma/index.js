@@ -83,13 +83,14 @@ NotifyMyAndroid.prototype.notify = function (trigger, book) {
         }).spread(function (http, response) {
             if (response) {
                 return Q.ninvoke(xml2js, 'parseString', response).then(function (response) {
-                    this.emit('notify', response);
                     return response;
                 }.bind(this));
             } else {
                 throw new Error('empty response from NMA');
             }
-        }.bind(this)).then(this._parseResponse.bind(this));
+        }.bind(this)).then(this._parseResponse.bind(this)).then(function (response) {
+            this.emit('notify', response);
+        }.bind(this));
     } else {
         return Q.fcall(function () {
             return {
@@ -97,7 +98,6 @@ NotifyMyAndroid.prototype.notify = function (trigger, book) {
                 message: 'notifier not enabled or trigger not set to notify'
             };
         }.bind(this)).then(function (response) {
-            this.emit('notify', response);
             return response;
         }.bind(this));
     }

@@ -83,13 +83,10 @@ Pushover.prototype.notify = function (trigger, book) {
             json: true,
             form: params
         }).spread(function (http, response) {
-            if (response) {
-                this.emit('notify', response);
-                return response;
-            } else {
-                throw new Error('empty response from pushover');
-            }
-        }.bind(this)).then(this._parseResponse.bind(this));
+            return response;
+        }.bind(this)).then(this._parseResponse.bind(this)).then(function (response) {
+            this.emit('notify', response);
+        }.bind(this));
     } else {
         return Q.fcall(function () {
             return {
@@ -97,7 +94,6 @@ Pushover.prototype.notify = function (trigger, book) {
                 message: 'notifier not enabled or trigger not set to notify'
             };
         }.bind(this)).then(function (response) {
-            this.emit('notify', response);
             return response;
         }.bind(this));
     }

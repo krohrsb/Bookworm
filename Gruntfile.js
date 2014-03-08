@@ -195,6 +195,16 @@ module.exports = function (grunt) {
                         dest: 'build/client/img/'
                     }
                 ]
+            },
+            swagger: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'node_modules/swagger-ui/dist',
+                        src: ['**'],
+                        dest: 'build/swagger/'
+                    }
+                ]
             }
         },
         watch: {
@@ -311,6 +321,7 @@ module.exports = function (grunt) {
     });
 
     grunt.registerTask('build:dev', [
+        'jshint',
         'clean',
         'uglify:dev',
         'stylus',
@@ -318,15 +329,17 @@ module.exports = function (grunt) {
     ]);
 
     grunt.registerTask('build:prod', [
+        'jshint',
+        'jshint',
         'clean',
         'uglify:prod',
         'stylus',
         'copy'
     ]);
 
-    grunt.registerTask('default', [
-        'jshint',
-        'build:dev'
-    ]);
+    grunt.registerTask('prod', ['build:prod']);
+    grunt.registerTask('dev', ['build:dev']);
+
+    grunt.registerTask('default', ['dev']);
 
 };

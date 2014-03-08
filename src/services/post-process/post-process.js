@@ -52,10 +52,10 @@ PostProcessService.prototype.getDirectories = function () {
 
     return qfs.listTree(this._settings.downloadDirectory).then(function (files) {
         return Q.all(files.map(function (file) {
-            return qfs.stat(path.join(this._settings.downloadDirectory, file)).then(function (stat) {
+            return qfs.stat(file).then(function (stat) {
                 return {
                     isDirectory: stat.isDirectory(),
-                    file: path.join(this._settings.downloadDirectory, file)
+                    file: file
                 };
             }.bind(this));
         }.bind(this)));

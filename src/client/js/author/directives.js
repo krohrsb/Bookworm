@@ -48,7 +48,7 @@
                     books = scope.author.books;
 
                     //update the author, request an updated one with latestBook and booksCount filled out
-                    scope.author.put({expand: 'latestBook,booksCount'}).then(function (updatedAuthor) {
+                    scope.author.put({expand: ''}).then(function (updatedAuthor) {
                         //set author
                         scope.author = updatedAuthor;
                         //set books to stored variable
@@ -62,7 +62,7 @@
                 scope.checkNewBooks = function () {
                     toaster.pop('info', 'Please Wait', 'Checking for new books...');
                     //get a new refreshed author, only caring about 'new' books.
-                    scope.author.get({refresh: true, newBooks: true, expand: 'books,latestBook,booksCount'}).then(function (updatedAuthor) {
+                    scope.author.get({refresh: true, newBooks: true, expand: 'book'}).then(function (updatedAuthor) {
                         scope.author = updatedAuthor;
                         $timeout(function () {
                             toaster.pop('success', 'Finished', 'Refreshed author\'s books.');
@@ -75,7 +75,7 @@
                  */
                 scope.refreshAuthor = function () {
                     toaster.pop('info', 'Please Wait', 'Refreshing author and book information...');
-                    scope.author.get({refresh: true, newBooks: false, expand: 'books,latestBook,booksCount'}).then(function (updatedAuthor) {
+                    scope.author.get({refresh: true, newBooks: false, expand: 'book'}).then(function (updatedAuthor) {
                         scope.author = updatedAuthor;
                         $timeout(function () {
                             toaster.pop('success', 'Finished', 'Refreshed author\'s information.');

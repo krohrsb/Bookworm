@@ -14,7 +14,10 @@ module.exports = function(sequelize, DataTypes) {
         guid: {
             type: DataTypes.TEXT,
             allowNull: false,
-            unique: true
+            unique: true,
+            validate: {
+                notEmpty: true
+            }
         },
         description: {
             type: DataTypes.TEXT,
@@ -25,7 +28,9 @@ module.exports = function(sequelize, DataTypes) {
             type: DataTypes.TEXT,
             unique: true,
             allowNull: false,
-            defaultValue: ''
+            validate: {
+                notEmpty: true
+            }
         },
         link: {
             type: DataTypes.TEXT,

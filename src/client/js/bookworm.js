@@ -31,10 +31,10 @@
     angular.module('bookworm', ['ngResource', 'ngStorage', 'btford.socket-io', 'ui', 'angularMoment', 'ngAnimate', 'toaster', 'restangular', 'ngProgressLite', 'truncate', 'bookworm.core',
             'bookworm.book', 'bookworm.author', 'bookworm.release', 'bookworm.search', 'bookworm.log', 'bookworm.setting', 'bookworm.notify', 'bookworm.manage'],
             ['RestangularProvider', function (RestangularProvider) {
-        RestangularProvider.setBaseUrl('/api/v1');
+        RestangularProvider.setBaseUrl('/api');
         RestangularProvider.setDefaultHeaders({'X-Requested-With': 'XMLHttpRequest'});
         RestangularProvider.setDefaultRequestParams({
-            apikey: bookworm.apiKey
+            apiKey: bookworm.apiKey
         });
 
 

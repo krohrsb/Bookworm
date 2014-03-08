@@ -33,7 +33,7 @@ var GoogleBooksAPIService = function (options) {
     /** @type {object} **/
     this._settings = _.merge({}, this._defaults, options || {});
 
-    this._paramBlacklist = ['paging', 'offset', 'limit', 'pagingQueryLimit', 'pagingQueryParallelCount'];
+    this._paramBlacklist = ['paging', 'offset', 'limit', 'pagingQueryLimit', 'pagingQueryParallelCount', 'fields'];
 
     /**
      * Async Request queue - Que up API requests so we can rate limit them.
@@ -41,11 +41,11 @@ var GoogleBooksAPIService = function (options) {
      * @private
      */
     this._requestQueue = async.queue(function (data, next) {
-
+        logger.log('debug', 'Not cached, issuing remote request', data.options.qs);
         request.get(data.options, function (err, response, body) {
             setTimeout(function (data, response, body) {
                 if (err || (body && body.error && !_.isEmpty(body.error.errors))) {
-                    this._apiCache.clear(data.key, true);
+                    this._apiCache.clear(data.id, true);
                 }
                 if (err) {
                     next(err);
@@ -58,14 +58,13 @@ var GoogleBooksAPIService = function (options) {
     }.bind(this), this._settings.requestQueueParallelCount);
 
     /**
-     * Cache for API calls based off of a key. The key is the full URL with query params.
+     * Cache for API calls based off of a id. The id is the full URL with query params.
      * @type {function}
      * @private
      */
-    this._apiCache = memoize(function (key, options, next) {
-        logger.log('debug', 'Not cached, issuing remote request', {key: key});
+    this._apiCache = memoize(function (id, options, next) {
         this._requestQueue.push({
-            key: key,
+            id: id,
             options: options
         }, next);
     }.bind(this), this._settings.cacheOptions);
@@ -93,7 +92,7 @@ GoogleBooksAPIService.prototype.updateSettings = function (settings) {
  */
 GoogleBooksAPIService.prototype.query = function (options) {
     "use strict";
-    var requestOptions, localOptions, key;
+    var requestOptions, localOptions, id;
 
     // ensure options exists
     localOptions = _.clone(options, true) || {};
@@ -112,11 +111,11 @@ GoogleBooksAPIService.prototype.query = function (options) {
         json: true
     };
 
-    // create the key used for caching lookup
-    key = requestOptions.uri + '?' + qs.stringify(requestOptions.qs);
+    // create the id used for caching lookup
+    id = requestOptions.uri + '?' + qs.stringify(requestOptions.qs);
     logger.log('debug', 'Making request to cache', requestOptions.qs);
     // call the cache (will request if not in cache, otherwise will return the cached result)
-    return Q.ninvoke(this, '_apiCache', key, requestOptions);
+    return Q.ninvoke(this, '_apiCache', id, requestOptions);
 
 };
 
@@ -194,20 +193,20 @@ GoogleBooksAPIService.prototype.pagingQuery = function (options) {
 
 /**
  * Find a Google Books volume given its id
- * @param {string} id - The volume identifier
+ * @param {string} volumeId - The volume identifier
  * @param {object} options - The query options (search params)
  * @returns {Promise} A promise of type Promise<Object, Error>
  */
-GoogleBooksAPIService.prototype.findById = function (id, options) {
+GoogleBooksAPIService.prototype.findById = function (volumeId, options) {
     "use strict";
-    var requestOptions, key;
+    var requestOptions, id;
 
     // ensure options exist
     options = options || {};
 
     // define request options
     requestOptions = {
-        uri: this._settings.apiUrl + '/' + id,
+        uri: this._settings.apiUrl + '/' + volumeId,
         qs: _.merge({}, this._settings.queryParams, options),
         headers: {
             'User-Agent': this._settings.userAgent
@@ -215,11 +214,11 @@ GoogleBooksAPIService.prototype.findById = function (id, options) {
         json: true
     };
 
-    // create the key used for caching lookup
-    key = requestOptions.uri + '?' + qs.stringify(requestOptions.qs);
+    // create the id used for caching lookup
+    id = requestOptions.uri + '?' + qs.stringify(requestOptions.qs);
 
     // call the cache (will request if not in cache, otherwise will return the cached result)
-    return Q.ninvoke(this, '_apiCache', key, requestOptions);
+    return Q.ninvoke(this, '_apiCache', id, requestOptions);
 
 };
 

@@ -60,7 +60,10 @@
     "event-stream": "~3.1.0",
     "sequelize": "~2.0.0-dev4",
     "sqlite3": "~2.2.0",
-    "q-io": "^1.11.0"
+    "q-io": "^1.11.0",
+    "swagger-ui": "^2.0.12",
+    "swaggerize": "0.0.2",
+    "swagger-node-express": "^2.0.1"
   },
   "devDependencies": {
     "grunt-contrib-copy": "~0.5.0",

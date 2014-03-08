@@ -1,6 +1,6 @@
 
-- var panelClassString = '{"panel-success": book.status == "downloaded", "panel-danger": book.status == "wanted", "panel-info": book.status == "snatched", "panel-default": book.status == "skipped", "panel-warning": book.status == "excluded"}';
-- var labelClassString = '{"label-success": book.status == "downloaded", "label-danger": book.status == "wanted", "label-info": book.status == "snatched", "label-default": book.status == "skipped", "label-warning": book.status == "excluded"}';
+- var panelClassString = '{"panel-success": book.status == "downloaded", "panel-danger": book.status == "wanted" || book.status == "wanted_new", "panel-info": book.status == "snatched", "panel-default": book.status == "skipped", "panel-warning": book.status == "excluded"}';
+- var labelClassString = '{"label-success": book.status == "downloaded", "label-danger": book.status == "wanted" || book.status == "wanted_new", "label-info": book.status == "snatched", "label-default": book.status == "skipped", "label-warning": book.status == "excluded"}';
 
 div
     div.panel.book(data-ng-if='!selecting', data-ng-class='#{panelClassString}')

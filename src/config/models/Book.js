@@ -169,7 +169,7 @@ module.exports = function(sequelize, DataTypes) {
                         }));
                     }).then(function (newBooks) {
                         return Q.all(newBooks.map(function (book) {
-                            book.setAuthor(author);
+                            return book.setAuthor(author);
                         }));
                     }.bind(this)).then(function (savedBooks) {
                         logger.log('debug', 'Finished merging books for author', {author: author.name, mergedBookData: mergeData});

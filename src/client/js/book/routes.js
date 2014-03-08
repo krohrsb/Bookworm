@@ -15,7 +15,7 @@
                 controller: 'BookCtrl',
                 resolve: {
                     book: ['Restangular', '$stateParams', function (Restangular, $stateParams) {
-                        return Restangular.one('books', $stateParams.id).get({expand: 'releases'});
+                        return Restangular.one('books', $stateParams.id).get({expand: 'release'});
                     }]
                 }
             })
