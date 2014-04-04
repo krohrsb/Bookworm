@@ -1,6 +1,6 @@
 {
   "name": "Bookworm",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "authors": [
     "Kyle Brown <blackbarn@gmail.com>"
   ],
@@ -18,20 +18,52 @@
   "dependencies": {
     "angular": "*",
     "angular-ui-router": "master",
-    "angular-resource": "~1.2.10",
-    "angular-moment": "~0.6.0",
-    "angular-truncate": "*",
-    "ngprogress-lite": "~1.0.4",
-    "angular-ui-utils": "~0.1.0",
-    "angular-animate": "~1.2.10",
-    "bootstrap": "~3.1.0",
-    "angular-bootstrap": "~0.10.0",
-    "angular-socket-io": "~0.3.0",
-    "socket.io-client": "~0.9.16",
-    "restangular": "~1.3.1",
-    "animate.css": "~3.0.0",
-    "ngstorage": "~0.3.0",
-    "angular-notify-toaster": "~0.4.1",
-    "json-mask": "https://github.com/nemtsov/json-mask.git#~0.1.1-alpha"
+    "angular-resource": "^1.2.10",
+    "angular-moment": "^0.6.0",
+    "angular-truncate": "https://github.com/martinp/angular-truncate.git",
+    "ngprogress-lite": "^1.0.4",
+    "angular-ui-utils": "^0.1.0",
+    "angular-animate": "^1.2.10",
+    "bootstrap": "^3.1.0",
+    "angular-bootstrap": "^0.10.0",
+    "angular-socket-io": "^0.3.0",
+    "socket.io-client": "^0.9.16",
+    "restangular": "^1.3.1",
+    "animate.css": "^3.0.0",
+    "ngstorage": "^0.3.0",
+    "angular-notify-toaster": "^0.4.1",
+    "json-mask": "https://github.com/nemtsov/json-mask.git#^0.1.1-alpha"
+  },
+  "overrides": {
+    "angular-truncate": {
+      "main": [
+        "dist/*.js"
+      ]
+    },
+    "socket.io-client": {
+      "main": [
+        "dist/*"
+      ]
+    },
+    "json-mask": {
+      "main": [
+        "build/*.js"
+      ]
+    },
+    "ngprogress-lite": {
+        "main": [
+            "ngprogress-lite*"
+        ]
+    },
+    "angular-bootstrap": {
+        "main": [
+            "./*.js"
+        ]
+    },
+    "lodash": {
+        "main": [
+            "dist/*.js"
+        ]
+    }
   }
 }

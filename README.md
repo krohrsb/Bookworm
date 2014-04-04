@@ -48,7 +48,7 @@ You will need a few things (currently) in order to set up Bookworm.
 * Git http://git-scm.com/
 * Node (NPM is included) http://nodejs.org/download/
 * Bower https://github.com/twitter/bower
-* Grunt-CLI http://gruntjs.com/getting-started
+* Gulp http://gulpjs.com/
 
 Once you have those dependencies set up, clone the repo and initialize.
 
@@ -66,7 +66,7 @@ npm install && bower install;
 ```
 Build the project
 ```
-grunt;
+gulp;
 ```
 
 Now that it is initialized, you can start it up!
@@ -75,7 +75,7 @@ node bin/bookworm.js;
 ```
 or
 ```
-grunt server;
+gulp server;
 ```
 or whatever method you wish to use to start up a node script. (supervisor, forever, etc)
 
@@ -83,14 +83,15 @@ For a 'production' environment:
 
 _note, you have a different config json file per environment_
 
-If using grunt server:
+Using gulp server task:
 ```
-grunt server:dist;
+gulp --production;
+gulp server --production;
 ```
 
-If using other:
+Using something else:
 ```
-grunt build:prod;
+gulp --production;
 NODE_ENV=production node bin/bookworm.js; #or whichever command you are using.
 ```
 
