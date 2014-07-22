@@ -1,3 +1,12 @@
+# NOTICE
+
+I am currently rewriting this on a bitbucket account right now. I wanted to learn/practice a few things and just wanted a change of pace.
+
+[Bookworm@Bitbucket](https://bitbucket.org/blackbarn/bookworm)
+
+Still writing the back-end, so it isn't really usable yet. The main difference is, it uses MongoDB instead of SQLite. It also has the latest express and a different API.
+
+
 # Bookworm
 
 Bookworm is a Book NZB searcher and grabber. In likeness with the Couchpotato, Sickbeard and Headphones applications.
